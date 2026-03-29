@@ -1,0 +1,139 @@
+/* --- 1. CONFIGURAÇÕES GERAIS (RESET) --- */
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body, html {
+    height: 100%;
+    font-family: 'Poppins', sans-serif;
+    color: #FFFFFF;
+    background-color: #121212;
+}
+
+body {
+    background-image: 
+        linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.95)), 
+        url('https://images.unsplash.com/photo-1599619126264-9f44a49c6703?q=80&w=2000&auto=format&fit=crop');
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+/* --- 2. COMPONENTES COMPARTILHADOS (BOTÕES E TEXTOS) --- */
+.nome-restaurante {
+    font-family: 'Playfair Display', serif;
+    font-weight: 700;
+    line-height: 1.1;
+    color: #FFFFFF;
+}
+
+.action-btn {
+    width: 100%;
+    padding: 16px;
+    font-family: 'Poppins', sans-serif;
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    text-decoration: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.btn-primary {
+    background: linear-gradient(135deg, #E6BD1A 0%, #B59410 100%);
+    color: #121212;
+}
+
+.btn-secondary {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: #FFFFFF;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(5px);
+}
+
+.action-btn:hover { transform: translateY(-3px); opacity: 0.9; }
+
+/* --- 3. LAYOUT DA HOME (INDEX) --- */
+.main-home {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    padding: 10px;
+}
+
+.actions-container {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    width: 100%;
+    max-width: 320px;
+    margin-bottom: 25vh; /* A subida que você pediu */
+}
+
+/* --- 4. LAYOUT DO MENU (COM FOTOS) --- */
+.menu-body { overflow-y: auto; }
+
+.menu-container {
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.menu-card {
+    display: flex;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 12px;
+    overflow: hidden;
+    margin-bottom: 15px;
+}
+
+.card-image img {
+    width: 100px; height: 100px; object-fit: cover;
+}
+
+.card-info { padding: 12px; flex: 1; }
+
+.card-header { display: flex; justify-content: space-between; font-weight: 600; }
+
+/* --- 5. RODAPÉ --- */
+
+        /* --- RODAPÉ (FOOTER) --- */
+        footer {
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 20px 10px;
+            font-size: 0.8rem;
+            text-align: center;
+            backdrop-filter: blur(10px);
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .footer-info {
+            opacity: 0.7;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+
+        .powerby {
+            margin-top: 5px;
+            font-size: 0.7rem;
+            opacity: 0.5;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+/* --- 6. RESPONSIVIDADE --- */
+@media (max-width: 600px) {
+    h1.nome-restaurante { font-size: 2.5rem; }
+    .card-image img { width: 80px; height: 80px; }
+}
