@@ -3,3 +3,5 @@
 # backend
 
 # banco de dados
+
+/src/generated/prisma
