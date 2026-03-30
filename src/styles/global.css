@@ -132,6 +132,142 @@ body {
             letter-spacing: 1px;
         }
 
+
+
+
+
+        /* --- PERFIL --- */
+.perfil-btn {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 2px solid #B59410;
+    cursor: pointer;
+    overflow: hidden;
+    z-index: 50;
+    background: #1a1a1a;
+    transition: all 0.2s;
+}
+
+.perfil-btn:hover {
+    border-color: #E6BD1A;
+    transform: scale(1.05);
+}
+
+.perfil-btn img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.perfil-iniciais {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: #B59410;
+    background: rgba(181,148,16,0.1);
+}
+
+/* --- POPUP PERFIL --- */
+.popup-perfil {
+    display: none;
+    position: fixed;
+    top: 74px;
+    right: 20px;
+    background: #1a1a1a;
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 16px;
+    padding: 24px;
+    width: 280px;
+    z-index: 101;
+    opacity: 0;
+    transform: translateY(-10px);
+    transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.popup-perfil.ativo {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+.perfil-topo {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid rgba(255,255,255,0.07);
+}
+
+.perfil-avatar-grande {
+    width: 52px;
+    height: 52px;
+    border-radius: 50%;
+    border: 2px solid #B59410;
+    background: rgba(181,148,16,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.2rem;
+    color: #B59410;
+    flex-shrink: 0;
+}
+
+.perfil-nome {
+    font-family: 'Playfair Display', serif;
+    font-size: 1rem;
+    color: #fff;
+    margin-bottom: 2px;
+}
+
+.perfil-email {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.45);
+}
+
+.perfil-menu-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px 8px;
+    border-radius: 8px;
+    color: rgba(255,255,255,0.7);
+    font-size: 0.85rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    text-decoration: none;
+}
+
+.perfil-menu-item:hover {
+    background: rgba(255,255,255,0.05);
+    color: #fff;
+}
+
+.perfil-menu-item.sair {
+    color: rgba(255,80,80,0.7);
+    margin-top: 8px;
+    border-top: 1px solid rgba(255,255,255,0.07);
+    padding-top: 16px;
+}
+
+.perfil-menu-item.sair:hover {
+    background: rgba(255,80,80,0.08);
+    color: rgb(255,80,80);
+}
+
+
+
+
+
 /* --- 6. RESPONSIVIDADE --- */
 @media (max-width: 600px) {
     h1.nome-restaurante { font-size: 2.5rem; }
