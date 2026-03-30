@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reserva - Table 4U</title>
+    <link rel="stylesheet" href="../styles/booking.css">
+    <link rel="stylesheet" href="../styles/global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div class="reserva-header">
+        <a href="../index.html" class="back-link">← Voltar</a>
+        <h2 class="reserva-title">Fazer Reserva</h2>
+    </div>
+
+    <main class="reserva-content">
+
+        <!-- STEP 1: FORMULÁRIO -->
+        <div id="step-form">
+            <p class="step-sub">Preencha os dados da sua reserva</p>
+
+            <div class="input-group">
+                <label class="input-label">Quantidade de pessoas</label>
+                <div class="pessoas-counter">
+                    <button class="counter-btn" onclick="alterarPessoas(-1)">−</button>
+                    <span id="pessoas-count">2</span>
+                    <button class="counter-btn" onclick="alterarPessoas(1)">+</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Data</label>
+                <input type="date" id="reserva-data" class="reserva-input">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Horário</label>
+                <div class="horarios-grid">
+                    <button class="horario-btn" onclick="selecionarHorario(this)">12:00</button>
+                    <button class="horario-btn" onclick="selecionarHorario(this)">12:30</button>
+                    <button class="horario-btn" onclick="selecionarHorario(this)">13:00</button>
+                    <button class="horario-btn" onclick="selecionarHorario(this)">13:30</button>
+                    <button class="horario-btn" onclick="selecionarHorario(this)">19:00</button>
+                    <button class="horario-btn" onclick="selecionarHorario(this)">19:30</button>
+                    <button class="horario-btn" onclick="selecionarHorario(this)">20:00</button>
+                    <button class="horario-btn" onclick="selecionarHorario(this)">20:30</button>
+                    <button class="horario-btn" onclick="selecionarHorario(this)">21:00</button>
+                    <button class="horario-btn" onclick="selecionarHorario(this)">21:30</button>
+                </div>
+            </div>
+
+            <button class="action-btn btn-primary" onclick="confirmarReserva()">Continuar</button>
+        </div>
+
+        <!-- STEP 2: CONFIRMAÇÃO -->
+        <div id="step-confirm" style="display:none">
+            <div class="step-icon">✦</div>
+            <h3 class="step-title">Confirmar Reserva</h3>
+            <p class="step-sub">Verifique os detalhes antes de confirmar</p>
+
+            <div class="reserva-resumo">
+                <div class="resumo-item">
+                    <span class="resumo-label">Pessoas</span>
+                    <span class="resumo-valor" id="confirm-pessoas"></span>
+                </div>
+                <div class="resumo-item">
+                    <span class="resumo-label">Data</span>
+                    <span class="resumo-valor" id="confirm-data"></span>
+                </div>
+                <div class="resumo-item">
+                    <span class="resumo-label">Horário</span>
+                    <span class="resumo-valor" id="confirm-horario"></span>
+                </div>
+            </div>
+
+            <button class="action-btn btn-primary" onclick="finalizarReserva()">Confirmar Reserva</button>
+            <button class="action-btn btn-secondary" onclick="voltarForm()" style="margin-top: 12px;">Editar</button>
+        </div>
+
+        <!-- STEP 3: SUCESSO -->
+        <div id="step-sucesso" style="display:none">
+            <div class="step-icon sucesso-icon">✦</div>
+            <h3 class="step-title">Reserva Confirmada!</h3>
+            <p class="step-sub">Até breve! Aguardamos sua visita.</p>
+
+            <div class="reserva-resumo">
+                <div class="resumo-item">
+                    <span class="resumo-label">Nome</span>
+                    <span class="resumo-valor" id="sucesso-nome"></span>
+                </div>
+                <div class="resumo-item">
+                    <span class="resumo-label">E-mail</span>
+                    <span class="resumo-valor" id="sucesso-email"></span>
+                </div>
+                <div class="resumo-item">
+                    <span class="resumo-label">Pessoas</span>
+                    <span class="resumo-valor" id="sucesso-pessoas"></span>
+                </div>
+                <div class="resumo-item">
+                    <span class="resumo-label">Data</span>
+                    <span class="resumo-valor" id="sucesso-data"></span>
+                </div>
+                <div class="resumo-item">
+                    <span class="resumo-label">Horário</span>
+                    <span class="resumo-valor" id="sucesso-horario"></span>
+                </div>
+            </div>
+
+            <a href="../index.html" class="action-btn btn-primary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">Voltar ao Início</a>
+        </div>
+
+    </main>
+
+    <footer>
+        <p class="footer-info">Endereço e Contatos</p>
+        <p class="powerby">Powered by Table4U</p>
+    </footer>
+
+    <!-- BOTÃO PERFIL -->
+    <button class="perfil-btn" onclick="togglePerfil()">
+        <div class="perfil-iniciais"></div>
+    </button>
+
+    <!-- POPUP PERFIL -->
+    <div id="popup-perfil" class="popup-perfil">
+        <div class="perfil-topo">
+            <div class="perfil-avatar-grande"></div>
+            <div>
+                <p class="perfil-nome"></p>
+                <p class="perfil-email"></p>
+            </div>
+        </div>
+        <a href="#" class="perfil-menu-item">Minhas Reservas</a>
+        <a href="#" class="perfil-menu-item">Editar Perfil</a>
+        <a href="#" class="perfil-menu-item sair">Sair</a>
+    </div>
+
+    <script src="../scripts/profile.js"></script>
+    <script src="../scripts/booking.js"></script>
+
+</body>
+</html>

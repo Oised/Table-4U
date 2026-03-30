@@ -20,25 +20,63 @@
         </div>
         
         <div class="actions-container">
-            <button type="button" class="action-btn btn-primary">Entrar na Fila</button>
-            <button type="button" class="action-btn btn-primary">Fazer Reserva</button>
+      <a href="pages/booking.html" class="action-btn btn-primary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
+    Entrar na Fila
+</a>
+ <a href="pages/booking.html" class="action-btn btn-primary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
+    Fazer Reserva
+</a>
             
             <div style="height: 1px; background-color: rgba(255,255,255,0.1); margin: 5px 0;"></div>
             
             <a href="pages/menu.html" class="action-btn btn-secondary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
     Ver Menu
 </a>
-           <a href="components/cardapio.pdf" download class="action-btn btn-secondary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
+           <a href="components/cardapio.pdf" download="cardapio.pdf" class="action-btn btn-secondary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
     Baixar Menu
 </a>
 
         </div>
     </div>
 
+
+
+<!-- BOTÃO PERFIL -->
+<button class="perfil-btn" onclick="togglePerfil()">
+    <div class="perfil-iniciais"></div>
+</button>
+
+<!-- POPUP PERFIL -->
+<div id="popup-perfil" class="popup-perfil">
+    <div class="perfil-topo">
+        <div class="perfil-avatar-grande"></div>
+        <div>
+            <p class="perfil-nome"></p>
+            <p class="perfil-email"></p>
+        </div>
+    </div>
+    <a href="#" class="perfil-menu-item">Minhas Reservas</a>
+    <a href="#" class="perfil-menu-item">Editar Perfil</a>
+    <a href="#" class="perfil-menu-item sair">Sair</a>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
     <footer>
         <p class="footer-info">Endereço e Contatos</p>
         <p class="powerby">Powered by Table4U</p>
     </footer>
+
+    <script src="scripts/profile.js"></script>
 
 </body>
 </html>
