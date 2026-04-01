@@ -1,31 +1,21 @@
-const usuario = {
-    nome: 'Quincas Borba',
-    email: 'quincas.borba@email.com'
-};
-
 function iniciarPerfil() {
-    const iniciais = usuario.nome.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase();
+    const nome = sessionStorage.getItem('usuario-nome') || '';
+    const email = sessionStorage.getItem('usuario-email') || '';
+    const iniciais = nome ? nome.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '?';
 
-    document.querySelectorAll('.perfil-iniciais').forEach(el => {
-        el.textContent = iniciais;
-    });
-
-    document.querySelectorAll('.perfil-nome').forEach(el => {
-        el.textContent = usuario.nome;
-    });
-
-    document.querySelectorAll('.perfil-email').forEach(el => {
-        el.textContent = usuario.email;
-    });
-
-    document.querySelectorAll('.perfil-avatar-grande').forEach(el => {
-        el.textContent = iniciais;
-    });
+    document.querySelectorAll('.perfil-iniciais').forEach(el => el.textContent = iniciais);
+    document.querySelectorAll('.perfil-avatar-grande').forEach(el => el.textContent = iniciais);
+    document.querySelectorAll('.perfil-nome').forEach(el => el.textContent = nome);
+    document.querySelectorAll('.perfil-email').forEach(el => el.textContent = email);
 }
 
 function togglePerfil() {
-    const popup = document.getElementById('popup-perfil');
-    popup.classList.toggle('ativo');
+    document.getElementById('popup-perfil').classList.toggle('ativo');
+}
+
+function sair() {
+    sessionStorage.clear();
+    window.location.href = '/src/index.html';
 }
 
 document.addEventListener('click', function(e) {
@@ -36,4 +26,8 @@ document.addEventListener('click', function(e) {
     }
 });
 
-document.addEventListener('DOMContentLoaded', iniciarPerfil);
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', iniciarPerfil);
+} else {
+    iniciarPerfil();
+}

@@ -1,0 +1,183 @@
+.login-body {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.login-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 24px;
+}
+
+.login-logo {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.login-boas-vindas {
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    letter-spacing: 3px;
+    color: #B59410;
+    margin-bottom: 4px;
+    font-weight: 300;
+}
+
+.login-nome {
+    font-family: 'Playfair Display', serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    color: #fff;
+}
+
+.login-card {
+    width: 100%;
+    max-width: 380px;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 20px;
+    padding: 36px 28px;
+}
+
+.card-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.6rem;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.card-sub {
+    font-size: 0.82rem;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 28px;
+}
+
+.input-group {
+    margin-bottom: 18px;
+}
+
+.input-label {
+    display: block;
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255,255,255,0.45);
+    margin-bottom: 8px;
+}
+
+.login-input {
+    width: 100%;
+    padding: 14px 16px;
+    background: rgba(255,255,255,0.05);
+    border: 1px solid rgba(255,255,255,0.1);
+    border-radius: 8px;
+    color: #fff;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border 0.2s;
+}
+
+.login-input:focus {
+    border-color: #B59410;
+}
+
+.login-input::placeholder {
+    color: rgba(255,255,255,0.25);
+}
+
+.input-senha-wrapper {
+    position: relative;
+}
+
+.input-senha-wrapper .login-input {
+    padding-right: 44px;
+}
+
+.toggle-senha {
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 1rem;
+    opacity: 0.4;
+    transition: opacity 0.2s;
+}
+
+.toggle-senha:hover { opacity: 0.8; }
+
+.esqueci-link {
+    font-size: 0.78rem;
+    color: #B59410;
+    text-align: right;
+    cursor: pointer;
+    margin-bottom: 20px;
+    margin-top: -8px;
+    transition: opacity 0.2s;
+}
+
+.esqueci-link:hover { opacity: 0.75; }
+
+.voltar-link {
+    display: block;
+    text-align: center;
+    margin-top: 16px;
+    font-size: 0.8rem;
+    color: rgba(255,255,255,0.35);
+    text-decoration: none;
+    transition: color 0.2s;
+}
+
+.voltar-link:hover { color: rgba(255,255,255,0.7); }
+
+.codigo-info {
+    font-size: 0.82rem;
+    color: #B59410;
+    text-align: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    background: rgba(181,148,16,0.08);
+    border-radius: 8px;
+    border: 1px solid rgba(181,148,16,0.2);
+}
+
+.sucesso-icon {
+    font-size: 2.2rem;
+    color: #B59410;
+    text-align: center;
+    margin-bottom: 16px;
+    animation: pulse 1.5s ease infinite;
+}
+
+
+.motivo-banner {
+    width: 100%;
+    max-width: 380px;
+    background: rgba(181,148,16,0.08);
+    border: 1px solid rgba(181,148,16,0.25);
+    border-radius: 12px;
+    padding: 14px 18px;
+    font-size: 0.85rem;
+    color: #B59410;
+    text-align: center;
+    margin-bottom: 20px;
+    line-height: 1.5;
+}
+
+
+@keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.7; transform: scale(1.15); }
+}
+
+@media (max-width: 400px) {
+    .login-card { padding: 28px 20px; }
+    .login-nome { font-size: 2rem; }
+}

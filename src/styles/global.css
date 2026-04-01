@@ -273,3 +273,14 @@ body {
     h1.nome-restaurante { font-size: 2.5rem; }
     .card-image img { width: 80px; height: 80px; }
 }
+
+@media (max-width: 480px) {
+    .perfil-btn { top: 12px; right: 12px; width: 38px; height: 38px; }
+    .popup-perfil { right: 12px; width: calc(100vw - 24px); }
+    .actions-container { max-width: 100%; padding: 0 20px; }
+}
+
+@media (min-width: 768px) {
+    .actions-container { max-width: 380px; }
+    .login-card { padding: 48px 40px; }
+}

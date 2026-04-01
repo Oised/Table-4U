@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login - Table 4U</title>
+    <link rel="stylesheet" href="../styles/login.css">
+    <link rel="stylesheet" href="../styles/global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="login-body">
+
+    <div class="login-container">
+
+        <div class="login-logo">
+            <p class="login-boas-vindas">Bem-vindo ao</p>
+            <h1 class="login-nome">Table4U</h1>
+        </div>
+
+        <!-- LOGIN -->
+        <div id="step-login" class="login-card">
+            <h2 class="card-title">Entrar</h2>
+            <p class="card-sub">Acesse sua conta para continuar</p>
+
+            <div class="input-group">
+                <label class="input-label">E-mail</label>
+                <input type="email" id="login-email" class="login-input" placeholder="seu@email.com">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Senha</label>
+                <div class="input-senha-wrapper">
+                    <input type="password" id="login-senha" class="login-input" placeholder="••••••••">
+                    <button class="toggle-senha" onclick="toggleSenha('login-senha', this)">👁</button>
+                </div>
+            </div>
+
+            <p class="esqueci-link" onclick="mostrarStep('step-esqueci')">Esqueci minha senha</p>
+
+            <button class="action-btn btn-primary" onclick="fazerLogin()">Entrar</button>
+            <button class="action-btn btn-secondary" onclick="mostrarStep('step-cadastro')" style="margin-top: 12px;">Criar conta</button>
+            <a href="../index.html" class="voltar-link">← Voltar ao início</a>
+        </div>
+
+        <!-- CADASTRO -->
+        <div id="step-cadastro" class="login-card" style="display:none">
+            <h2 class="card-title">Criar Conta</h2>
+            <p class="card-sub">Preencha seus dados para se cadastrar</p>
+
+            <div class="input-group">
+                <label class="input-label">Nome completo</label>
+                <input type="text" id="cadastro-nome" class="login-input" placeholder="Seu nome">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">E-mail</label>
+                <input type="email" id="cadastro-email" class="login-input" placeholder="seu@email.com">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Senha</label>
+                <div class="input-senha-wrapper">
+                    <input type="password" id="cadastro-senha" class="login-input" placeholder="••••••••">
+                    <button class="toggle-senha" onclick="toggleSenha('cadastro-senha', this)">👁</button>
+                </div>
+            </div>
+
+            <button class="action-btn btn-primary" onclick="fazerCadastro()">Criar Conta</button>
+            <button class="action-btn btn-secondary" onclick="mostrarStep('step-login')" style="margin-top: 12px;">Já tenho conta</button>
+            <a href="../index.html" class="voltar-link">← Voltar ao início</a>
+        </div>
+
+        <!-- ESQUECI SENHA -->
+        <div id="step-esqueci" class="login-card" style="display:none">
+            <h2 class="card-title">Recuperar Senha</h2>
+            <p class="card-sub">Enviaremos um código para o seu e-mail</p>
+
+            <div id="step-esqueci-email">
+                <div class="input-group">
+                    <label class="input-label">E-mail</label>
+                    <input type="email" id="esqueci-email" class="login-input" placeholder="seu@email.com">
+                </div>
+                <button class="action-btn btn-primary" onclick="enviarCodigo()">Enviar Código</button>
+            </div>
+
+            <div id="step-esqueci-codigo" style="display:none">
+                <p class="codigo-info">Código enviado! Verifique seu e-mail.</p>
+                <div class="input-group">
+                    <label class="input-label">Código</label>
+                    <input type="text" id="codigo-input" class="login-input" placeholder="Digite o código">
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Nova senha</label>
+                    <div class="input-senha-wrapper">
+                        <input type="password" id="nova-senha" class="login-input" placeholder="••••••••">
+                        <button class="toggle-senha" onclick="toggleSenha('nova-senha', this)">👁</button>
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Confirmar nova senha</label>
+                    <div class="input-senha-wrapper">
+                        <input type="password" id="confirmar-senha" class="login-input" placeholder="••••••••">
+                        <button class="toggle-senha" onclick="toggleSenha('confirmar-senha', this)">👁</button>
+                    </div>
+                </div>
+                <button class="action-btn btn-primary" onclick="redefinirSenha()">Redefinir Senha</button>
+            </div>
+
+            <button class="action-btn btn-secondary" onclick="mostrarStep('step-login')" style="margin-top: 12px;">Voltar ao login</button>
+        </div>
+
+        <!-- SUCESSO CADASTRO -->
+        <div id="step-sucesso" class="login-card" style="display:none">
+            <div class="sucesso-icon">✦</div>
+            <h2 class="card-title">Conta Criada!</h2>
+            <p class="card-sub">Bem-vindo ao Table4U. Faça login para continuar.</p>
+            <button class="action-btn btn-primary" onclick="mostrarStep('step-login')">Fazer Login</button>
+        </div>
+
+    </div>
+
+    <footer>
+        <p class="footer-info">Endereço e Contatos</p>
+        <p class="powerby">Powered by Table4U</p>
+    </footer>
+
+    <script src="../scripts/login.js"></script>
+</body>
+</html>

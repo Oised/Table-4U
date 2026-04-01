@@ -34,10 +34,11 @@ function voltarForm() {
 }
 
 function finalizarReserva() {
-    const usuario = { nome: 'Quincas Borba', email: 'quincas.borba@email.com' };
+    const nome = sessionStorage.getItem('usuario-nome') || '';
+    const email = sessionStorage.getItem('usuario-email') || '';
 
-    document.getElementById('sucesso-nome').textContent = usuario.nome;
-    document.getElementById('sucesso-email').textContent = usuario.email;
+    document.getElementById('sucesso-nome').textContent = nome;
+    document.getElementById('sucesso-email').textContent = email;
     document.getElementById('sucesso-pessoas').textContent = document.getElementById('confirm-pessoas').textContent;
     document.getElementById('sucesso-data').textContent = document.getElementById('confirm-data').textContent;
     document.getElementById('sucesso-horario').textContent = document.getElementById('confirm-horario').textContent;

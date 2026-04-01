@@ -20,23 +20,22 @@
         </div>
         
         <div class="actions-container">
-      <a href="pages/booking.html" class="action-btn btn-primary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
+ <a href="pages/fila.html" onclick="irPara(event, 'pages/fila.html', 'Para entrar na fila')" class="action-btn btn-primary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
     Entrar na Fila
 </a>
- <a href="pages/booking.html" class="action-btn btn-primary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
+<a href="pages/booking.html" onclick="irPara(event, 'pages/booking.html', 'Para fazer uma reserva')" class="action-btn btn-primary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
     Fazer Reserva
 </a>
-            
-            <div style="height: 1px; background-color: rgba(255,255,255,0.1); margin: 5px 0;"></div>
-            
-            <a href="pages/menu.html" class="action-btn btn-secondary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
-    Ver Menu
-</a>
-           <a href="components/cardapio.pdf" download="cardapio.pdf" class="action-btn btn-secondary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
-    Baixar Menu
-</a>
 
-        </div>
+    <div style="height: 1px; background-color: rgba(255,255,255,0.1); margin: 5px 0;"></div>
+
+    <a href="pages/menu.html" class="action-btn btn-secondary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
+        Ver Menu
+    </a>
+    <a href="components/cardapio.pdf" download="cardapio.pdf" class="action-btn btn-secondary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
+        Baixar Menu
+    </a>
+</div>
     </div>
 
 
@@ -57,7 +56,7 @@
     </div>
     <a href="#" class="perfil-menu-item">Minhas Reservas</a>
     <a href="#" class="perfil-menu-item">Editar Perfil</a>
-    <a href="#" class="perfil-menu-item sair">Sair</a>
+    <a href="#" class="perfil-menu-item sair" onclick="sair()">Sair</a>
 </div>
 
 
@@ -76,7 +75,11 @@
         <p class="powerby">Powered by Table4U</p>
     </footer>
 
-    <script src="scripts/profile.js"></script>
+<script src="scripts/profile.js"></script>
+<script src="scripts/index.js"></script>
+
+
+
 
 </body>
 </html>
