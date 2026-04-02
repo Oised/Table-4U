@@ -54,9 +54,11 @@
             <p class="perfil-email"></p>
         </div>
     </div>
-    <a href="#" class="perfil-menu-item">Minhas Reservas</a>
-    <a href="#" class="perfil-menu-item">Editar Perfil</a>
-    <a href="#" class="perfil-menu-item sair" onclick="sair()">Sair</a>
+    <a href="pages/login.html" class="perfil-menu-item perfil-deslogado">Fazer Login</a>
+    <a href="pages/login.html?cadastro=true" class="perfil-menu-item perfil-deslogado">Criar Conta</a>
+    <a href="#" class="perfil-menu-item perfil-logado">Minhas Reservas</a>
+    <a href="#" class="perfil-menu-item perfil-logado">Editar Perfil</a>
+    <a href="#" class="perfil-menu-item sair perfil-logado" onclick="sair()">Sair</a>
 </div>
 
 
@@ -75,9 +77,9 @@
         <p class="powerby">Powered by Table4U</p>
     </footer>
 
-<script src="scripts/profile.js"></script>
-<script src="scripts/index.js"></script>
 
+<script src="scripts/index.js"></script>
+<script src="scripts/profile.js"></script>
 
 
 

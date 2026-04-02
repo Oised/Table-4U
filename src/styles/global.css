@@ -264,6 +264,9 @@ body {
     color: rgb(255,80,80);
 }
 
+.perfil-logado { display: none; }
+.perfil-deslogado { display: none; }
+
 
 
 

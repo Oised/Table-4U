@@ -1,12 +1,16 @@
 function iniciarPerfil() {
     const nome = sessionStorage.getItem('usuario-nome') || '';
     const email = sessionStorage.getItem('usuario-email') || '';
+    const logado = sessionStorage.getItem('logado');
     const iniciais = nome ? nome.split(' ').map(n => n[0]).join('').slice(0, 2).toUpperCase() : '?';
 
     document.querySelectorAll('.perfil-iniciais').forEach(el => el.textContent = iniciais);
     document.querySelectorAll('.perfil-avatar-grande').forEach(el => el.textContent = iniciais);
-    document.querySelectorAll('.perfil-nome').forEach(el => el.textContent = nome);
-    document.querySelectorAll('.perfil-email').forEach(el => el.textContent = email);
+    document.querySelectorAll('.perfil-nome').forEach(el => el.textContent = logado ? nome : 'Visitante');
+    document.querySelectorAll('.perfil-email').forEach(el => el.textContent = logado ? email : '');
+
+    document.querySelectorAll('.perfil-logado').forEach(el => el.style.display = logado ? 'flex' : 'none');
+    document.querySelectorAll('.perfil-deslogado').forEach(el => el.style.display = logado ? 'none' : 'flex');
 }
 
 function togglePerfil() {
