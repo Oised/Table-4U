@@ -1,0 +1,81 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model adm {
+  adm_id      Int           @id @default(autoincrement())
+  nome        String        @db.VarChar(100)
+  email       String        @unique @db.VarChar(100)
+  senha       String
+  funcionario funcionario[]
+}
+
+model atendimento {
+  atendimento_id Int         @id @default(autoincrement())
+  n_pessoas      Int
+  duracao        Int?
+  checkin        DateTime    @db.Timestamp(6)
+  checkout       DateTime?   @db.Timestamp(6)
+  funcionario_id Int
+  funcionario    funcionario @relation(fields: [funcionario_id], references: [funcionario_id], onDelete: SetNull, onUpdate: NoAction)
+  pagamento      pagamento[]
+  pedido         pedido[]
+}
+
+model funcionario {
+  funcionario_id Int           @id @default(autoincrement())
+  nome           String        @db.VarChar(100)
+  email          String        @unique @db.VarChar(100)
+  senha          String
+  adm_id         Int
+  atendimento    atendimento[]
+  adm            adm           @relation(fields: [adm_id], references: [adm_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model pagamento {
+  pagamento_id   Int         @id @default(autoincrement())
+  forma          String      @db.VarChar(50)
+  valor          Decimal     @db.Decimal(10, 2)
+  data_pagamento DateTime    @db.Timestamp(6)
+  atendimento_id Int
+  atendimento    atendimento @relation(fields: [atendimento_id], references: [atendimento_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model pedido {
+  pedido_id      Int         @id @default(autoincrement())
+  prato_id       Int
+  atendimento_id Int
+  quantidade     Int
+  atendimento    atendimento @relation(fields: [atendimento_id], references: [atendimento_id], onDelete: Cascade, onUpdate: NoAction)
+  prato          prato       @relation(fields: [prato_id], references: [prato_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model prato {
+  prato_id      Int             @id @default(autoincrement())
+  nome          String          @db.VarChar(100)
+  preco         Decimal         @db.Decimal(10, 2)
+  custo         Decimal         @db.Decimal(10, 2)
+  pedido        pedido[]
+  pratos_do_dia pratos_do_dia[]
+  tempo         tempo?
+}
+
+model pratos_do_dia {
+  prato_id   Int
+  quantidade Int
+  dia        DateTime @db.Date
+  prato      prato    @relation(fields: [prato_id], references: [prato_id], onDelete: Cascade, onUpdate: NoAction)
+
+  @@id([prato_id, dia])
+}
+
+model tempo {
+  prato_id      Int   @id
+  tempo_preparo Int
+  prato         prato @relation(fields: [prato_id], references: [prato_id], onDelete: Cascade, onUpdate: NoAction)
+}
