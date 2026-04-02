@@ -14,7 +14,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const naFila = sessionStorage.getItem('usuario-na-fila');
     
     // Procura o botão de entrar na fila pelo link dele
-    const btnFila = document.querySelector('a[href="pages/fila.html"]');
+    const btnFila = document.querySelector('a[href="pages/queue.html"]');
 
     if (btnFila && naFila === 'true') {
         // Se já está na fila, muda o texto para algo mais direto

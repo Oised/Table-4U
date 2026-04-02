@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Fila de Espera - Table 4U</title>
     <link rel="stylesheet" href="../styles/global.css">
-    <link rel="stylesheet" href="../styles/fila.css">
+    <link rel="stylesheet" href="../styles/queue.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body class="fila-body">
@@ -90,13 +90,13 @@
                 <p class="perfil-email"></p>
             </div>
         </div>
-        <a href="#" class="perfil-menu-item">Minhas Reservas</a>
-        <a href="#" class="perfil-menu-item">Editar Perfil</a>
+        <a href="#" class="perfil-menu-item perfil-logado" onclick="irParaMinhasReservas(event)">Minhas Reservas</a>
+        <a href="#" class="perfil-menu-item perfil-logado" onclick="irParaEditarPerfil(event)">Editar Perfil</a>
         <a href="#" class="perfil-menu-item sair" onclick="sair()">Sair</a>
     </div>
 
     <script src="../scripts/profile.js"></script>
-    <script src="../scripts/fila.js"></script>
+    <script src="../scripts/queue.js"></script>
 
 </body>
 </html>

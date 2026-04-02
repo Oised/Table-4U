@@ -20,7 +20,7 @@
         </div>
         
         <div class="actions-container">
- <a href="pages/fila.html" onclick="irPara(event, 'pages/fila.html', 'Para entrar na fila')" class="action-btn btn-primary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
+ <a href="pages/queue.html" onclick="irPara(event, 'pages/queue.html', 'Para entrar na fila')" class="action-btn btn-primary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
     Entrar na Fila
 </a>
 <a href="pages/booking.html" onclick="irPara(event, 'pages/booking.html', 'Para fazer uma reserva')" class="action-btn btn-primary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">
@@ -56,8 +56,8 @@
     </div>
     <a href="pages/login.html" class="perfil-menu-item perfil-deslogado">Fazer Login</a>
     <a href="pages/login.html?cadastro=true" class="perfil-menu-item perfil-deslogado">Criar Conta</a>
-    <a href="#" class="perfil-menu-item perfil-logado">Minhas Reservas</a>
-    <a href="#" class="perfil-menu-item perfil-logado">Editar Perfil</a>
+    <a href="#" class="perfil-menu-item perfil-logado" onclick="irParaMinhasReservas(event)">Minhas Reservas</a>
+    <a href="#" class="perfil-menu-item perfil-logado" onclick="irParaEditarPerfil(event)">Editar Perfil</a>
     <a href="#" class="perfil-menu-item sair perfil-logado" onclick="sair()">Sair</a>
 </div>
 

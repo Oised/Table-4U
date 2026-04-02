@@ -1,0 +1,122 @@
+.reservas-body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.reservas-header {
+    padding: 40px 20px 20px;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    background: rgba(18, 18, 18, 0.9);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.back-link {
+    color: #B59410;
+    text-decoration: none;
+    font-size: 0.9rem;
+    position: absolute;
+    left: 20px;
+    top: 45px;
+}
+
+.reservas-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: #fff;
+}
+
+.reservas-content {
+    flex: 1;
+    width: 100%;
+    max-width: 500px;
+    margin: 0 auto;
+    padding: 32px 24px;
+}
+
+.reserva-card {
+    background: rgba(255,255,255,0.03);
+    border: 1px solid rgba(255,255,255,0.08);
+    border-radius: 16px;
+    padding: 24px;
+    margin-bottom: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s;
+}
+
+.reserva-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(181, 148, 16, 0.3);
+}
+
+/* Detalhe dourado na lateral do card */
+.reserva-card::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(to bottom, #E6BD1A, #B59410);
+}
+
+.reserva-status {
+    display: inline-block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #121212;
+    background: #B59410;
+    padding: 4px 10px;
+    border-radius: 12px;
+    margin-bottom: 16px;
+    font-weight: 600;
+}
+
+.reserva-info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.info-box {
+    display: flex;
+    flex-direction: column;
+}
+
+.info-label {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.45);
+    text-transform: uppercase;
+    margin-bottom: 4px;
+}
+
+.info-valor {
+    font-size: 1.1rem;
+    color: #fff;
+    font-family: 'Playfair Display', serif;
+}
+
+.btn-cancelar {
+    width: 100%;
+    background: transparent;
+    border: 1px solid rgba(255, 80, 80, 0.3);
+    color: rgba(255, 80, 80, 0.8);
+    padding: 10px;
+    border-radius: 8px;
+    margin-top: 20px;
+    cursor: pointer;
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.85rem;
+    transition: all 0.2s;
+}
+
+.btn-cancelar:hover {
+    background: rgba(255, 80, 80, 0.1);
+    color: rgb(255, 80, 80);
+}

@@ -35,3 +35,25 @@ if (document.readyState === 'loading') {
 } else {
     iniciarPerfil();
 }
+
+function irParaMinhasReservas(event) {
+    event.preventDefault();
+    // Como o index fica na raiz e as outras páginas na pasta pages, 
+    // precisamos checar onde estamos para não quebrar o link
+    const path = window.location.pathname;
+    if (path.includes('/pages/')) {
+        window.location.href = 'mybookings.html';
+    } else {
+        window.location.href = 'pages/mybookings.html';
+    }
+}
+
+function irParaEditarPerfil(event) {
+    event.preventDefault();
+    const path = window.location.pathname;
+    if (path.includes('/pages/')) {
+        window.location.href = 'editprofile.html';
+    } else {
+        window.location.href = 'pages/editprofile.html';
+    }
+}

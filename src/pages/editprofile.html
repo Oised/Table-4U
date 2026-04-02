@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Editar Perfil - Table 4U</title>
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/editprofile.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="perfil-body">
+
+    <div class="perfil-header">
+        <a href="../index.html" class="back-link">← Voltar</a>
+        <h2 class="perfil-title">Meu Perfil</h2>
+    </div>
+
+    <main class="perfil-content">
+        <div class="perfil-card">
+            
+            <h3 class="secao-title">Dados Pessoais</h3>
+            
+            <div class="input-group">
+                <label class="input-label">Nome Completo</label>
+                <input type="text" id="edit-nome" class="perfil-input">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">E-mail</label>
+                <input type="email" id="edit-email" class="perfil-input">
+            </div>
+
+            <div class="divisor"></div>
+
+            <h3 class="secao-title">Segurança</h3>
+            
+            <div id="fluxo-senha-1">
+                <p class="seguranca-texto">Para alterar sua senha, enviaremos um código de verificação para o seu e-mail.</p>
+                <button class="action-btn btn-secondary btn-sm" onclick="enviarCodigoSenha()">Enviar Código</button>
+            </div>
+
+            <div id="fluxo-senha-2" style="display: none;">
+                <p class="seguranca-texto destaque-ouro">Código enviado! Verifique sua caixa de entrada.</p>
+                <div class="input-group" style="margin-top: 12px;">
+                    <label class="input-label">Código de Verificação</label>
+                    <input type="text" id="edit-codigo" class="perfil-input" placeholder="Digite o código de 6 dígitos">
+                </div>
+                <button class="action-btn btn-secondary btn-sm" onclick="verificarCodigoSenha()">Validar Código</button>
+            </div>
+
+            <div id="fluxo-senha-3" style="display: none;">
+                <p class="seguranca-texto destaque-ouro">Código validado. Crie sua nova senha.</p>
+                <div class="input-group" style="margin-top: 12px;">
+                    <label class="input-label">Nova Senha</label>
+                    <div class="input-senha-wrapper">
+                        <input type="password" id="edit-nova-senha" class="perfil-input" placeholder="••••••••">
+                    </div>
+                </div>
+                <div class="input-group">
+                    <label class="input-label">Confirmar Nova Senha</label>
+                    <div class="input-senha-wrapper">
+                        <input type="password" id="edit-confirma-senha" class="perfil-input" placeholder="••••••••">
+                    </div>
+                </div>
+            </div>
+
+            <button class="action-btn btn-primary" style="margin-top: 32px;" onclick="salvarPerfil()">Salvar Alterações</button>
+            
+            <p id="msg-sucesso" class="msg-sucesso" style="display: none;">Perfil atualizado com sucesso!</p>
+
+        </div>
+    </main>
+
+    <footer>
+        <p class="footer-info">Endereço e Contatos</p>
+        <p class="powerby">Powered by Table4U</p>
+    </footer>
+
+    <button class="perfil-btn" onclick="togglePerfil()">
+        <div class="perfil-iniciais"></div>
+    </button>
+    <div id="popup-perfil" class="popup-perfil">
+        <div class="perfil-topo">
+            <div class="perfil-avatar-grande"></div>
+            <div>
+                <p class="perfil-nome"></p>
+                <p class="perfil-email"></p>
+            </div>
+        </div>
+        <a href="mybookings.html" class="perfil-menu-item">Minhas Reservas</a>
+        <a href="#" class="perfil-menu-item">Editar Perfil</a>
+        <a href="#" class="perfil-menu-item sair" onclick="sair()">Sair</a>
+    </div>
+
+    <script src="../scripts/profile.js"></script>
+    <script src="../scripts/editprofile.js"></script>
+</body>
+</html>

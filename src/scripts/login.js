@@ -37,12 +37,16 @@ function fazerLogin() {
     sessionStorage.setItem('usuario-email', email);
     sessionStorage.setItem('usuario-nome', email.split('@')[0]);
 
-    console.log('logado:', sessionStorage.getItem('logado'));
-    console.log('nome:', sessionStorage.getItem('usuario-nome'));
-
-    const destino = sessionStorage.getItem('destino') || '/src/index.html';
+    let destino = sessionStorage.getItem('destino');
     sessionStorage.removeItem('destino');
-    window.location.href = destino;
+
+    if (destino) {
+        // Aplica o mesmo truque aqui para quem faz login direto!
+        let arquivoDestino = destino.split('/').pop();
+        window.location.href = arquivoDestino;
+    } else {
+        window.location.href = '../index.html';
+    }
 }
 
 function fazerCadastro() {
@@ -51,27 +55,27 @@ function fazerCadastro() {
     const senha = document.getElementById('cadastro-senha').value;
     if (!nome || !email || !senha) return;
 
+    // Salva os dados e o status de logado
     sessionStorage.setItem('usuario-nome', nome);
     sessionStorage.setItem('usuario-email', email);
-    sessionStorage.setItem('logado', 'true'); // A correção que fizemos antes!
+    sessionStorage.setItem('logado', 'true');
 
-    // Lógica nova para arrumar a tela de sucesso
+    // Lógica para o botão dinâmico
     const destino = sessionStorage.getItem('destino');
     const btnContinuar = document.getElementById('btn-continuar-destino');
     
     if (destino) {
-        btnContinuar.style.display = 'block'; // Mostra o botão
+        btnContinuar.style.display = 'block';
         
-        // Define o texto do botão baseado na URL
-        if (destino.includes('fila.html')) {
+        // Deixei a verificação mais simples para não falhar
+        if (destino.includes('fila')) {
             btnContinuar.textContent = 'Entrar na Fila';
-        } else if (destino.includes('booking.html')) {
+        } else if (destino.includes('booking')) {
             btnContinuar.textContent = 'Fazer Reserva';
         } else {
             btnContinuar.textContent = 'Continuar';
         }
     } else {
-        // Se não tinha destino (clicou em criar conta direto pelo perfil), esconde o botão
         btnContinuar.style.display = 'none'; 
     }
 
@@ -92,13 +96,22 @@ function redefinirSenha() {
 }
 
 function irParaDestino() {
-    // Pega o destino salvo ou manda pro início por padrão
-    const destino = sessionStorage.getItem('destino') || '../index.html';
+    let destino = sessionStorage.getItem('destino');
     
-
+    // Limpa a memória para não bugar depois
     sessionStorage.removeItem('destino');
     sessionStorage.removeItem('motivo');
     
-    // Redireciona
-    window.location.href = destino;
+    // Se não tinha destino, vai pro início
+    if (!destino) {
+        window.location.href = '../index.html';
+        return;
+    }
+
+    // TRUQUE DE MESTRE: Pega só o nome final do arquivo (tira as barras e pastas)
+    // Exemplo: 'pages/fila.html' vira só 'fila.html'
+    let arquivoDestino = destino.split('/').pop();
+    
+    // Como você já está na pasta pages, basta chamar o nome do arquivo direto
+    window.location.href = arquivoDestino;
 }

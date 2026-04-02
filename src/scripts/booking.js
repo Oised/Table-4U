@@ -37,11 +37,30 @@ function finalizarReserva() {
     const nome = sessionStorage.getItem('usuario-nome') || '';
     const email = sessionStorage.getItem('usuario-email') || '';
 
+    // Pegamos os valores da tela para usar nos dois lugares (tela de sucesso e salvamento)
+    const pessoasText = document.getElementById('confirm-pessoas').textContent;
+    const dataText = document.getElementById('confirm-data').textContent;
+    const horarioText = document.getElementById('confirm-horario').textContent;
+
+    // Atualiza a tela de sucesso
     document.getElementById('sucesso-nome').textContent = nome;
     document.getElementById('sucesso-email').textContent = email;
-    document.getElementById('sucesso-pessoas').textContent = document.getElementById('confirm-pessoas').textContent;
-    document.getElementById('sucesso-data').textContent = document.getElementById('confirm-data').textContent;
-    document.getElementById('sucesso-horario').textContent = document.getElementById('confirm-horario').textContent;
+    document.getElementById('sucesso-pessoas').textContent = pessoasText;
+    document.getElementById('sucesso-data').textContent = dataText;
+    document.getElementById('sucesso-horario').textContent = horarioText;
+
+    // --- SALVANDO A RESERVA ---
+    let minhasReservas = JSON.parse(sessionStorage.getItem('lista-reservas') || '[]');
+
+    minhasReservas.push({
+        pessoas: pessoasText,
+        data: dataText,
+        horario: horarioText,
+        status: 'Confirmada'
+    });
+
+    sessionStorage.setItem('lista-reservas', JSON.stringify(minhasReservas));
+    // --------------------------
 
     document.getElementById('step-confirm').style.display = 'none';
     document.getElementById('step-sucesso').style.display = 'block';
