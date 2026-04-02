@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fila de Espera - Table 4U</title>
+    <link rel="stylesheet" href="../styles/global.css">
+    <link rel="stylesheet" href="../styles/fila.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="fila-body">
+
+    <div class="fila-header">
+        <h2 class="fila-title">Fila de Espera</h2>
+    </div>
+
+    <main class="fila-container">
+
+        <div id="step-entrar" class="fila-card">
+            <div class="status-icon">🕒</div>
+            <h3 class="card-title">Status Atual</h3>
+            
+            <div class="info-destaque">
+                <span id="pessoas-na-fila" class="numero-destaque">12</span>
+                <span class="texto-destaque">pessoas aguardando</span>
+            </div>
+
+            <p class="card-sub">Deseja entrar na fila de espera para conseguir uma mesa?</p>
+
+            <button class="action-btn btn-primary" onclick="entrarNaFila()">Entrar na Fila</button>
+            <a href="../index.html" class="voltar-link">← Voltar ao início</a>
+        </div>
+
+        <div id="step-status" class="fila-card" style="display:none">
+            <div class="status-icon dourado">✦</div>
+            <h3 class="card-title">Sua Posição</h3>
+            <p class="card-sub">Você já está na nossa lista de espera.</p>
+
+            <div class="fila-resumo">
+                <div class="resumo-item">
+                    <span class="resumo-label">Sua Posição</span>
+                    <span class="resumo-valor destaque-ouro" id="posicao-usuario"></span>
+                </div>
+                <div class="resumo-item">
+                    <span class="resumo-label">Tempo Estimado</span>
+                    <span class="resumo-valor" id="tempo-espera"></span>
+                </div>
+            </div>
+
+            <p class="pergunta-sair">Mudou de ideia? Deseja sair da fila?</p>
+            <button class="action-btn btn-secondary" onclick="sairDaFila()">Sair da Fila</button>
+            <a href="../index.html" class="voltar-link">← Voltar ao início</a>
+        </div>
+
+
+
+
+        <div id="step-vez" class="fila-card" style="display:none">
+            <div class="status-icon dourado" style="animation: pulse 1s ease infinite;">🔔</div>
+            <h3 class="card-title" style="color: #B59410;">Sua vez chegou!</h3>
+            <p class="card-sub">Dirija-se ao balcão de atendimento imediatamente.</p>
+
+            <div class="info-destaque" style="border-color: #B59410; background: rgba(181,148,16,0.08);">
+                <span id="timer-atendimento" class="numero-destaque">10:00</span>
+                <span class="texto-destaque">para se apresentar</span>
+            </div>
+
+            <button class="action-btn btn-primary" onclick="sairDaFila()">Confirmar Presença</button>
+            <button class="action-btn btn-secondary" onclick="sairDaFila()" style="margin-top: 12px;">Cancelar / Sair</button>
+        </div>
+
+
+
+    </main>
+
+    <footer>
+        <p class="footer-info">Endereço e Contatos</p>
+        <p class="powerby">Powered by Table4U</p>
+    </footer>
+
+    <button class="perfil-btn" onclick="togglePerfil()">
+        <div class="perfil-iniciais"></div>
+    </button>
+
+    <div id="popup-perfil" class="popup-perfil">
+        <div class="perfil-topo">
+            <div class="perfil-avatar-grande"></div>
+            <div>
+                <p class="perfil-nome"></p>
+                <p class="perfil-email"></p>
+            </div>
+        </div>
+        <a href="#" class="perfil-menu-item">Minhas Reservas</a>
+        <a href="#" class="perfil-menu-item">Editar Perfil</a>
+        <a href="#" class="perfil-menu-item sair" onclick="sair()">Sair</a>
+    </div>
+
+    <script src="../scripts/profile.js"></script>
+    <script src="../scripts/fila.js"></script>
+
+</body>
+</html>
