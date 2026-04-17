@@ -1,0 +1,36 @@
+generator client {
+  provider = "prisma-client-js"
+  output   = "../generated/public"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL_PUBLIC")
+}
+
+model Cliente {
+  id_cliente Int       @id @default(autoincrement())
+  nome       String
+  email      String    @unique
+  senha      String
+  Fila       Fila[]
+  Reserva    Reserva[]
+}
+
+model Fila {
+  id_fila        Int      @id @default(autoincrement())
+  data_entrada   DateTime @default(now())
+  numero_pessoas Int
+  status         String   @default("esperando")
+  id_cliente     Int
+  Cliente        Cliente  @relation(fields: [id_cliente], references: [id_cliente])
+}
+
+model Reserva {
+  id_reserva     Int      @id @default(autoincrement())
+  data_reserva   DateTime
+  numero_pessoas Int
+  status         String   @default("pendente")
+  id_cliente     Int
+  Cliente        Cliente  @relation(fields: [id_cliente], references: [id_cliente])
+}
