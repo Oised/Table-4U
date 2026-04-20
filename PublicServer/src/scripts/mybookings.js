@@ -2,62 +2,50 @@ document.addEventListener('DOMContentLoaded', function() {
     carregarReservas();
 });
 
-function carregarReservas() {
+async function carregarReservas() {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
+    if (!usuario) {
+        window.location.href = "/src/pages/login.html";
+        return;
+    }
+
     const listaContainer = document.getElementById('lista-reservas');
     const msgSemReservas = document.getElementById('sem-reservas');
-    
-    // Puxa as reservas do navegador
-   const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
-   const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
-   const minhasReservas = reservas.filter(r => r.email === usuario.email);
-    // Limpa o container antes de renderizar
-    listaContainer.innerHTML = '';
 
-    if (reservas.length === 0) {
-        msgSemReservas.style.display = 'block';
-    } else {
-        msgSemReservas.style.display = 'none';
-        
-        // Inverte o array para mostrar a reserva mais recente primeiro
-        minhasReservas.reverse().forEach((reserva, index) => {
-            const card = document.createElement('div');
-            card.className = 'reserva-card';
-            
-            card.innerHTML = `
-        <span class="reserva-status">Confirmado</span>
+    try {
+        const response = await fetch(`http://localhost:3000/reservas/${usuario.email}`);
+        const reservas = await response.json();
 
-        <div class="reserva-info-grid">
-          <div class="info-box">
-            <span class="info-label">Nome</span>
-            <span class="info-valor">${reserva.nome}</span>
-          </div>
+        listaContainer.innerHTML = '';
 
-          <div class="info-box">
-            <span class="info-label">E-mail</span>
-            <span class="info-valor">${reserva.email}</span>
-          </div>
+        if (reservas.length === 0) {
+            msgSemReservas.style.display = 'block';
+        } else {
+            msgSemReservas.style.display = 'none';
 
-          <div class="info-box">
-            <span class="info-label">Data</span>
-            <span class="info-valor">${reserva.data}</span>
-          </div>
+            reservas.reverse().forEach((reserva, index) => {
+                const card = document.createElement('div');
+                card.className = 'reserva-card';
 
-          <div class="info-box">
-            <span class="info-label">Horário</span>
-            <span class="info-valor">${reserva.horario}</span>
-          </div>
+                card.innerHTML = `
+                    <span class="reserva-status">Confirmado</span>
 
-          <div class="info-box">
-            <span class="info-label">Pessoas</span>
-            <span class="info-valor">${reserva.pessoas}</span>
-          </div>
-        </div>
+                    <div class="reserva-info-grid">
+                        <div class="info-box"><span class="info-label">Nome</span><span>${reserva.nome}</span></div>
+                        <div class="info-box"><span class="info-label">E-mail</span><span>${reserva.email}</span></div>
+                        <div class="info-box"><span class="info-label">Data</span><span>${reserva.data}</span></div>
+                        <div class="info-box"><span class="info-label">Horário</span><span>${reserva.horario}</span></div>
+                        <div class="info-box"><span class="info-label">Pessoas</span><span>${reserva.pessoas}</span></div>
+                    </div>
+                `;
 
-        <button class="btn-cancelar" onclick="cancelarReserva(${index})">Cancelar Reserva</button>
-    `;
-            
-            listaContainer.appendChild(card);
-        });
+                listaContainer.appendChild(card);
+            });
+        }
+
+    } catch (err) {
+        console.error(err);
     }
 }
 

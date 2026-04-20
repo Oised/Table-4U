@@ -1,11 +1,10 @@
 window.onload = function() {
-  const usuario = localStorage.getItem("usuarioLogado");
+  const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 
-  console.log("Usuário no booking:", usuario);
-
-  if (!usuario) {
+  if (!usuario || !usuario.email) {
     alert("Você precisa estar logado!");
     window.location.href = "/src/pages/login.html";
+    return;
   }
 };
 let pessoasCount = 2;
@@ -53,9 +52,27 @@ function finalizarReserva() {
   // PEGAR USUÁRIO LOGADO
   const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 
-  // PEGAR RESERVAS EXISTENTES
-  let reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+if (!usuario) {
+  alert("Sessão expirada. Faça login novamente.");
+  window.location.href = "/src/pages/login.html";
+  return;
+}
 
+  // PEGAR RESERVAS EXISTENTES
+
+fetch("http://localhost:3000/reserva", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json"
+  },
+  body: JSON.stringify({
+    pessoas,
+    data,
+    horario,
+    nome: usuario.nome,
+    email: usuario.email
+  })
+})
   // CRIAR NOVA RESERVA
   const novaReserva = {
     nome: usuario.nome,
@@ -65,9 +82,7 @@ function finalizarReserva() {
     horario
   };
 
-  // SALVAR
-  reservas.push(novaReserva);
-  localStorage.setItem("reservas", JSON.stringify(reservas));
+  
 
   // SEU BACKEND CONTINUA NORMAL
   fetch("http://localhost:3000/reserva", {

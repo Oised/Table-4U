@@ -28,29 +28,40 @@ function toggleSenha(inputId, btn) {
     btn.style.opacity = input.type === 'text' ? '0.9' : '0.4';
 }
 
-function fazerLogin() {
+async function fazerLogin() {
   const email = document.getElementById("login-email").value;
   const senha = document.getElementById("login-senha").value;
 
-  let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+  try {
+    const response = await fetch("http://localhost:3000/login", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ email, senha })
+    });
 
-  //procura pelo email E senha
-  const usuario = usuarios.find(user => user.email === email && user.senha === senha);
+    if (!response.ok) {
+      alert("Email ou senha inválidos!");
+      return;
+    }
 
-  if (!usuario) {
-    alert("Email ou senha inválidos!");
-    return;
+    const data = await response.json();
+
+    // mantém isso (ok por enquanto)
+    localStorage.setItem("usuarioLogado", JSON.stringify(data.user));
+
+    alert("Login realizado!");
+
+    window.location.href = "/src/pages/queue.html";
+
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao conectar com o servidor");
   }
-
-  //salva o usuário atualizado
-  localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
-
-  alert("Login realizado!");
-
-  window.location.href = "/src/pages/queue.html";
 }
 
-function fazerCadastro() {
+async function fazerCadastro() {
   const nome = document.getElementById("cadastro-nome").value;
   const email = document.getElementById("cadastro-email").value;
   const senha = document.getElementById("cadastro-senha").value;
@@ -60,29 +71,28 @@ function fazerCadastro() {
     return;
   }
 
-  // pega usuários já cadastrados
-  let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+  try {
+    const response = await fetch("http://localhost:3000/register", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ nome, email, senha })
+    });
 
-  // verifica se já existe
-  const existe = usuarios.find(user => user.email === email);
+    if (!response.ok) {
+      alert("Esse email já está cadastrado!");
+      return;
+    }
 
-  if (existe) {
-    alert("Esse email já está cadastrado!");
-    return;
+    alert("Conta criada com sucesso!");
+
+    mostrarStep("step-login");
+
+  } catch (err) {
+    console.error(err);
+    alert("Erro ao conectar com o servidor");
   }
-
-  // cria novo usuário
-  const novoUsuario = { nome, email, senha };
-
-  usuarios.push(novoUsuario);
-
-  // salva no localStorage
-  localStorage.setItem("usuarios", JSON.stringify(usuarios));
-
-  alert("Conta criada com sucesso!");
-
-  // volta para login
-  mostrarStep("step-login");
 }
 
 function enviarCodigo() {
