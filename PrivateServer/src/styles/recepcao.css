@@ -1,0 +1,165 @@
+/* Layout geral */
+.app {
+    display: flex;
+    height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 70px;
+    position: fixed;
+    top: 0;
+    bottom: 80px;
+    left: 0;
+    background: rgba(0,0,0,0.5);
+    display: flex;
+    justify-content: center;
+    padding-top: 20px;
+    border-right: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.sidebar button {
+    width: 42px;
+    height: 42px;
+    border-radius: 10px;
+    border: 1px solid rgba(212, 175, 15, 0.4);
+    background: rgba(255, 255, 255, 0.05);
+    color: #d4af0f;
+    font-size: 1.2rem;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+.sidebar button:hover {
+    background: rgba(212, 175, 15, 0.1);
+    border-color: #d4af0f;
+    transform: scale(1.05);
+}
+
+/* Conteúdo */
+.main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 20px 40px;
+    padding-bottom: 100px;
+    margin-left: 70px;
+}
+/* Topo */
+.topbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.user {
+    font-size: 0.9rem;
+    color: #aaa;
+}
+
+/* Título */
+.page-title {
+    text-align: center;
+    margin: 5px 0;
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+}
+
+/* Grid mesas */
+.mesas-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(280px, 380px));
+    gap: 24px;
+    justify-content: center;
+    width: 100%;
+}
+
+/* Mesa */
+.mesa {
+    width: 100%;
+    padding: 32px 24px;
+    border-radius: 16px;
+    text-align: center;
+    font-weight: 600;
+    font-size: 1.1rem;
+    background: rgba(255,255,255,0.03);
+    border: 1px solid #d4af0f;
+    cursor: pointer;
+    transition: 0.25s ease;
+}
+
+/* efeito hover */
+.mesa:hover {
+    background: rgba(212, 175, 15, 0.08);
+    transform: translateY(-2px) scale(1.02);
+    box-shadow: 0 12px 20px rgba(0,0,0,0.3);
+}
+
+/* FILA */
+.fila-container {
+    display: flex;
+    gap: 30px;
+}
+
+/* Lista */
+.fila-lista {
+    width: 220px;
+    background: rgba(255,255,255,0.05);
+    padding: 10px;
+    border-radius: 10px;
+}
+
+/* Detalhe */
+.fila-detalhe {
+    position: fixed;
+    top: 140px; 
+    bottom: 80px; 
+    right: 0;
+    left: 270px; 
+    background: rgba(20, 20, 20, 0.95);
+    backdrop-filter: blur(8px);
+    padding: 30px;
+    border-left: 1px solid rgba(255,255,255,0.05);
+    display: flex;
+    flex-direction: column;
+}
+.fila-item {
+    width: 100%;
+    padding: 14px;
+    margin-bottom: 8px;
+    text-align: left;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid transparent;
+    border-radius: 10px;
+    color: #fff;
+    cursor: pointer;
+    transition: 0.2s ease;
+}
+.fila-item:hover {
+    background:rgba(212, 175, 15, 0.08);
+}
+.fila-item.ativo {
+    border-color: #d4af0f;
+    background: rgba(212, 175, 15, 0.12);
+}
+
+/* Botões */
+.acoes {
+    margin-top: 20px;
+    display: flex;
+    gap: 10px;
+}
+.mesas-wrapper {
+    flex: 1;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding-top: 100px;
+}
+.divider {
+    width: 100%;
+    height: 1px;
+    margin: 8px 0 20px;
+    background-image: linear-gradient(to right, transparent, rgba(212, 175, 15, 0.5), transparent);
+}

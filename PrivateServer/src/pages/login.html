@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Login ADM - Table4U</title>
+        <link rel="stylesheet" href="../styles/Global.css">
+        <link rel="stylesheet" href="../styles/login.css">
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    </head>
+    <body class="login-body">
+        <div class="login-container">
+            <h1 class="login-nome">Table4U</h1>
+
+            <div id="step-login" class="login-card">
+            <h2 class="card-title">Entrar</h2>
+            <p class="card-sub">Insira suas informações para começar</p>
+
+            <div class="input-group">
+                <label class="input-label">E-mail</label>
+                <input type="text" id="login-email" class="login-input" placeholder="seu@email.com">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Senha</label>
+                <div class="input-senha-wrapper">
+                    <input type="password" id="login-senha" class="login-input" placeholder="••••••••">
+                    <button class="toggle-senha" onclick="toggleSenha('login-senha', this)">👁</button>
+                </div>
+            </div>
+            <button class="action-btn btn-primary" onclick="fazerLogin()">Entrar</button>
+        </div>
+        <footer>
+            <p class="footer-info">Endereço e Contatos</p>
+            <p class="powerby">Powered by Table4U</p>
+        </footer>
+    </body>
+</html>
