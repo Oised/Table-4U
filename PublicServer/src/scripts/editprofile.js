@@ -4,29 +4,42 @@ document.addEventListener('DOMContentLoaded', function() {
 
 function carregarDadosPerfil() {
     // Puxa os dados salvos e preenche os inputs
-    const nome = sessionStorage.getItem('usuario-nome') || '';
-    const email = sessionStorage.getItem('usuario-email') || '';
+
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
+    const nome = usuario?.nome || '';
+    const email = usuario?.email || '';
 
     document.getElementById('edit-nome').value = nome;
     document.getElementById('edit-email').value = email;
 }
 
 function enviarCodigoSenha() {
-    // FINGE que chamou o back-end e enviou o e-mail
+    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+
+    // salva código e email
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
+    localStorage.setItem("codigoRecuperacao", codigo);
+    localStorage.setItem("emailRecuperacao", usuario.email);
+
+    console.log("Código enviado (simulação):", codigo);
+
+    alert("Código enviado para o seu email (simulado no console)");
+
     document.getElementById('fluxo-senha-1').style.display = 'none';
     document.getElementById('fluxo-senha-2').style.display = 'block';
 }
 
 function verificarCodigoSenha() {
-    const codigo = document.getElementById('edit-codigo').value;
-    
-    // Como é um mock de front-end, aceitamos qualquer código que não seja vazio
-    if(codigo.trim() === '') {
-        alert('Por favor, digite o código.');
+    const codigoDigitado = document.getElementById('edit-codigo').value;
+    const codigoSalvo = localStorage.getItem("codigoRecuperacao");
+
+    if (codigoDigitado !== codigoSalvo) {
+        alert("Código inválido!");
         return;
     }
 
-    // Código validado! Mostra os campos de nova senha
     document.getElementById('fluxo-senha-2').style.display = 'none';
     document.getElementById('fluxo-senha-3').style.display = 'block';
 }
@@ -36,8 +49,44 @@ function salvarPerfil() {
     const novoEmail = document.getElementById('edit-email').value;
     
     // Atualiza os dados básicos
-    if (novoNome) sessionStorage.setItem('usuario-nome', novoNome);
-    if (novoEmail) sessionStorage.setItem('usuario-email', novoEmail);
+   let usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+   const emailAntigo = usuario.email;
+
+   if (novoNome) usuario.nome = novoNome;
+   if (novoEmail) usuario.email = novoEmail;
+
+localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+
+let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+usuarios = usuarios.map(u => {
+  if (u.email === usuario.email) {
+    return {
+      ...u,
+      nome: usuario.nome,
+      email: usuario.email,
+      senha: u.senha // mantém a senha
+    };
+  }
+  return u;
+});
+
+localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+let reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+
+reservas = reservas.map(r => {
+  if (r.email === emailAntigo) {
+    return {
+      ...r,
+      nome: usuario.nome,
+      email: usuario.email
+    };
+  }
+  return r;
+});
+
+localStorage.setItem("reservas", JSON.stringify(reservas));
 
     // Verifica se a pessoa chegou até a etapa de trocar senha
     const fluxo3Visivel = document.getElementById('fluxo-senha-3').style.display === 'block';
@@ -56,8 +105,24 @@ function salvarPerfil() {
             return;
         }
         
-        // Aqui no futuro o front enviaria um POST pro back-end atualizar a senha no BD
-        console.log("Senha pronta para ser enviada e criptografada pelo back-end.");
+        let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+// atualiza senha no "banco"
+  usuarios = usuarios.map(u => {
+  if (u.email === emailAntigo) {
+    return {
+      ...u,
+      senha: senha1
+    };
+  }
+  return u;
+    });
+
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+    // atualiza usuário logado também
+    usuario.senha = senha1;
+    localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
     }
 
     // Feedback visual de sucesso

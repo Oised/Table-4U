@@ -29,70 +29,127 @@ function toggleSenha(inputId, btn) {
 }
 
 function fazerLogin() {
-    const email = document.getElementById('login-email').value;
-    const senha = document.getElementById('login-senha').value;
-    if (!email || !senha) return;
+  const email = document.getElementById("login-email").value;
+  const senha = document.getElementById("login-senha").value;
 
-    sessionStorage.setItem('logado', 'true');
-    sessionStorage.setItem('usuario-email', email);
-    sessionStorage.setItem('usuario-nome', email.split('@')[0]);
+  let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
 
-    let destino = sessionStorage.getItem('destino');
-    sessionStorage.removeItem('destino');
+  //procura pelo email E senha
+  const usuario = usuarios.find(user => user.email === email && user.senha === senha);
 
-    if (destino) {
-        // Aplica o mesmo truque aqui para quem faz login direto!
-        let arquivoDestino = destino.split('/').pop();
-        window.location.href = arquivoDestino;
-    } else {
-        window.location.href = '../index.html';
-    }
+  if (!usuario) {
+    alert("Email ou senha inválidos!");
+    return;
+  }
+
+  //salva o usuário atualizado
+  localStorage.setItem("usuarioLogado", JSON.stringify(usuario));
+
+  alert("Login realizado!");
+
+  window.location.href = "/src/pages/queue.html";
 }
 
 function fazerCadastro() {
-    const nome = document.getElementById('cadastro-nome').value;
-    const email = document.getElementById('cadastro-email').value;
-    const senha = document.getElementById('cadastro-senha').value;
-    if (!nome || !email || !senha) return;
+  const nome = document.getElementById("cadastro-nome").value;
+  const email = document.getElementById("cadastro-email").value;
+  const senha = document.getElementById("cadastro-senha").value;
 
-    // Salva os dados e o status de logado
-    sessionStorage.setItem('usuario-nome', nome);
-    sessionStorage.setItem('usuario-email', email);
-    sessionStorage.setItem('logado', 'true');
+  if (!nome || !email || !senha) {
+    alert("Preencha todos os campos!");
+    return;
+  }
 
-    // Lógica para o botão dinâmico
-    const destino = sessionStorage.getItem('destino');
-    const btnContinuar = document.getElementById('btn-continuar-destino');
-    
-    if (destino) {
-        btnContinuar.style.display = 'block';
-        
-        // Deixei a verificação mais simples para não falhar
-        if (destino.includes('fila')) {
-            btnContinuar.textContent = 'Entrar na Fila';
-        } else if (destino.includes('booking')) {
-            btnContinuar.textContent = 'Fazer Reserva';
-        } else {
-            btnContinuar.textContent = 'Continuar';
-        }
-    } else {
-        btnContinuar.style.display = 'none'; 
+  // pega usuários já cadastrados
+  let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+  // verifica se já existe
+  const existe = usuarios.find(user => user.email === email);
+
+  if (existe) {
+    alert("Esse email já está cadastrado!");
+    return;
+  }
+
+  // cria novo usuário
+  const novoUsuario = { nome, email, senha };
+
+  usuarios.push(novoUsuario);
+
+  // salva no localStorage
+  localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+  alert("Conta criada com sucesso!");
+
+  // volta para login
+  mostrarStep("step-login");
+}
+
+function enviarCodigo() {
+    const email = document.getElementById("esqueci-email").value;
+
+    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+    const usuario = usuarios.find(u => u.email === email);
+
+    if (!usuario) {
+        alert("Email não encontrado!");
+        return;
     }
 
-    mostrarStep('step-sucesso');
-}
-function enviarCodigo() {
-    const email = document.getElementById('esqueci-email').value;
-    if (!email) return;
-    document.getElementById('step-esqueci-email').style.display = 'none';
-    document.getElementById('step-esqueci-codigo').style.display = 'block';
+    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
+
+    localStorage.setItem("codigoRecuperacao", codigo);
+    localStorage.setItem("emailRecuperacao", email);
+
+    console.log("Código:", codigo);
+
+    alert("Código enviado (simulado no console)");
+
+    document.getElementById("step-esqueci-email").style.display = "none";
+    document.getElementById("step-esqueci-codigo").style.display = "block";
 }
 
 function redefinirSenha() {
-    const nova = document.getElementById('nova-senha').value;
-    const confirmar = document.getElementById('confirmar-senha').value;
-    if (!nova || !confirmar || nova !== confirmar) return;
-    mostrarStep('step-login');
+    const codigo = document.getElementById("codigo-input").value;
+    const novaSenha = document.getElementById("nova-senha").value;
+    const confirmar = document.getElementById("confirmar-senha").value;
+
+    const codigoSalvo = localStorage.getItem("codigoRecuperacao");
+    const email = localStorage.getItem("emailRecuperacao");
+
+    if (codigo !== codigoSalvo) {
+        alert("Código inválido!");
+        return;
+    }
+
+    if (novaSenha !== confirmar) {
+        alert("Senhas não coincidem!");
+        return;
+    }
+
+    if (novaSenha.length < 6) {
+    alert("A senha deve ter pelo menos 6 caracteres!");
+    return;
+    }
+
+    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
+
+    usuarios = usuarios.map(u => {
+        if (u.email === email) {
+            return {
+                ...u,
+                senha: novaSenha
+            };
+        }
+        return u;
+    });
+
+    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+
+    alert("Senha redefinida com sucesso!");
+
+    window.location.href = "/src/pages/login.html";
 }
 
 function irParaDestino() {

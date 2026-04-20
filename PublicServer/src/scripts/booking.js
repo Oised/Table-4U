@@ -1,3 +1,13 @@
+window.onload = function() {
+  const usuario = localStorage.getItem("usuarioLogado");
+
+  console.log("Usuário no booking:", usuario);
+
+  if (!usuario) {
+    alert("Você precisa estar logado!");
+    window.location.href = "/src/pages/login.html";
+  }
+};
 let pessoasCount = 2;
 let horarioSelecionado = null;
 
@@ -34,34 +44,61 @@ function voltarForm() {
 }
 
 function finalizarReserva() {
-    const nome = sessionStorage.getItem('usuario-nome') || '';
-    const email = sessionStorage.getItem('usuario-email') || '';
+  const pessoas = document.getElementById("pessoas-count").innerText;
+  const data = document.getElementById("reserva-data").value;
 
-    // Pegamos os valores da tela para usar nos dois lugares (tela de sucesso e salvamento)
-    const pessoasText = document.getElementById('confirm-pessoas').textContent;
-    const dataText = document.getElementById('confirm-data').textContent;
-    const horarioText = document.getElementById('confirm-horario').textContent;
+  const horarioSelecionado = document.querySelector(".horario-btn.selecionado");
+  const horario = horarioSelecionado ? horarioSelecionado.innerText : "";
 
-    // Atualiza a tela de sucesso
-    document.getElementById('sucesso-nome').textContent = nome;
-    document.getElementById('sucesso-email').textContent = email;
-    document.getElementById('sucesso-pessoas').textContent = pessoasText;
-    document.getElementById('sucesso-data').textContent = dataText;
-    document.getElementById('sucesso-horario').textContent = horarioText;
+  // PEGAR USUÁRIO LOGADO
+  const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 
-    // --- SALVANDO A RESERVA ---
-    let minhasReservas = JSON.parse(sessionStorage.getItem('lista-reservas') || '[]');
+  // PEGAR RESERVAS EXISTENTES
+  let reservas = JSON.parse(localStorage.getItem("reservas")) || [];
 
-    minhasReservas.push({
-        pessoas: pessoasText,
-        data: dataText,
-        horario: horarioText,
-        status: 'Confirmada'
-    });
+  // CRIAR NOVA RESERVA
+  const novaReserva = {
+    nome: usuario.nome,
+    email: usuario.email,
+    pessoas,
+    data,
+    horario
+  };
 
-    sessionStorage.setItem('lista-reservas', JSON.stringify(minhasReservas));
-    // --------------------------
+  // SALVAR
+  reservas.push(novaReserva);
+  localStorage.setItem("reservas", JSON.stringify(reservas));
 
-    document.getElementById('step-confirm').style.display = 'none';
-    document.getElementById('step-sucesso').style.display = 'block';
+  // SEU BACKEND CONTINUA NORMAL
+  fetch("http://localhost:3000/reserva", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json"
+    },
+    body: JSON.stringify({
+      pessoas,
+      data,
+      horario
+    })
+  })
+  .then(res => res.json())
+  .then(resposta => {
+    console.log(resposta);
+
+    // UI
+    document.getElementById("step-confirm").style.display = "none";
+    document.getElementById("step-sucesso").style.display = "block";
+
+    document.getElementById("sucesso-pessoas").innerText = pessoas;
+    document.getElementById("sucesso-data").innerText = data;
+    document.getElementById("sucesso-horario").innerText = horario;
+    
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
+    document.getElementById("sucesso-nome").innerText = usuario.nome;
+    document.getElementById("sucesso-email").innerText = usuario.email;
+  })
+  .catch(err => {
+    console.error("Erro:", err);
+  });
 }
