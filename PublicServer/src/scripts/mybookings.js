@@ -27,18 +27,38 @@ async function carregarReservas() {
             reservas.reverse().forEach((reserva, index) => {
                 const card = document.createElement('div');
                 card.className = 'reserva-card';
-
                 card.innerHTML = `
-                    <span class="reserva-status">Confirmado</span>
+    <span class="reserva-status">${reserva.status}</span>
 
-                    <div class="reserva-info-grid">
-                        <div class="info-box"><span class="info-label">Nome</span><span>${reserva.nome}</span></div>
-                        <div class="info-box"><span class="info-label">E-mail</span><span>${reserva.email}</span></div>
-                        <div class="info-box"><span class="info-label">Data</span><span>${reserva.data}</span></div>
-                        <div class="info-box"><span class="info-label">Horário</span><span>${reserva.horario}</span></div>
-                        <div class="info-box"><span class="info-label">Pessoas</span><span>${reserva.pessoas}</span></div>
-                    </div>
-                `;
+    <div class="reserva-info-grid">
+        <div class="info-box">
+            <span class="info-label">Nome</span>
+            <span>${usuario.nome}</span>
+        </div>
+
+        <div class="info-box">
+            <span class="info-label">E-mail</span>
+            <span>${usuario.email}</span>
+        </div>
+
+        <div class="info-box">
+            <span class="info-label">Data</span>
+            <span>
+                ${new Date(reserva.data_reserva).toLocaleString("pt-BR")}
+            </span>
+        </div>
+
+        <div class="info-box">
+            <span class="info-label">Pessoas</span>
+            <span>${reserva.numero_pessoas}</span>
+        </div>
+
+        <button class="btn-cancelar" onclick="cancelarReserva(${reserva.id_reserva})">
+        Cancelar Reserva
+        </button>
+    </div>
+`;
+                
 
                 listaContainer.appendChild(card);
             });
@@ -49,17 +69,28 @@ async function carregarReservas() {
     }
 }
 
-// Bônus: Função para cancelar a reserva (remove do sessionStorage)
-function cancelarReserva(indexReverso) {
-    if(confirm("Tem certeza que deseja cancelar esta reserva?")) {
-        let reservas = JSON.parse(localStorage.getItem('reservas')) || [];
-        
-        // Como invertemos o array para exibir, precisamos corrigir o índice para apagar o item certo
-        const indiceReal = (reservas.length - 1) - indexReverso;
-        
-        reservas.splice(indiceReal, 1); // Remove o item
-        localStorage.setItem('reservas', JSON.stringify(reservas));
-        
-        carregarReservas(); // Recarrega a tela
+// Função para cancelar a reserva 
+async function cancelarReserva(id) {
+    if (!confirm("Tem certeza que deseja cancelar esta reserva?")) {
+        return;
+    }
+
+    try {
+        const response = await fetch(`http://localhost:3000/reserva/${id}`, {
+            method: "DELETE"
+        });
+
+        if (!response.ok) {
+            alert("Erro ao cancelar reserva");
+            return;
+        }
+
+        alert("Reserva cancelada com sucesso!");
+
+        carregarReservas(); // recarrega lista
+
+    } catch (err) {
+        console.error(err);
+        alert("Erro ao conectar com o servidor");
     }
 }
