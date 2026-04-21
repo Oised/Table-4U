@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Garçom - Table 4U</title>
+    <link rel="stylesheet" href="../styles/waiter.css">
+    <link rel="stylesheet" href="../../../PublicServer/src/styles/global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="waiter-body">
+
+    <div class="waiter-header">
+        <h2 class="waiter-title">Mesas</h2>
+    </div>
+
+    <main class="waiter-content">
+        <div class="mesas-grid" id="mesas-grid"></div>
+    </main>
+
+    <!-- MODAL MESA LIVRE -->
+    <div id="modal-overlay" class="modal-overlay" onclick="fecharModal()"></div>
+
+    <div id="modal-livre" class="modal">
+        <button class="modal-close" onclick="fecharModal()">×</button>
+        <h3 class="modal-title" id="modal-livre-titulo"></h3>
+        <p class="modal-sub">O que deseja fazer?</p>
+        <button class="action-btn btn-primary" onclick="irCheckin()">Check-in</button>
+        <button class="action-btn btn-secondary" onclick="irPedido()" style="margin-top: 12px;">Fazer Pedido</button>
+    </div>
+
+    <!-- MODAL MESA OCUPADA -->
+    <div id="modal-ocupada" class="modal">
+        <button class="modal-close" onclick="fecharModal()">×</button>
+        <h3 class="modal-title" id="modal-ocupada-titulo"></h3>
+        <div class="mesa-info-grid">
+            <div class="mesa-info-item">
+                <span class="mesa-info-label">Pessoas</span>
+                <span class="mesa-info-valor" id="ocupada-pessoas"></span>
+            </div>
+            <div class="mesa-info-item">
+                <span class="mesa-info-label">Previsão de saída</span>
+                <span class="mesa-info-valor" id="ocupada-previsao"></span>
+            </div>
+        </div>
+        <div class="pedidos-lista" id="ocupada-pedidos"></div>
+    </div>
+
+    <!-- MODAL MESA LIMPAR -->
+    <div id="modal-limpar" class="modal">
+        <button class="modal-close" onclick="fecharModal()">×</button>
+        <div class="modal-icon vermelho-icon">✕</div>
+        <h3 class="modal-title" id="modal-limpar-titulo"></h3>
+        <p class="modal-sub">Mesa precisa ser limpa antes de liberar.</p>
+        <button class="action-btn btn-primary" onclick="liberarMesa()">Mesa Limpa — Liberar</button>
+        <button class="action-btn btn-secondary" onclick="fecharModal()" style="margin-top: 12px;">Voltar</button>
+    </div>
+
+    <!-- PÁGINA CHECKIN -->
+    <div id="pagina-checkin" class="pagina-interna" style="display:none">
+        <div class="pagina-header">
+            <button class="back-link" onclick="voltarParaMesas()">← Voltar</button>
+            <h2 class="pagina-titulo">Check-in</h2>
+        </div>
+        <div class="pagina-content">
+            <div class="checkin-icon">✦</div>
+            <h3 class="step-title" id="checkin-titulo"></h3>
+            <p class="step-sub">Confirme o check-in desta mesa</p>
+            <div class="input-group">
+                <label class="input-label">Quantidade de pessoas</label>
+                <div class="pessoas-counter">
+                    <button class="counter-btn" onclick="alterarCheckinPessoas(-1)">−</button>
+                    <span id="checkin-pessoas-count">2</span>
+                    <button class="counter-btn" onclick="alterarCheckinPessoas(1)">+</button>
+                </div>
+            </div>
+            <button class="action-btn btn-primary" onclick="confirmarCheckin()">Confirmar Check-in</button>
+        </div>
+    </div>
+
+    <!-- PÁGINA PEDIDO -->
+    <div id="pagina-pedido" class="pagina-interna" style="display:none">
+        <div class="pagina-header">
+            <button class="back-link" onclick="voltarParaMesas()">← Voltar</button>
+            <h2 class="pagina-titulo">Pedido</h2>
+        </div>
+        <div class="pagina-content">
+            <h3 class="step-title" id="pedido-titulo"></h3>
+            <p class="step-sub">Selecione os itens e quantidades</p>
+            <div id="pedido-categorias"></div>
+            <div class="input-group" style="margin-top: 24px;">
+                <label class="input-label">Anotação (opcional)</label>
+                <textarea id="pedido-anotacao" class="waiter-input waiter-textarea" placeholder="Ex: sem cebola, alergia a glúten..."></textarea>
+            </div>
+            <div class="pedido-footer">
+                <button class="action-btn btn-secondary" onclick="voltarParaMesas()">Voltar</button>
+                <button class="action-btn btn-primary" onclick="confirmarPedido()">Confirmar</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- BOTÃO PERFIL -->
+    <button class="perfil-btn" onclick="togglePerfil()">
+        <div class="perfil-iniciais"></div>
+    </button>
+
+    <!-- POPUP PERFIL -->
+    <div id="popup-perfil" class="popup-perfil">
+        <div class="perfil-topo">
+            <div class="perfil-avatar-grande"></div>
+            <div>
+                <p class="perfil-nome"></p>
+                <p class="perfil-email"></p>
+            </div>
+        </div>
+        <a href="#" class="perfil-menu-item sair" onclick="sairFuncionario()">Sair</a>
+    </div>
+
+    <footer>
+        <p class="footer-info">Endereço e Contatos</p>
+        <p class="powerby">Powered by Table4U</p>
+    </footer>
+
+    <script src="../../../PublicServer/src/scripts/profile.js"></script>
+    <script src="../scripts/waiter.js"></script>
+</body>
+</html>

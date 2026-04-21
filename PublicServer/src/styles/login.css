@@ -171,6 +171,29 @@
     line-height: 1.5;
 }
 
+.login-cargo {
+    font-size: 0.75rem;
+    color: rgba(255,255,255,0.35);
+    margin-top: 4px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+
+select.login-input {
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    background-image: none;
+    padding-right: 16px;
+}
+
+select.login-input option {
+    background-color: #1a1a1a;
+    color: #fff;
+    padding: 10px;
+}
+
 
 @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }

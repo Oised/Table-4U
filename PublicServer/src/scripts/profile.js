@@ -35,8 +35,8 @@ function togglePerfil() {
 }
 
 function sair() {
-  localStorage.removeItem("usuarioLogado");
-  window.location.href = "/src/pages/login.html";
+    sessionStorage.clear();
+    window.location.href = 'index.html';
 }
 
 document.addEventListener('click', function(e) {
