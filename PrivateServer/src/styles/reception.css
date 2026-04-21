@@ -182,6 +182,62 @@
 .modal-sub { font-size: 0.9rem; color: rgba(255,255,255,0.6); margin-bottom: 25px; }
 .modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
 
+
+
+/* --- MODAL DE CHECK-IN --- */
+.mesas-livres-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+    max-height: 250px;
+    overflow-y: auto;
+    margin-bottom: 10px;
+}
+
+.btn-mesa-livre {
+    background: rgba(76,175,80,0.1);
+    border: 1px solid rgba(76,175,80,0.4);
+    color: #fff;
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+}
+
+.btn-mesa-livre:hover {
+    background: rgba(76,175,80,0.25);
+    border-color: #4CAF50;
+    transform: translateY(-2px);
+}
+
+.btn-mesa-livre strong {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+}
+
+.btn-mesa-livre small {
+    color: rgba(255,255,255,0.6);
+    font-size: 0.8rem;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 @media (max-width: 500px) {
     .destaque-actions { grid-template-columns: 1fr; }
     .destaque-header { flex-direction: column; align-items: flex-start; }

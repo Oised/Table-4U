@@ -28,7 +28,6 @@ function mudarAba(abaDestino) {
 }
 
 // --- LÓGICA DA FILA ---
-
 let itemParaRemoverId = null; // Guarda o ID da div que será removida
 
 // Função para abrir o modal de confirmação de exclusão
@@ -44,26 +43,130 @@ function fecharModalRemover() {
     itemParaRemoverId = null;
 }
 
+// --- LÓGICA DE AVANÇAR A FILA ---
+function avancarFila() {
+    const filaLista = document.querySelector('.fila-lista');
+    const proximos = filaLista.querySelectorAll('.fila-item');
+    
+    if (proximos.length > 0) {
+        // Pega o primeiro card da lista de espera
+        const proximo = proximos[0];
+        const nomeProximo = proximo.querySelector('.fila-nome').innerText;
+        
+        // Atualiza o destaque (Nome grandão)
+        document.querySelector('.destaque-nome').innerText = `1º - ${nomeProximo}`;
+        
+        // Atualiza os botões do destaque para usar o nome do novo primeiro da fila
+        const btnCheckin = document.querySelector('.destaque-actions .btn-primary');
+        const btnRemover = document.querySelector('.destaque-actions .btn-remover');
+        
+        btnCheckin.setAttribute('onclick', `fazerCheckin('${nomeProximo}')`);
+        btnRemover.setAttribute('onclick', `abrirModalRemover('${nomeProximo}', true)`);
+        
+        // Remove o elemento que subiu para o destaque da lista de baixo
+        proximo.remove();
+        
+        // Reorganiza a numeração (#2, #3...) do resto da fila
+        atualizarPosicoesFila();
+    } else {
+        // Se não tem mais ninguém na fila
+        document.querySelector('.destaque-nome').innerText = "Fila Vazia";
+        document.querySelector('.destaque-actions').style.display = 'none';
+        document.querySelector('.tempo-box').style.display = 'none';
+    }
+}
+
+function atualizarPosicoesFila() {
+    const itens = document.querySelectorAll('.fila-item');
+    itens.forEach((item, index) => {
+        const posicao = index + 2; // Começa do 2 porque o 1º está no destaque
+        item.querySelector('.fila-posicao').innerText = `#${posicao}`;
+    });
+}
+
+// --- ATUALIZAÇÃO: CONFIRMAR REMOÇÃO ---
 function confirmarRemocao() {
-    // Lógica visual para remover a pessoa da tela
     if (itemParaRemoverId) {
-        // Remove um item da lista
+        // Remove alguém do meio da lista
         const elemento = document.getElementById(itemParaRemoverId);
         if(elemento) elemento.remove();
+        atualizarPosicoesFila();
     } else {
-        // Se for null, significa que clicou em remover o Primeiro da Fila
-        // Num sistema real, aqui você puxaria o próximo da lista para o destaque
-        alert("O primeiro da fila foi removido do sistema.");
-        document.querySelector('.fila-destaque').style.opacity = '0.5';
-        document.querySelector('.fila-destaque').style.pointerEvents = 'none';
+        // Remove o Primeiro da Fila (Destaque) e faz a fila andar
+        avancarFila();
     }
     
     fecharModalRemover();
 }
 
+// --- LÓGICA DO CHECK-IN E MODAL DE MESAS LIVRES ---
+let pessoaAtualCheckin = "";
+
 function fazerCheckin(nomePessoa) {
-    // Num sistema real, abriria tela para associar ele a uma mesa
-    alert(`${nomePessoa} foi chamado para fazer Check-in! A mesa será liberada.`);
+    pessoaAtualCheckin = nomePessoa;
+    document.getElementById('nome-checkin').innerText = nomePessoa;
+    
+    const gridMesas = document.getElementById('lista-mesas-livres');
+    gridMesas.innerHTML = ''; // Limpa a lista anterior
+    
+    // Varre o DOM procurando APENAS mesas com a classe 'verde' (Livres)
+    const mesasLivres = document.querySelectorAll('.mesa-card.verde');
+    
+    if (mesasLivres.length === 0) {
+        gridMesas.innerHTML = '<p style="color: #F44336; grid-column: 1/-1; text-align: center;">Nenhuma mesa livre no momento!</p>';
+    } else {
+        // Cria um botão para cada mesa livre encontrada
+        mesasLivres.forEach(mesa => {
+            const nomeMesa = mesa.querySelector('.mesa-nome').innerText;
+            const lugares = mesa.querySelector('.mesa-pessoas').innerText;
+            
+            const btn = document.createElement('button');
+            btn.className = 'btn-mesa-livre';
+            btn.innerHTML = `<strong>${nomeMesa}</strong><small>Livre</small>`;
+            
+            // Quando clicar na mesa, confirma o check-in
+            btn.onclick = () => confirmarCheckinDaMesa(mesa, nomeMesa);
+            gridMesas.appendChild(btn);
+        });
+    }
+    
+    document.getElementById('modal-checkin').classList.add('ativo');
+}
+
+function fecharModalCheckin() {
+    document.getElementById('modal-checkin').classList.remove('ativo');
+    pessoaAtualCheckin = "";
+}
+
+function confirmarCheckinDaMesa(mesaElemento, nomeMesa) {
+
+    
+    // 1. Muda visualmente o status da mesa escolhida para Ocupada (Azul)
+    mesaElemento.classList.remove('verde');
+    mesaElemento.classList.add('azul');
+    
+    const statusSpan = mesaElemento.querySelector('.mesa-status');
+    if (statusSpan) {
+        statusSpan.innerText = 'Ocupada';
+    }
+    
+    // Adiciona o ícone de prato indicando que estão comendo (se já não tiver a div)
+    let iconesDiv = mesaElemento.querySelector('.mesa-icones');
+    if(!iconesDiv) {
+        iconesDiv = document.createElement('div');
+        iconesDiv.className = 'mesa-icones';
+        mesaElemento.appendChild(iconesDiv);
+    }
+    iconesDiv.innerHTML = '<span class="mesa-icone prato">🍽️</span>';
+
+    // 2. Fecha o modal
+    fecharModalCheckin();
+    
+    // 3. Exibe a mensagem de sucesso com o nome da pessoa e a mesa escolhida
+    alert(`Check-in realizado com sucesso na ${nomeMesa}!`);
+    
+    // 4. Faz a fila andar já que o cliente foi acomodado!
+    avancarFila();
 }
 
 // --- SIMULADOR DE CRONÔMETRO PARA O 1º DA FILA ---
