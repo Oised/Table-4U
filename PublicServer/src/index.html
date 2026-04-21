@@ -41,11 +41,14 @@
 
 
 <!-- BOTÃO PERFIL -->
+
 <button class="perfil-btn" onclick="togglePerfil()">
     <div class="perfil-iniciais"></div>
 </button>
 
-<!-- POPUP PERFIL -->
+
+
+
 <div id="popup-perfil" class="popup-perfil">
     <div class="perfil-topo">
         <div class="perfil-avatar-grande"></div>
@@ -56,11 +59,11 @@
     </div>
     <a href="pages/login.html" class="perfil-menu-item perfil-deslogado">Fazer Login</a>
     <a href="pages/login.html?cadastro=true" class="perfil-menu-item perfil-deslogado">Criar Conta</a>
-    <a href="#" class="perfil-menu-item perfil-logado" onclick="irParaMinhasReservas(event)">Minhas Reservas</a>
-    <a href="#" class="perfil-menu-item perfil-logado" onclick="irParaEditarPerfil(event)">Editar Perfil</a>
+    <a href="pages/login.html?funcionario=true" class="perfil-menu-item perfil-deslogado">Funcionário</a>
+    <a href="#" class="perfil-menu-item perfil-logado">Minhas Reservas</a>
+    <a href="#" class="perfil-menu-item perfil-logado">Editar Perfil</a>
     <a href="#" class="perfil-menu-item sair perfil-logado" onclick="sair()">Sair</a>
 </div>
-
 
 
 

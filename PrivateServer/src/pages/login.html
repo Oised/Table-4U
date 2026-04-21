@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Acesso Funcionário - Table 4U</title>
+    <link rel="stylesheet" href="/PublicServer/src/styles/login.css">
+    <link rel="stylesheet" href="/PublicServer/src/styles/global.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="login-body">
+
+    <div class="login-container">
+
+        <div class="login-logo">
+            <p class="login-boas-vindas">Área Restrita</p>
+            <h1 class="login-nome">Table4U</h1>
+            <p class="login-cargo">Acesso para Funcionários</p>
+        </div>
+
+        <div class="login-card">
+            <h2 class="card-title">Entrar</h2>
+            <p class="card-sub">Use suas credenciais de funcionário</p>
+
+            <div class="input-group">
+                <label class="input-label">E-mail</label>
+                <input type="text" id="func-email" class="login-input" placeholder="funcionario@table4u.com">
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Senha</label>
+                <div class="input-senha-wrapper">
+                    <input type="password" id="func-senha" class="login-input" placeholder="••••••••">
+                    <button class="toggle-senha" onclick="toggleSenha('func-senha', this)">👁</button>
+                </div>
+            </div>
+
+            <div class="input-group">
+                <label class="input-label">Cargo</label>
+                <select id="func-cargo" class="login-input">
+                    <option value="garcom">Garçom</option>
+                    <option value="cozinha">Cozinha</option>
+                    <option value="adm">Administração</option>
+                </select>
+            </div>
+
+            <button class="action-btn btn-primary" onclick="fazerLoginFuncionario()">Entrar</button>
+            <a href="/PublicServer/src/index.html" class="voltar-link">← Voltar ao início</a>
+        </div>
+
+    </div>
+
+    <footer>
+        <p class="footer-info">Endereço e Contatos</p>
+        <p class="powerby">Powered by Table4U</p>
+    </footer>
+
+    <script src="../scripts/login.js"></script>
+</body>
+</html>

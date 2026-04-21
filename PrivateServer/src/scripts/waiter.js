@@ -37,6 +37,19 @@ const iconeMap = {
     chamada: { emoji: '🔔', titulo: 'Cliente chamando', classe: 'chamada' },
 };
 
+function sairFuncionario() {
+    sessionStorage.clear();
+    window.location.href = 'login.html';
+}
+
+
+
+
+
+
+
+
+
 function renderizarMesas() {
     const grid = document.getElementById('mesas-grid');
     grid.innerHTML = '';
@@ -140,22 +153,17 @@ function alterarCheckinPessoas(valor) {
     checkinPessoas = Math.max(1, Math.min(20, checkinPessoas + valor));
     document.getElementById('checkin-pessoas-count').textContent = checkinPessoas;
 }
-
 function confirmarCheckin() {
-    const previsao = document.getElementById('checkin-previsao').value;
-    if (!previsao) return;
-
     const mesa = mesas.find(m => m.id === mesaSelecionada.id);
     mesa.status = 'ocupada';
     mesa.pessoas = checkinPessoas;
-    mesa.previsao = previsao;
+    mesa.previsao = 'Calculando...';
     mesa.pedidos = [];
     mesa.icones = [];
 
     voltarParaMesas();
     renderizarMesas();
 }
-
 function renderizarMenuPedido() {
     const container = document.getElementById('pedido-categorias');
     container.innerHTML = '';

@@ -5,14 +5,13 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Garçom - Table 4U</title>
     <link rel="stylesheet" href="../styles/waiter.css">
-    <link rel="stylesheet" href="../../../PublicServer/src/styles/global.css">
+    <link rel="stylesheet" href="/PublicServer/src/styles/global.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
 <body class="waiter-body">
 
     <div class="waiter-header">
         <h2 class="waiter-title">Mesas</h2>
-       
     </div>
 
     <main class="waiter-content">
@@ -75,10 +74,6 @@
                     <button class="counter-btn" onclick="alterarCheckinPessoas(1)">+</button>
                 </div>
             </div>
-            <div class="input-group">
-                <label class="input-label">Previsão de saída</label>
-                <input type="time" id="checkin-previsao" class="waiter-input">
-            </div>
             <button class="action-btn btn-primary" onclick="confirmarCheckin()">Confirmar Check-in</button>
         </div>
     </div>
@@ -92,14 +87,11 @@
         <div class="pagina-content">
             <h3 class="step-title" id="pedido-titulo"></h3>
             <p class="step-sub">Selecione os itens e quantidades</p>
-
             <div id="pedido-categorias"></div>
-
             <div class="input-group" style="margin-top: 24px;">
                 <label class="input-label">Anotação (opcional)</label>
                 <textarea id="pedido-anotacao" class="waiter-input waiter-textarea" placeholder="Ex: sem cebola, alergia a glúten..."></textarea>
             </div>
-
             <div class="pedido-footer">
                 <button class="action-btn btn-secondary" onclick="voltarParaMesas()">Voltar</button>
                 <button class="action-btn btn-primary" onclick="confirmarPedido()">Confirmar</button>
@@ -121,11 +113,7 @@
                 <p class="perfil-email"></p>
             </div>
         </div>
-        <a href="#" class="perfil-menu-item perfil-logado">Minhas Reservas</a>
-        <a href="#" class="perfil-menu-item perfil-logado">Editar Perfil</a>
-        <a href="#" class="perfil-menu-item sair perfil-logado" onclick="sair()">Sair</a>
-        <a href="../pages/login.html" class="perfil-menu-item perfil-deslogado">Fazer Login</a>
-        <a href="../pages/login.html?cadastro=true" class="perfil-menu-item perfil-deslogado">Criar Conta</a>
+        <a href="#" class="perfil-menu-item sair" onclick="sairFuncionario()">Sair</a>
     </div>
 
     <footer>
@@ -133,7 +121,7 @@
         <p class="powerby">Powered by Table4U</p>
     </footer>
 
-    <script src="../scripts/profile.js"></script>
+    <script src="/PublicServer/src/scripts/profile.js"></script>
     <script src="../scripts/waiter.js"></script>
 </body>
 </html>
