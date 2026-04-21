@@ -19,7 +19,7 @@ function togglePerfil() {
 
 function sair() {
     sessionStorage.clear();
-    window.location.href = '/PublicServer/src/index.html';
+    window.location.href = 'index.html';
 }
 
 document.addEventListener('click', function(e) {

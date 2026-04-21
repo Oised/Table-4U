@@ -51,15 +51,15 @@ function fazerLoginFuncionario() {
 
 switch(cargo) {
     case 'garcom':
-        window.location.href = '/PrivateServer/src/pages/waiter.html';
+        window.location.href = '../pages/waiter.html';
         break;
     case 'cozinha':
-        window.location.href = '/PrivateServer/src/pages/cozinha.html';
+        window.location.href = '../pages/cozinha.html';
         break;
     case 'adm':
-        window.location.href = '/PrivateServer/src/pages/admin.html';
+        window.location.href = '../pages/admin.html';
         break;
     default:
-        window.location.href = '/PublicServer/src/index.html';
+        window.location.href = '../pages/index.html';
 }
 }
