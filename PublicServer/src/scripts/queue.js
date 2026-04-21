@@ -6,6 +6,17 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 function verificarStatusFila() {
+
+const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+
+    if (!usuario) {
+        alert("Você precisa estar logado para acessar a fila!");
+        window.location.href = "login.html";
+        return;
+    }
+
+
+
     const naFila = sessionStorage.getItem('usuario-na-fila');
     const vezChegou = sessionStorage.getItem('usuario-vez-chegou');
 
@@ -57,6 +68,17 @@ function atualizarTextosFila(posicao, tempo) {
 }
 
 function entrarNaFila() {
+
+
+const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+    
+    if (!usuario) {
+        alert("Sessão inválida. Por favor, faça login.");
+        window.location.href = "login.html";
+        return;
+    }
+
+
     sessionStorage.setItem('usuario-na-fila', 'true');
     sessionStorage.removeItem('usuario-vez-chegou');
     
