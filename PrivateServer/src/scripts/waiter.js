@@ -42,21 +42,20 @@ function sairFuncionario() {
     window.location.href = 'login.html';
 }
 
-
-
-
-
-
-
-
-
 function renderizarMesas() {
     const grid = document.getElementById('mesas-grid');
     grid.innerHTML = '';
 
+    const corMap = {
+        livre: 'verde',
+        ocupada: 'azul',
+        limpar: 'vermelho'
+    };
+
     mesas.forEach(mesa => {
+        const corDaMesa = corMap[mesa.status];
         const card = document.createElement('div');
-        card.className = `mesa-card ${mesa.status}`;
+        card.className = `mesa-card ${corDaMesa}`;
         card.onclick = () => clicarMesa(mesa);
 
         const statusTexto = { livre: 'Livre', ocupada: 'Ocupada', limpar: 'Limpar' }[mesa.status];
@@ -70,15 +69,15 @@ function renderizarMesas() {
             </button>`
         ).join('');
 
- card.innerHTML = `
-    ${pessoasHTML}
-    <div class="mesa-nome">Mesa ${mesa.id}</div>
-    <div class="mesa-status-row">
-        ${mesa.status === 'limpar' ? '<span class="mesa-bolinha limpar"></span>' : ''}
-        <span class="mesa-status">${statusTexto}</span>
-    </div>
-    <div class="mesa-icones">${iconesHTML}</div>
-`;
+        card.innerHTML = `
+            ${pessoasHTML}
+            <div class="mesa-nome">Mesa ${mesa.id}</div>
+            <div class="mesa-status-row">
+                <span class="mesa-bolinha ${corDaMesa}"></span>
+                <span class="mesa-status">${statusTexto}</span>
+            </div>
+            <div class="mesa-icones">${iconesHTML}</div>
+        `;
         grid.appendChild(card);
     });
 }
@@ -109,6 +108,29 @@ function clicarMesa(mesa) {
     }
 }
 
+// LÓGICA PARA LIBERAR MESA OCUPADA
+function abrirConfirmacaoLiberar() {
+    document.getElementById('modal-ocupada').classList.remove('ativo');
+    document.getElementById('confirmar-liberar-nome').textContent = `Mesa ${mesaSelecionada.id}`;
+    document.getElementById('modal-confirmar-liberar').classList.add('ativo');
+}
+
+function voltarModalOcupada() {
+    document.getElementById('modal-confirmar-liberar').classList.remove('ativo');
+    document.getElementById('modal-ocupada').classList.add('ativo');
+}
+
+function confirmarLiberarMesaOcupada() {
+    if (!mesaSelecionada) return;
+    const mesa = mesas.find(m => m.id === mesaSelecionada.id);
+    mesa.status = 'limpar'; 
+    mesa.icones = [];
+    mesa.pedidos = [];
+    mesa.pessoas = 0;
+    fecharModal();
+    renderizarMesas();
+}
+
 function abrirModal(id) {
     document.getElementById('modal-overlay').classList.add('ativo');
     document.getElementById(id).classList.add('ativo');
@@ -133,7 +155,6 @@ function irCheckin() {
     document.getElementById('checkin-titulo').textContent = `Mesa ${mesaSelecionada.id}`;
     checkinPessoas = 2;
     document.getElementById('checkin-pessoas-count').textContent = checkinPessoas;
-    document.getElementById('checkin-previsao').value = '';
     document.getElementById('pagina-checkin').style.display = 'flex';
 }
 
@@ -153,17 +174,18 @@ function alterarCheckinPessoas(valor) {
     checkinPessoas = Math.max(1, Math.min(20, checkinPessoas + valor));
     document.getElementById('checkin-pessoas-count').textContent = checkinPessoas;
 }
+
 function confirmarCheckin() {
     const mesa = mesas.find(m => m.id === mesaSelecionada.id);
     mesa.status = 'ocupada';
     mesa.pessoas = checkinPessoas;
-    mesa.previsao = 'Calculando...';
+    mesa.previsao = '1h 20min';
     mesa.pedidos = [];
     mesa.icones = [];
-
     voltarParaMesas();
     renderizarMesas();
 }
+
 function renderizarMenuPedido() {
     const container = document.getElementById('pedido-categorias');
     container.innerHTML = '';

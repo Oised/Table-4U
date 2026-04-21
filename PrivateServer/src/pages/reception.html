@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Recepção - Table 4U</title>
+    <link rel="stylesheet" href="../../../PublicServer/src/styles/global.css">
+    <link rel="stylesheet" href="../styles/reception.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+</head>
+<body class="reception-body">
+
+    <div id="sidebar-overlay" class="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <nav id="sidebar" class="sidebar">
+        <div class="sidebar-header">
+            <h1 class="nome-restaurante" style="font-size: 1.5rem;">Table4U</h1>
+            <p style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">Recepção</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="#" onclick="mudarAba('mesas'); toggleSidebar();" id="link-mesas" class="ativo">Visão Geral das Mesas</a></li>
+            <li><a href="#" onclick="mudarAba('fila'); toggleSidebar();" id="link-fila">Gerenciar Fila</a></li>
+        </ul>
+    </nav>
+
+    <header class="reception-header">
+        <button class="menu-hamburguer" onclick="toggleSidebar()">☰</button>
+        <h2 class="reception-title" id="page-title">Mesas</h2>
+        <div style="width: 24px;"></div> </header>
+
+    <main class="reception-content">
+        
+        <div id="aba-mesas" class="aba-conteudo ativo">
+            <div class="mesas-grid-reception">
+                
+                <div class="mesa-card verde">
+                    <div class="mesa-pessoas">2 lugares</div>
+                    <div>
+                        <div class="mesa-nome">Mesa 1</div>
+                        <div class="mesa-status-row">
+                            <span class="mesa-status">Livre</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mesa-card azul">
+                    <div class="mesa-pessoas">👤2</div>
+                    <div>
+                        <div class="mesa-nome">Mesa 2</div>
+                        <div class="mesa-status-row">
+                            <span class="mesa-status">Ocupada</span>
+                        </div>
+                    </div>
+                    <div class="mesa-icones">
+                        <span class="mesa-icone prato">🍽️</span>
+                    </div>
+                </div>
+
+                <div class="mesa-card vermelho">
+                    <div class="mesa-pessoas">4 lugares</div>
+                    <div>
+                        <div class="mesa-nome">Mesa 3</div>
+                        <div class="mesa-status-row">
+                            <span class="mesa-bolinha limpar"></span>
+                            <span class="mesa-status">Limpar</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mesa-card azul">
+                    <div class="mesa-pessoas">👤4</div>
+                    <div>
+                        <div class="mesa-nome">Mesa 4</div>
+                        <div class="mesa-status-row">
+                            <span class="mesa-status">Ocupada</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mesa-card verde">
+                    <div class="mesa-pessoas">6 lugares</div>
+                    <div>
+                        <div class="mesa-nome">Mesa 5</div>
+                        <div class="mesa-status-row">
+                            <span class="mesa-status">Livre</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mesa-card verde">
+                    <div class="mesa-pessoas">2 lugares</div>
+                    <div>
+                        <div class="mesa-nome">Mesa 6</div>
+                        <div class="mesa-status-row">
+                            <span class="mesa-status">Livre</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mesa-card azul">
+                    <div class="mesa-pessoas">👤3</div>
+                    <div>
+                        <div class="mesa-nome">Mesa 7</div>
+                        <div class="mesa-status-row">
+                            <span class="mesa-status">Ocupada</span>
+                        </div>
+                    </div>
+                    <div class="mesa-icones">
+                        <span class="mesa-icone chamada">🛎️</span>
+                    </div>
+                </div>
+
+                <div class="mesa-card vermelho">
+                    <div class="mesa-pessoas">2 lugares</div>
+                    <div>
+                        <div class="mesa-nome">Mesa 8</div>
+                        <div class="mesa-status-row">
+                            <span class="mesa-bolinha limpar"></span>
+                            <span class="mesa-status">Limpar</span>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <div id="aba-fila" class="aba-conteudo">
+            <div class="fila-destaque">
+                <div class="destaque-header">
+                    <h3 class="destaque-nome">1º - João </h3>
+                    <div class="tempo-box">
+                        <span class="tempo-label">Tempo Restante</span>
+                        <span class="tempo-valor" id="tempo-primeiro">13:58</span>
+                    </div>
+                </div>
+                <div class="destaque-actions">
+                    <button class="action-btn btn-primary" onclick="fazerCheckin('João')">Check-in na Mesa</button>
+                    <button class="action-btn btn-secondary btn-remover" onclick="abrirModalRemover('João Roes', true)">Remover</button>
+                </div>
+            </div>
+
+            <div class="fila-lista">
+                <h4 class="fila-subtitle">Próximos na fila</h4>
+                
+                <div class="fila-item" id="item-fila-2">
+                    <div class="fila-item-info">
+                        <span class="fila-posicao">#2</span>
+                        <span class="fila-nome">Arthur Silva</span>
+                        <span class="fila-detalhe">(4 pessoas)</span>
+                    </div>
+                    <button class="btn-icon-remover" onclick="abrirModalRemover('Arthur Silva', false, 'item-fila-2')">✕</button>
+                </div>
+
+                <div class="fila-item" id="item-fila-3">
+                    <div class="fila-item-info">
+                        <span class="fila-posicao">#3</span>
+                        <span class="fila-nome">Pedro Henrique</span>
+                        <span class="fila-detalhe">(2 pessoas)</span>
+                    </div>
+                    <button class="btn-icon-remover" onclick="abrirModalRemover('Pedro Henrique', false, 'item-fila-3')">✕</button>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="modal-confirmacao" class="modal-reception">
+        <div class="modal-content">
+            <div class="modal-icon vermelho-icon">⚠️</div>
+            <h3 class="modal-title">Remover da fila?</h3>
+            <p class="modal-sub">Tem certeza que deseja remover <strong id="nome-remover"></strong> da fila de espera? Esta ação não pode ser desfeita.</p>
+            <div class="modal-actions">
+                <button class="action-btn btn-secondary" onclick="fecharModalRemover()">Cancelar</button>
+                <button class="action-btn btn-primary" style="background: #F44336; color: white; border: none;" onclick="confirmarRemocao()">Sim, Remover</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="../scripts/reception.js"></script>
+</body>
+</html>

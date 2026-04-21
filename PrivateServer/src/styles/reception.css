@@ -1,0 +1,188 @@
+/* --- LAYOUT BÁSICO DA RECEPÇÃO --- */
+.reception-body {
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+.reception-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px;
+    position: sticky;
+    top: 0;
+    background: rgba(18, 18, 18, 0.95);
+    backdrop-filter: blur(10px);
+    z-index: 10;
+    border-bottom: 1px solid rgba(255,255,255,0.05);
+}
+
+.reception-title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.5rem;
+    color: #ffffff;
+}
+
+.menu-hamburguer {
+    background: none;
+    border: none;
+    color: #fff;
+    font-size: 1.8rem;
+    cursor: pointer;
+    padding: 0 10px 0 0;
+}
+
+.reception-content {
+    flex: 1;
+    padding: 20px;
+    max-width: 1000px; /* Mais largo para caber todas as mesas */
+    margin: 0 auto;
+    width: 100%;
+}
+
+/* --- MENU LATERAL (SIDEBAR) --- */
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); backdrop-filter: blur(3px); z-index: 99; }
+.sidebar-overlay.ativo { display: block; }
+
+.sidebar {
+    position: fixed; top: 0; left: -300px; width: 280px; height: 100%;
+    background: #1a1a1a; border-right: 1px solid rgba(255,255,255,0.08);
+    z-index: 100; transition: left 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+    display: flex; flex-direction: column;
+}
+.sidebar.ativo { left: 0; }
+
+.sidebar-header { padding: 30px 20px; border-bottom: 1px solid rgba(255,255,255,0.05); }
+.sidebar-menu { list-style: none; padding: 20px 0; }
+.sidebar-menu li a {
+    display: block; padding: 15px 25px; color: rgba(255,255,255,0.7); text-decoration: none;
+    font-size: 1.1rem; transition: all 0.2s; border-left: 3px solid transparent;
+}
+.sidebar-menu li a:hover, .sidebar-menu li a.ativo { background: rgba(255,255,255,0.05); color: #B59410; border-left-color: #B59410; }
+
+/* --- ABAS --- */
+.aba-conteudo { display: none; animation: fadeIn 0.3s ease; }
+.aba-conteudo.ativo { display: block; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+
+/* ==========================================================
+   ESTÉTICA DAS MESAS IDÊNTICA AO WAITER.CSS 
+   ========================================================== */
+
+.mesas-grid-reception {
+    display: grid;
+    /* Diferença principal pro garçom: grid responsivo para salão cheio */
+    grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+    gap: 14px;
+}
+
+.mesa-card {
+    background: rgba(255,255,255,0.03);
+    border-radius: 14px;
+    padding: 18px 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    position: relative;
+    border: 1px solid rgba(255,255,255,0.08);
+    min-height: 120px;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.mesa-card:active { transform: scale(0.97); }
+
+.mesa-card.verde { border-left: 4px solid #4CAF50; }
+.mesa-card.azul  { border-left: 4px solid #2196F3; }
+.mesa-card.vermelho { border-left: 4px solid #F44336; }
+
+.mesa-card.verde:hover { background: rgba(76,175,80,0.08); }
+.mesa-card.azul:hover  { background: rgba(33,150,243,0.08); }
+.mesa-card.vermelho:hover { background: rgba(244,67,54,0.08); }
+
+.mesa-nome {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.1rem;
+    color: #fff;
+    margin-bottom: 6px;
+}
+
+.mesa-status-row { display: flex; align-items: center; gap: 6px; margin-bottom: 12px; }
+
+.mesa-status {
+    font-size: 0.72rem;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    line-height: 1;
+}
+
+.verde .mesa-status { color: #4CAF50; }
+.azul .mesa-status  { color: #2196F3; }
+.vermelho .mesa-status { color: #F44336; }
+
+.mesa-bolinha.limpar {
+    width: 9px; height: 9px; border-radius: 50%;
+    background: #F44336; box-shadow: 0 0 6px #F44336;
+    flex-shrink: 0; display: inline-block; vertical-align: middle;
+}
+
+.mesa-icones { display: flex; gap: 8px; flex-wrap: wrap; }
+.mesa-icone {
+    font-size: 1rem; background: rgba(255,255,255,0.06);
+    border-radius: 6px; padding: 4px 6px; cursor: pointer;
+    transition: background 0.2s; border: none; color: #fff;
+}
+.mesa-icone:hover { background: rgba(255,255,255,0.12); }
+.mesa-icone.prato { color: #B59410; }
+.mesa-icone.chamada { color: #E91E63; }
+
+.mesa-pessoas {
+    position: absolute; top: 14px; right: 14px;
+    font-size: 0.75rem; color: rgba(255,255,255,0.5);
+    display: flex; align-items: center; gap: 4px;
+}
+
+
+/* ==========================================================
+   ESTÉTICA DA FILA DE ESPERA E MODAIS 
+   ========================================================== */
+
+.fila-destaque {
+    background: linear-gradient(145deg, rgba(255,255,255,0.05), rgba(181,148,16,0.05));
+    border: 1px solid rgba(181,148,16,0.3); border-radius: 16px; padding: 24px; margin-bottom: 30px;
+}
+.destaque-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; flex-wrap: wrap; gap: 15px;}
+.destaque-nome { font-family: 'Playfair Display', serif; font-size: 1.8rem; color: #fff; }
+.tempo-box { background: rgba(0,0,0,0.5); padding: 10px 15px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); text-align: center; }
+.tempo-label { display: block; font-size: 0.7rem; color: rgba(255,255,255,0.5); text-transform: uppercase; }
+.tempo-valor { font-family: 'Playfair Display', serif; font-size: 1.4rem; color: #B59410; }
+.destaque-actions { display: grid; grid-template-columns: 2fr 1fr; gap: 12px; }
+
+.fila-subtitle { font-family: 'Playfair Display', serif; font-size: 1.2rem; color: rgba(255,255,255,0.7); margin-bottom: 15px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; }
+.fila-item { display: flex; justify-content: space-between; align-items: center; background: rgba(255,255,255,0.02); border: 1px solid rgba(255,255,255,0.05); border-radius: 8px; padding: 12px 16px; margin-bottom: 10px; }
+.fila-item-info { display: flex; align-items: center; gap: 12px; }
+.fila-posicao { font-weight: 600; color: #B59410; font-size: 1.1rem; width: 25px; }
+.fila-nome { font-size: 1rem; color: #fff; }
+.fila-detalhe { font-size: 0.8rem; color: rgba(255,255,255,0.4); }
+
+.btn-icon-remover {
+    background: rgba(244,67,54,0.1); color: #F44336; border: 1px solid rgba(244,67,54,0.3); border-radius: 6px;
+    width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.2s;
+}
+.btn-icon-remover:hover { background: #F44336; color: white; }
+
+.modal-reception { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 200; align-items: center; justify-content: center; }
+.modal-reception.ativo { display: flex; }
+.modal-content { background: #1a1a1a; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; padding: 30px; width: 90%; max-width: 400px; text-align: center; }
+.modal-icon { font-size: 3rem; margin-bottom: 10px; }
+.vermelho-icon { color: #F44336; }
+.modal-title { font-family: 'Playfair Display', serif; font-size: 1.5rem; color: #fff; margin-bottom: 10px; }
+.modal-sub { font-size: 0.9rem; color: rgba(255,255,255,0.6); margin-bottom: 25px; }
+.modal-actions { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; }
+
+@media (max-width: 500px) {
+    .destaque-actions { grid-template-columns: 1fr; }
+    .destaque-header { flex-direction: column; align-items: flex-start; }
+}

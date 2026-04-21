@@ -18,7 +18,6 @@
         <div class="mesas-grid" id="mesas-grid"></div>
     </main>
 
-    <!-- MODAL MESA LIVRE -->
     <div id="modal-overlay" class="modal-overlay" onclick="fecharModal()"></div>
 
     <div id="modal-livre" class="modal">
@@ -29,7 +28,6 @@
         <button class="action-btn btn-secondary" onclick="irPedido()" style="margin-top: 12px;">Fazer Pedido</button>
     </div>
 
-    <!-- MODAL MESA OCUPADA -->
     <div id="modal-ocupada" class="modal">
         <button class="modal-close" onclick="fecharModal()">×</button>
         <h3 class="modal-title" id="modal-ocupada-titulo"></h3>
@@ -44,9 +42,11 @@
             </div>
         </div>
         <div class="pedidos-lista" id="ocupada-pedidos"></div>
+        
+        <button class="action-btn btn-secondary" onclick="irPedido()" style="margin-top: 20px;">Adicionar Pedido</button>
+        <button class="action-btn btn-primary" style="margin-top: 12px; background: #F44336; border: none; color: white;" onclick="abrirConfirmacaoLiberar()">Liberar Mesa</button>
     </div>
 
-    <!-- MODAL MESA LIMPAR -->
     <div id="modal-limpar" class="modal">
         <button class="modal-close" onclick="fecharModal()">×</button>
         <div class="modal-icon vermelho-icon">✕</div>
@@ -56,7 +56,15 @@
         <button class="action-btn btn-secondary" onclick="fecharModal()" style="margin-top: 12px;">Voltar</button>
     </div>
 
-    <!-- PÁGINA CHECKIN -->
+    <div id="modal-confirmar-liberar" class="modal">
+        <button class="modal-close" onclick="fecharModal()">×</button>
+        <div class="modal-icon vermelho-icon">⚠️</div>
+        <h3 class="modal-title">Encerrar Mesa?</h3>
+        <p class="modal-sub">Deseja realmente encerrar a <strong id="confirmar-liberar-nome"></strong>? Esta ação enviará a mesa para a limpeza.</p>
+        <button class="action-btn btn-primary" style="background: #F44336; border: none; color: white;" onclick="confirmarLiberarMesaOcupada()">Sim, Liberar Mesa</button>
+        <button class="action-btn btn-secondary" onclick="voltarModalOcupada()" style="margin-top: 12px;">Cancelar</button>
+    </div>
+
     <div id="pagina-checkin" class="pagina-interna" style="display:none">
         <div class="pagina-header">
             <button class="back-link" onclick="voltarParaMesas()">← Voltar</button>
@@ -78,7 +86,6 @@
         </div>
     </div>
 
-    <!-- PÁGINA PEDIDO -->
     <div id="pagina-pedido" class="pagina-interna" style="display:none">
         <div class="pagina-header">
             <button class="back-link" onclick="voltarParaMesas()">← Voltar</button>
@@ -99,12 +106,10 @@
         </div>
     </div>
 
-    <!-- BOTÃO PERFIL -->
     <button class="perfil-btn" onclick="togglePerfil()">
         <div class="perfil-iniciais"></div>
     </button>
 
-    <!-- POPUP PERFIL -->
     <div id="popup-perfil" class="popup-perfil">
         <div class="perfil-topo">
             <div class="perfil-avatar-grande"></div>
