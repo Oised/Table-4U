@@ -27,6 +27,27 @@
         <h2 class="reception-title" id="page-title">Mesas</h2>
         <div style="width: 24px;"></div> </header>
 
+<button class="perfil-btn" onclick="togglePerfil()">
+    <div class="perfil-iniciais"></div>
+</button>
+
+<div id="popup-perfil" class="popup-perfil">
+    <div class="perfil-topo">
+        <div class="perfil-avatar-grande"></div>
+        <div>
+            <p class="perfil-nome"></p>
+            <p class="perfil-email"></p>
+        </div>
+    </div>
+    <a href="#" class="perfil-menu-item sair" onclick="sairFuncionario()">Sair</a>
+</div>
+
+<script src="../../../PublicServer/src/scripts/profile.js"></script>
+<script src="../scripts/reception.js"></script>
+
+
+
+
     <main class="reception-content">
         
         <div id="aba-mesas" class="aba-conteudo ativo">

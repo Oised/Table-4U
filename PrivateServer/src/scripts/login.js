@@ -39,10 +39,10 @@ function fazerLoginFuncionario() {
     sessionStorage.setItem('usuario-nome', email.split('@')[0]);
     sessionStorage.setItem('usuario-cargo', cargo);
 
-    // Redirecionamento baseado no cargo
+   
     switch(cargo) {
         case 'recepcao':
-            window.location.href = '../pages/reception.html'; // Certifique-se de que este arquivo existe
+            window.location.href = '../pages/reception.html'; //vinicius o ngc é aqui kk
             break;
         case 'garcom':
             window.location.href = '../pages/waiter.html';
