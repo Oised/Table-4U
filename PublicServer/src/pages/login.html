@@ -17,14 +17,13 @@
             <h1 class="login-nome">Table4U</h1>
         </div>
 
-        <!-- LOGIN -->
         <div id="step-login" class="login-card">
             <h2 class="card-title">Entrar</h2>
             <p class="card-sub">Acesse sua conta para continuar</p>
 
             <div class="input-group">
                 <label class="input-label">E-mail</label>
-                <input type="text" id="login-email" class="login-input" placeholder="seu@email.com">
+                <input type="email" id="login-email" class="login-input" placeholder="seu@email.com">
             </div>
 
             <div class="input-group">
@@ -42,7 +41,6 @@
             <a href="../index.html" class="voltar-link">← Voltar ao início</a>
         </div>
 
-        <!-- CADASTRO -->
         <div id="step-cadastro" class="login-card" style="display:none">
             <h2 class="card-title">Criar Conta</h2>
             <p class="card-sub">Preencha seus dados para se cadastrar</p>
@@ -54,7 +52,7 @@
 
             <div class="input-group">
                 <label class="input-label">E-mail</label>
-                <input type="text" id="cadastro-email" class="login-input" placeholder="seu@email.com">
+                <input type="email" id="cadastro-email" class="login-input" placeholder="seu@email.com">
             </div>
 
             <div class="input-group">
@@ -70,7 +68,6 @@
             <a href="../index.html" class="voltar-link">← Voltar ao início</a>
         </div>
 
-        <!-- ESQUECI SENHA -->
         <div id="step-esqueci" class="login-card" style="display:none">
             <h2 class="card-title">Recuperar Senha</h2>
             <p class="card-sub">Enviaremos um código para o seu e-mail</p>
@@ -78,7 +75,7 @@
             <div id="step-esqueci-email">
                 <div class="input-group">
                     <label class="input-label">E-mail</label>
-                    <input type="text" id="esqueci-email" class="login-input" placeholder="seu@email.com">
+                    <input type="email" id="esqueci-email" class="login-input" placeholder="seu@email.com">
                 </div>
                 <button class="action-btn btn-primary" onclick="enviarCodigo()">Enviar Código</button>
             </div>
@@ -109,7 +106,6 @@
             <button class="action-btn btn-secondary" onclick="mostrarStep('step-login')" style="margin-top: 12px;">Voltar ao login</button>
         </div>
 
-        <!-- SUCESSO CADASTRO -->
         <div id="step-sucesso" class="login-card" style="display:none">
             <div class="sucesso-icon">✦</div>
             <h2 class="card-title">Conta Criada!</h2>
@@ -126,6 +122,8 @@
         <p class="footer-info">Endereço e Contatos</p>
         <p class="powerby">Powered by Table4U</p>
     </footer>
+
+    <div id="toast-container" class="toast-container"></div>
 
     <script src="../scripts/login.js"></script>
 </body>

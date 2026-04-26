@@ -18,10 +18,11 @@ function fazerLoginFuncionario() {
         alert("Por favor, preencha todos os campos.");
         return;
     }
-
 //*********************************************************************** */
-  // Contas provisórias para teste (REMOVER QUANDO FAZEr O BACKEND!!!!!!!!!!!!!!!)
+//BACK END ------> REMOVER ISSO QDO FOREM FAZZER
+    
     const contas = {
+        'recepcao@table4u.com': { senha: '1234', cargo: 'recepcao' }, // Adicionado recepção
         'garcom@table4u.com':  { senha: '1234', cargo: 'garcom' },
         'cozinha@table4u.com': { senha: '1234', cargo: 'cozinha' },
         'adm@table4u.com':     { senha: '1234', cargo: 'adm' },
@@ -33,7 +34,30 @@ function fazerLoginFuncionario() {
         return;
     }
 
-//*********************************************************************** */
+    sessionStorage.setItem('logado', 'true');
+    sessionStorage.setItem('usuario-email', email);
+    sessionStorage.setItem('usuario-nome', email.split('@')[0]);
+    sessionStorage.setItem('usuario-cargo', cargo);
+
+   
+    switch(cargo) {
+        case 'recepcao':
+            window.location.href = '../pages/reception.html'; //vinicius o ngc é aqui kk
+            break;
+        case 'garcom':
+            window.location.href = '../pages/waiter.html';
+            break;
+        case 'cozinha':
+            window.location.href = '../pages/cozinha.html';
+            break;
+        case 'adm':
+            window.location.href = '../pages/admin.html';
+            break;
+        default:
+            window.location.href = '../pages/index.html';
+    }
+}
+
 
 
 
@@ -61,5 +85,4 @@ switch(cargo) {
         break;
     default:
         window.location.href = '../pages/index.html';
-}
 }

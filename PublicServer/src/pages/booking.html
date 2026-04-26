@@ -17,7 +17,6 @@
 
     <main class="reserva-content">
 
-        <!-- STEP 1: FORMULÁRIO -->
         <div id="step-form">
             <p class="step-sub">Preencha os dados da sua reserva</p>
 
@@ -54,58 +53,32 @@
             <button class="action-btn btn-primary" onclick="confirmarReserva()">Continuar</button>
         </div>
 
-        <!-- STEP 2: CONFIRMAÇÃO -->
         <div id="step-confirm" style="display:none">
             <div class="step-icon">✦</div>
             <h3 class="step-title">Confirmar Reserva</h3>
             <p class="step-sub">Verifique os detalhes antes de confirmar</p>
 
             <div class="reserva-resumo">
-                <div class="resumo-item">
-                    <span class="resumo-label">Pessoas</span>
-                    <span class="resumo-valor" id="confirm-pessoas"></span>
-                </div>
-                <div class="resumo-item">
-                    <span class="resumo-label">Data</span>
-                    <span class="resumo-valor" id="confirm-data"></span>
-                </div>
-                <div class="resumo-item">
-                    <span class="resumo-label">Horário</span>
-                    <span class="resumo-valor" id="confirm-horario"></span>
-                </div>
+                <div class="resumo-item"><span class="resumo-label">Pessoas</span><span class="resumo-valor" id="confirm-pessoas"></span></div>
+                <div class="resumo-item"><span class="resumo-label">Data</span><span class="resumo-valor" id="confirm-data"></span></div>
+                <div class="resumo-item"><span class="resumo-label">Horário</span><span class="resumo-valor" id="confirm-horario"></span></div>
             </div>
 
             <button class="action-btn btn-primary" onclick="finalizarReserva()">Confirmar Reserva</button>
             <button class="action-btn btn-secondary" onclick="voltarForm()" style="margin-top: 12px;">Editar</button>
         </div>
 
-        <!-- STEP 3: SUCESSO -->
         <div id="step-sucesso" style="display:none">
             <div class="step-icon sucesso-icon">✦</div>
             <h3 class="step-title">Reserva Confirmada!</h3>
             <p class="step-sub">Até breve! Aguardamos sua visita.</p>
 
             <div class="reserva-resumo">
-                <div class="resumo-item">
-                    <span class="resumo-label">Nome</span>
-                    <span class="resumo-valor" id="sucesso-nome"></span>
-                </div>
-                <div class="resumo-item">
-                    <span class="resumo-label">E-mail</span>
-                    <span class="resumo-valor" id="sucesso-email"></span>
-                </div>
-                <div class="resumo-item">
-                    <span class="resumo-label">Pessoas</span>
-                    <span class="resumo-valor" id="sucesso-pessoas"></span>
-                </div>
-                <div class="resumo-item">
-                    <span class="resumo-label">Data</span>
-                    <span class="resumo-valor" id="sucesso-data"></span>
-                </div>
-                <div class="resumo-item">
-                    <span class="resumo-label">Horário</span>
-                    <span class="resumo-valor" id="sucesso-horario"></span>
-                </div>
+                <div class="resumo-item"><span class="resumo-label">Nome</span><span class="resumo-valor" id="sucesso-nome"></span></div>
+                <div class="resumo-item"><span class="resumo-label">E-mail</span><span class="resumo-valor" id="sucesso-email"></span></div>
+                <div class="resumo-item"><span class="resumo-label">Pessoas</span><span class="resumo-valor" id="sucesso-pessoas"></span></div>
+                <div class="resumo-item"><span class="resumo-label">Data</span><span class="resumo-valor" id="sucesso-data"></span></div>
+                <div class="resumo-item"><span class="resumo-label">Horário</span><span class="resumo-valor" id="sucesso-horario"></span></div>
             </div>
 
             <a href="../index.html" class="action-btn btn-primary" style="text-decoration: none; display: flex; justify-content: center; align-items: center;">Voltar ao Início</a>
@@ -118,22 +91,19 @@
         <p class="powerby">Powered by Table4U</p>
     </footer>
 
-    <!-- BOTÃO PERFIL -->
+    <div id="toast-container" class="toast-container"></div>
+
     <button class="perfil-btn" onclick="togglePerfil()">
         <div class="perfil-iniciais"></div>
     </button>
 
-    <!-- POPUP PERFIL -->
     <div id="popup-perfil" class="popup-perfil">
         <div class="perfil-topo">
             <div class="perfil-avatar-grande"></div>
-            <div>
-                <p class="perfil-nome"></p>
-                <p class="perfil-email"></p>
-            </div>
+            <div><p class="perfil-nome"></p><p class="perfil-email"></p></div>
         </div>
         <a href="#" class="perfil-menu-item perfil-logado" onclick="irParaMinhasReservas(event)">Minhas Reservas</a>
-        <a href="#" class="perfil-menu-item perfil-logado" onclick="irParaEditarPerfil(event)">Editar Perfil</a>
+        <a href="editprofile.html" class="perfil-menu-item perfil-logado">Editar Perfil</a>
         <a href="#" class="perfil-menu-item sair" onclick="sair()">Sair</a>
     </div>
 

@@ -6,17 +6,37 @@ document.addEventListener('DOMContentLoaded', function() {
 
     const motivo = sessionStorage.getItem('motivo');
     if (motivo) {
-        const banner = document.createElement('div');
-        banner.className = 'motivo-banner';
-        banner.textContent = motivo + ', é necessário fazer login ou criar uma conta.';
-        document.querySelector('.login-container').insertBefore(
-            banner,
-            document.querySelector('.login-card')
-        );
+        showToast(motivo + ', é necessário fazer login ou criar uma conta.');
     }
 });
 
+// --- SISTEMA DE NOTIFICAÇÃO (TOAST) ---
+function showToast(mensagem) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
 
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = mensagem;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.5s forwards';
+        setTimeout(() => toast.remove(), 500);
+    }, 3500);
+}
+
+// --- VALIDAÇÕES ---
+function validarEmail(email) {
+    return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+}
+
+function validarSenha(senha) {
+    return senha.length >= 8 && /\d/.test(senha) && /[!@#$%^&*(),.?":{}|<>]/.test(senha);
+}
+
+// --- INTERFACE ---
 function mostrarStep(id) {
     document.querySelectorAll('.login-card').forEach(el => el.style.display = 'none');
     document.getElementById(id).style.display = 'block';
@@ -28,157 +48,97 @@ function toggleSenha(inputId, btn) {
     btn.style.opacity = input.type === 'text' ? '0.9' : '0.4';
 }
 
+// --- LÓGICA DE NEGÓCIO ---
+
 async function fazerLogin() {
-  const email = document.getElementById("login-email").value;
-  const senha = document.getElementById("login-senha").value;
+    const email = document.getElementById("login-email").value;
+    const senha = document.getElementById("login-senha").value;
 
-  try {
-    const response = await fetch("http://localhost:3000/login", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ email, senha })
-    });
-
-    if (!response.ok) {
-      alert("Email ou senha inválidos!");
-      return;
+    if (!validarEmail(email)) {
+        showToast("E-mail inválido.");
+        return;
     }
 
-    const data = await response.json();
+    try {
+        const response = await fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, senha })
+        });
 
-    // mantém isso (ok por enquanto)
-    localStorage.setItem("usuarioLogado", JSON.stringify(data.user));
+        if (!response.ok) {
+            showToast("Login ou senha incorretos.");
+            return;
+        }
 
-    alert("Login realizado!");
+        const data = await response.json();
+        localStorage.setItem("usuarioLogado", JSON.stringify(data.user));
+        
+        showToast("Bem-vinda, Soso! ✨");
+        setTimeout(() => {
+            // Ajustado para o caminho da sua estrutura
+            window.location.href = "../index.html"; 
+        }, 1000);
 
-    window.location.href = "/src/pages/queue.html";
-
-  } catch (err) {
-    console.error(err);
-    alert("Erro ao conectar com o servidor");
-  }
+    } catch (err) {
+        showToast("Erro ao conectar com o servidor.");
+    }
 }
 
 async function fazerCadastro() {
-  const nome = document.getElementById("cadastro-nome").value;
-  const email = document.getElementById("cadastro-email").value;
-  const senha = document.getElementById("cadastro-senha").value;
+    const nome = document.getElementById("cadastro-nome").value;
+    const email = document.getElementById("cadastro-email").value;
+    const senha = document.getElementById("cadastro-senha").value;
 
-  if (!nome || !email || !senha) {
-    alert("Preencha todos os campos!");
-    return;
-  }
-
-  try {
-    const response = await fetch("http://localhost:3000/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json"
-      },
-      body: JSON.stringify({ nome, email, senha })
-    });
-
-    if (!response.ok) {
-      alert("Esse email já está cadastrado!");
-      return;
-    }
-
-    alert("Conta criada com sucesso!");
-
-    mostrarStep("step-login");
-
-  } catch (err) {
-    console.error(err);
-    alert("Erro ao conectar com o servidor");
-  }
-}
-
-function enviarCodigo() {
-    const email = document.getElementById("esqueci-email").value;
-
-    const usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-
-    const usuario = usuarios.find(u => u.email === email);
-
-    if (!usuario) {
-        alert("Email não encontrado!");
+    if (!nome || !email || !senha) {
+        showToast("Preencha todos os campos!");
         return;
     }
 
-    const codigo = Math.floor(100000 + Math.random() * 900000).toString();
-
-    localStorage.setItem("codigoRecuperacao", codigo);
-    localStorage.setItem("emailRecuperacao", email);
-
-    console.log("Código:", codigo);
-
-    alert("Código enviado (simulado no console)");
-
-    document.getElementById("step-esqueci-email").style.display = "none";
-    document.getElementById("step-esqueci-codigo").style.display = "block";
-}
-
-function redefinirSenha() {
-    const codigo = document.getElementById("codigo-input").value;
-    const novaSenha = document.getElementById("nova-senha").value;
-    const confirmar = document.getElementById("confirmar-senha").value;
-
-    const codigoSalvo = localStorage.getItem("codigoRecuperacao");
-    const email = localStorage.getItem("emailRecuperacao");
-
-    if (codigo !== codigoSalvo) {
-        alert("Código inválido!");
+    if (!validarEmail(email)) {
+        showToast("E-mail inválido!");
         return;
     }
 
-    if (novaSenha !== confirmar) {
-        alert("Senhas não coincidem!");
+    if (!validarSenha(senha)) {
+        showToast("Senha fraca: use 8+ caracteres, números e símbolos.");
         return;
     }
 
-    if (novaSenha.length < 6) {
-    alert("A senha deve ter pelo menos 6 caracteres!");
-    return;
-    }
+    try {
+        const response = await fetch("http://localhost:3000/register", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ nome, email, senha })
+        });
 
-    let usuarios = JSON.parse(localStorage.getItem("usuarios")) || [];
-
-    usuarios = usuarios.map(u => {
-        if (u.email === email) {
-            return {
-                ...u,
-                senha: novaSenha
-            };
+        if (!response.ok) {
+            showToast("Este e-mail já existe.");
+            return;
         }
-        return u;
-    });
 
-    localStorage.setItem("usuarios", JSON.stringify(usuarios));
+        // --- LOGIN AUTOMÁTICO ---
+        showToast("Conta criada! Entrando...");
 
-    alert("Senha redefinida com sucesso!");
+        const loginRes = await fetch("http://localhost:3000/login", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ email, senha })
+        });
 
-    window.location.href = "/src/pages/login.html";
-}
+        if (loginRes.ok) {
+            const loginData = await loginRes.json();
+            localStorage.setItem("usuarioLogado", JSON.stringify(loginData.user));
+            
+            setTimeout(() => {
+                // Como login.html está em /src/pages/, subimos um nível para achar o index.html em /src/
+                window.location.href = "../index.html"; 
+            }, 1500);
+        } else {
+            mostrarStep("step-login");
+        }
 
-function irParaDestino() {
-    let destino = sessionStorage.getItem('destino');
-    
-    // Limpa a memória para não bugar depois
-    sessionStorage.removeItem('destino');
-    sessionStorage.removeItem('motivo');
-    
-    // Se não tinha destino, vai pro início
-    if (!destino) {
-        window.location.href = '../index.html';
-        return;
+    } catch (err) {
+        showToast("Erro no servidor.");
     }
-
-    // TRUQUE DE MESTRE: Pega só o nome final do arquivo (tira as barras e pastas)
-    // Exemplo: 'pages/fila.html' vira só 'fila.html'
-    let arquivoDestino = destino.split('/').pop();
-    
-    // Como você já está na pasta pages, basta chamar o nome do arquivo direto
-    window.location.href = arquivoDestino;
 }
