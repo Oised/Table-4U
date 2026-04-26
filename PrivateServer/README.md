@@ -30,9 +30,9 @@ PrivateServer/
 O PrivateServer utiliza o mesmo servidor Express (`server.js`) e se comunica com os mesmos endpoints definidos no backend principal. A separação em pastas distintas (`PrivateServer` e `PublicServer`) visa isolar as lógicas de interface e privilégios de acesso.
 
 ## Observações
-- A subpasta `prisma-private` e `prisma-public` sugerem que podem existir configurações de banco de dados específicas para cada ambiente, embora atualmente ambas apontem para o mesmo schema.
+- A subpasta `prisma-private` e `prisma-public` futuramente existiram configurações de banco de dados específicas para cada ambiente, embora atualmente ambas apontem para o mesmo schema.
 - O arquivo `test.js` contém testes manuais ou automatizados para validação do fluxo de check-in.
-- O módulo `ModelPredic` (mencionado em commits recentes) indica que um modelo preditivo está sendo implementado para auxiliar na gestão de mesas.
+- Com o módulo `ModelPredic` um modelo preditivo está sendo implementado para auxiliar na gestão de mesas.
 
 ## Status
-Em desenvolvimento. As telas de recepção e garçom estão sendo ajustadas (commits de 21 e 22 de abril de 2026). A integração com o modelo preditivo está em fase inicial.
+Em desenvolvimento. As telas de recepção e garçom estão sendo ajustadas. A integração com o modelo preditivo está em fase inicial.
