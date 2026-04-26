@@ -74,7 +74,7 @@ async function fazerLogin() {
         const data = await response.json();
         localStorage.setItem("usuarioLogado", JSON.stringify(data.user));
         
-        showToast("Bem-vinda, Soso! ✨");
+        showToast("Bem-vindo(a)! ✨");
         setTimeout(() => {
             // Ajustado para o caminho da sua estrutura
             window.location.href = "../index.html"; 
