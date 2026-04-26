@@ -1,12 +1,51 @@
 window.onload = function() {
-  const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 
-  if (!usuario || !usuario.email) {
-    alert("Você precisa estar logado!");
-    window.location.href = "/src/pages/login.html";
-    return;
-  }
+    if (!usuario || !usuario.email) {
+        showToast("Você precisa estar logado!");
+        setTimeout(() => {
+            window.location.href = "/src/pages/login.html";
+        }, 1500);
+        return;
+    }
+
+    configurarLimitesData();
 };
+
+// --- SUA FUNÇÃO SHOWTOAST PADRONIZADA ---
+function showToast(mensagem) {
+    const container = document.getElementById('toast-container');
+    if (!container) return;
+
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = mensagem;
+
+    container.appendChild(toast);
+
+    // Inicia o desaparecimento após 3.5 segundos
+    setTimeout(() => {
+        toast.style.animation = 'fadeOut 0.5s forwards';
+        setTimeout(() => toast.remove(), 500);
+    }, 3500);
+}
+
+// --- CONFIGURAÇÃO DE LIMITES NO CALENDÁRIO ---
+function configurarLimitesData() {
+    const inputData = document.getElementById('reserva-data');
+    if (!inputData) return;
+
+    const hoje = new Date();
+    const minDate = hoje.toISOString().split('T')[0];
+
+    const maxDateObj = new Date();
+    maxDateObj.setMonth(hoje.getMonth() + 3); // Limite de 3 meses para frente
+    const maxDate = maxDateObj.toISOString().split('T')[0];
+
+    inputData.setAttribute('min', minDate);
+    inputData.setAttribute('max', maxDate);
+}
+
 let pessoasCount = 2;
 let horarioSelecionado = null;
 
@@ -22,10 +61,48 @@ function selecionarHorario(btn) {
 }
 
 function confirmarReserva() {
-    const data = document.getElementById('reserva-data').value;
-    if (!data || !horarioSelecionado) return;
+    const inputData = document.getElementById('reserva-data');
+    const dataValor = inputData.value;
+    
+    // 1. Validação: Campo de data vazio
+    if (!dataValor) {
+        showToast("Selecione uma data para a reserva! ✨");
+        return;
+    }
 
-    const dataFormatada = new Date(data + 'T00:00:00').toLocaleDateString('pt-BR', {
+    // 2. Validação: Horário não selecionado
+    if (!horarioSelecionado) {
+        showToast("Por favor, selecione um horário! ✨");
+        return;
+    }
+
+    const dataReserva = new Date(dataValor + 'T00:00:00');
+    const agora = new Date(); // Domingo, 26 de Abril de 2026, 13:42
+    
+    const hojeApenasData = new Date();
+    hojeApenasData.setHours(0, 0, 0, 0);
+
+    // 3. Validação: Data no passado
+    if (dataReserva < hojeApenasData) {
+        showToast("Não é possível reservar datas passadas! ✨");
+        return;
+    }
+
+    // 4. Validação: Horário que já passou (Apenas para HOJE)
+    if (dataReserva.getTime() === hojeApenasData.getTime()) {
+        const [horaReserva, minutoReserva] = horarioSelecionado.split(':').map(Number);
+        const horaAtual = agora.getHours();
+        const minutoAtual = agora.getMinutes();
+
+        // Se agora são 13:42 e você tentar 13:30, ele barra
+        if (horaReserva < horaAtual || (horaReserva === horaAtual && minutoReserva <= minutoAtual)) {
+            showToast("Este horário já passou para hoje! ✨");
+            return;
+        }
+    }
+
+    // Se passar por todas as "travas" acima, ele segue para a confirmação
+    const dataFormatada = dataReserva.toLocaleDateString('pt-BR', {
         weekday: 'long', day: '2-digit', month: 'long'
     });
 
@@ -42,78 +119,38 @@ function voltarForm() {
     document.getElementById('step-form').style.display = 'block';
 }
 
-function finalizarReserva() {
-  const pessoas = document.getElementById("pessoas-count").innerText;
-  const data = document.getElementById("reserva-data").value;
-
-  const horarioSelecionado = document.querySelector(".horario-btn.selecionado");
-  const horario = horarioSelecionado ? horarioSelecionado.innerText : "";
-
-  // PEGAR USUÁRIO LOGADO
-  const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
-
-if (!usuario) {
-  alert("Sessão expirada. Faça login novamente.");
-  window.location.href = "/src/pages/login.html";
-  return;
-}
-
-  // PEGAR RESERVAS EXISTENTES
-
-fetch("http://localhost:3000/reserva", {
-  method: "POST",
-  headers: {
-    "Content-Type": "application/json"
-  },
-  body: JSON.stringify({
-    pessoas,
-    data,
-    horario,
-    nome: usuario.nome,
-    email: usuario.email
-  })
-})
-  // CRIAR NOVA RESERVA
-  const novaReserva = {
-    nome: usuario.nome,
-    email: usuario.email,
-    pessoas,
-    data,
-    horario
-  };
-
-  
-
-  // SEU BACKEND CONTINUA NORMAL
-  fetch("http://localhost:3000/reserva", {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      pessoas,
-      data,
-      horario
-    })
-  })
-  .then(res => res.json())
-  .then(resposta => {
-    console.log(resposta);
-
-    // UI
-    document.getElementById("step-confirm").style.display = "none";
-    document.getElementById("step-sucesso").style.display = "block";
-
-    document.getElementById("sucesso-pessoas").innerText = pessoas;
-    document.getElementById("sucesso-data").innerText = data;
-    document.getElementById("sucesso-horario").innerText = horario;
-    
+async function finalizarReserva() {
+    const pessoas = document.getElementById("pessoas-count").innerText;
+    const data = document.getElementById("reserva-data").value;
+    const horario = horarioSelecionado;
     const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 
-    document.getElementById("sucesso-nome").innerText = usuario.nome;
-    document.getElementById("sucesso-email").innerText = usuario.email;
-  })
-  .catch(err => {
-    console.error("Erro:", err);
-  });
+    try {
+        const response = await fetch("http://localhost:3000/reserva", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                pessoas,
+                data,
+                horario,
+                nome: usuario.nome,
+                email: usuario.email
+            })
+        });
+
+        if (response.ok) {
+            document.getElementById("step-confirm").style.display = "none";
+            document.getElementById("step-sucesso").style.display = "block";
+
+            document.getElementById("sucesso-pessoas").innerText = pessoas;
+            document.getElementById("sucesso-data").innerText = data;
+            document.getElementById("sucesso-horario").innerText = horario;
+            document.getElementById("sucesso-nome").innerText = usuario.nome;
+            document.getElementById("sucesso-email").innerText = usuario.email;
+        } else {
+            showToast("Erro ao processar reserva no servidor.");
+        }
+    } catch (err) {
+        showToast("Erro ao conectar com o servidor.");
+    }
 }

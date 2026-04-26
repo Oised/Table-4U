@@ -36,7 +36,14 @@ function togglePerfil() {
 
 function sair() {
     sessionStorage.clear();
-    window.location.href = 'index.html';
+    localStorage.removeItem("usuarioLogado");
+
+    const path = window.location.pathname;
+    if (path.includes('/pages/')) {
+        window.location.href = '../index.html'; // Volta um nível
+    } else {
+        window.location.href = 'index.html';
+    }
 }
 
 document.addEventListener('click', function(e) {

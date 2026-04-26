@@ -120,3 +120,12 @@
     }
     .item-name { font-size: 0.9rem; }
 }
+@media (max-width: 320px) {
+    .menu-card {
+        flex-direction: column; /* Foto em cima, texto embaixo em telas minúsculas */
+    }
+    .card-image {
+        width: 100% !important;
+        height: 120px !important;
+    }
+}

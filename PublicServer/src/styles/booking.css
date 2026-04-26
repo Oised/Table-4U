@@ -134,10 +134,18 @@
     border-color: #B59410;
 }
 
+/* No booking.css */
 .horarios-grid {
     display: grid;
-    grid-template-columns: repeat(5, 1fr);
+    /* Em vez de 'repeat(5, 1fr)', usamos auto-fit */
+    grid-template-columns: repeat(auto-fit, minmax(60px, 1fr)); 
     gap: 8px;
+}
+
+@media (max-width: 340px) {
+    .horarios-grid {
+        grid-template-columns: repeat(3, 1fr); /* Força 3 colunas em telas mini */
+    }
 }
 
 .horario-btn {
@@ -195,4 +203,54 @@
     font-size: 0.95rem;
     color: #fff;
     font-weight: 600;
+}
+
+/* --- SISTEMA DE NOTIFICAÇÃO (TOAST) --- */
+
+.toast-container {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: 90%;
+    max-width: 320px;
+}
+
+.toast {
+    background: #1a1a1a;
+    color: #fff;
+    border-left: 4px solid #B59410; /* Dourado Table4U */
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    font-family: 'Poppins', sans-serif;
+    font-size: 0.9rem;
+    margin-top: 10px;
+    
+    /* Animação de entrada */
+    animation: slideUp 0.5s ease-out forwards;
+}
+
+/* Animações */
+@keyframes slideUp {
+    from { 
+        opacity: 0; 
+        transform: translateY(20px); 
+    }
+    to { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+}
+
+@keyframes fadeOut {
+    from { 
+        opacity: 1; 
+        transform: translateY(0); 
+    }
+    to { 
+        opacity: 0; 
+        transform: translateY(-20px); 
+    }
 }

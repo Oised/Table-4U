@@ -195,6 +195,39 @@ select.login-input option {
 }
 
 
+.toast-container {
+    position: fixed;
+    bottom: 30px;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 9999;
+    width: 90%;
+    max-width: 320px;
+}
+
+
+
+.toast {
+    background: #1a1a1a;
+    color: #fff;
+    border-left: 4px solid #B59410; /* Dourado Table4U */
+    padding: 16px 20px;
+    border-radius: 12px;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+    font-family: 'Poppins', sans-serif;
+    /* ... animações ... */
+}
+
+
+
+
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+
+
 @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }
     50% { opacity: 0.7; transform: scale(1.15); }
@@ -203,4 +236,22 @@ select.login-input option {
 @media (max-width: 400px) {
     .login-card { padding: 28px 20px; }
     .login-nome { font-size: 2rem; }
+}
+
+/* No final de login.css e editprofile.css */
+@media (max-width: 480px) {
+    .login-card, .perfil-card {
+        padding: 24px 16px; /* Reduz o padding para ganhar espaço interno */
+        width: 92%; /* Garante que o card não encoste nas bordas da tela */
+        max-width: 100%; /* Remove qualquer trava de largura fixa anterior */
+        margin: 0 auto; /* Centraliza o card horizontalmente */
+    }
+
+    .input-group {
+        margin-bottom: 12px; /* Diminui o espaçamento vertical entre campos */
+    }
+
+    .card-title {
+        font-size: 1.4rem; /* Ajusta o título para não quebrar de forma estranha */
+    }
 }

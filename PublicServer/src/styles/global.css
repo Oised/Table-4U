@@ -287,3 +287,18 @@ body {
     .actions-container { max-width: 380px; }
     .login-card { padding: 48px 40px; }
 }
+
+@media (max-width: 360px) {
+    :root {
+        --side-padding: 16px; /* Reduzindo o padding lateral */
+    }
+
+    .reserva-content, .perfil-content, .login-container, .fila-container {
+        padding-left: var(--side-padding) !important;
+        padding-right: var(--side-padding) !important;
+    }
+
+    .nome-restaurante {
+        font-size: 2.2rem !important; /* Evita que o nome quebre de forma estranha */
+    }
+}
