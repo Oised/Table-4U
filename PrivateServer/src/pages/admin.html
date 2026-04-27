@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table4U - Administração</title>
+    <link rel="stylesheet" href="../styles/Global.css">
+    <link rel="stylesheet" href="../styles/Adm.css">
+</head>
+<body>
+    <div class="admin-layout">
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <button id="toggleSidebar" class="toggle-btn">☰</button>
+            </div>
+            <div class="sidebar-content">
+                <ul>
+                    <li><a href="admin.html" class="active">Início / Dashboard</a></li>
+                    <li><a href="#">Restaurante</a></li>
+                    <li><a href="#">Faturamento</a></li>
+                    <li><a href="#">Pratos / Menu</a></li>
+                    <li><a href="employee.html">Funcionários</a></li>
+                </ul>
+                <div class="sidebar-extra">
+                    <button class="mode-btn">Modo funcionário</button>
+                    <button class="mode-btn">Modo cozinha</button>
+                    <a href="#" class="logout">Sair</a>
+                </div>
+            </div>
+        </aside>
+        <main class="main-content">
+            <header class="topbar">
+                <h1>Painel Administrativo</h1>
+                <div class="profile">Perfil</div>
+            </header>
+            <section class="stats-grid">
+                <div class="stat-card">
+                    <h3>Pedidos</h3>
+                    <div class="fake-chart"></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Faturamento</h3>
+                    <div class="fake-chart"></div>
+                </div>
+                <div class="stat-card">
+                    <h3>Crescimento</h3>
+                    <div class="fake-chart"></div>
+                </div>
+            </section>
+            <section class="info-section">
+                <div class="info-box">Resumo geral do restaurante</div>
+                <div class="info-box">Relatórios e dados específicos</div>
+                <div class="info-box">Informações adicionais</div>
+            </section>
+        </main>
+    </div>
+    <footer>
+        <div class="footer-info">Endereço e Contatos</div>
+        <div class="powerby">Powered by Table4U</div>
+    </footer>
+    <script src="../scripts/Adm.js"></script>
+</body>
+</html>

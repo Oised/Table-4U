@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="pt-BR">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Cozinha</title>
+        <link rel="stylesheet" href="../styles/Global.css">
+        <link rel="stylesheet" href="../styles/kitchen.css">
+        <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    </head>
+    <body>
+        <div class="sidebar" id="sidebar">
+            <button class="menu-toggle" id="menuToggle">☰</button>
+            <div class="sidebar-links">
+                <button class="sidebar-btn" onclick="window.location.href='kitchen.html'">Pedidos</button>
+                <button class="sidebar-btn" onclick="window.location.href='kitchen-menu.html'">Menu</button>
+            </div>
+        </div>
+        <main class="main">
+            <header class="Topbar">
+                <h2>Table4U</h2>
+                <div class="user">User 👤</div>
+            </header>
+            <h1 class="page-title">Pedidos</h1>
+            <div class="divider"></div>
+            <section class="pedido-card">
+                <div class="pedido-header">
+                    <span>Pedido #XX</span>
+                    <span>Mesa X</span>
+                    <span>XX:XX</span>
+                </div>
+                <div class="pedido-items">
+                    <div class="item checked">Prato A ✓</div>
+                    <div class="item checked">Prato B ✓</div>
+                    <div class="item">Prato C ☐</div>
+                </div>
+                <div class="pedido-actions">
+                    <button class="action-btn">Reportar</button>
+                    <button class="action-btn gold">Pedido Pronto</button>
+                </div>
+            </section>
+        </main>
+        <footer>
+            <p class="footer-info">Endereço e Contatos</p>
+            <p class="powerby">Powered by Table4U</p>
+        </footer>
+        <script src="../scripts/kitchen.js"></script>
+    </body>
+</html>

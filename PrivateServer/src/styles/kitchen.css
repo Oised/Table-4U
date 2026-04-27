@@ -1,0 +1,183 @@
+.main {
+    margin-left: 70px;
+    padding: 20px 40px 100px;
+}
+
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 70px;
+    height: 100vh;
+    min-height: 100%;
+    background: #0f0f0f;
+    border-right: 1px solid rgba(255, 215, 0, 0.12);
+    transition: width 0.35s ease;
+    overflow: hidden;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding-top: 20px;
+}
+
+.sidebar.open {
+    width: 220px;
+}
+
+.sidebar-menu {
+    display: none;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+.sidebar-menu.show {
+    display: flex;
+}
+
+.sidebar .nav-item {
+    width: 100%;
+    padding: 14px 20px;
+    color: white;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.sidebar .nav-item span {
+    opacity: 0;
+    transition: opacity 0.25s ease;
+}
+
+.sidebar:hover .nav-item span {
+    opacity: 1;
+}
+
+.sidebar-btn {
+    width: 85%;
+    margin: 8px auto;
+    display: block;
+    padding: 12px 16px;
+    border-radius: 12px;
+    background: rgba(255, 215, 0, 0.05);
+    border: 1px solid rgba(255, 215, 0, 0.15);
+    color: #f5d76e;
+    font-weight: 600;
+    text-align: left;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    text-decoration: none;
+}
+
+.sidebar-btn:hover {
+    background: rgba(255, 215, 0, 0.12);
+    transform: translateX(4px);
+}
+
+.sidebar-links {
+    margin-top: 25px;
+    width: 100%;
+    opacity: 0;
+    transform: translateX(-20px);
+    transition: all 0.35s ease;
+    pointer-events: none;
+}
+
+.sidebar.open .sidebar-links {
+    opacity: 1;
+    transform: translateX(0);
+    pointer-events: auto;
+}
+
+.menu-toggle {
+    background: transparent;
+    border: 1px solid rgba(255, 215, 0, 0.4);
+    color: #d4af37;
+    border-radius: 14px;
+    width: 46px;
+    height: 46px;
+    cursor: pointer;
+    font-size: 20px;
+    transition: all 0.3s ease;
+}
+
+.menu-toggle:hover {
+    background: rgba(255, 215, 0, 0.08);
+}
+
+.menu-btn, .action-btn, .tab {
+    border: 1px solid rgba(212,175,15,0.4);
+    background: rgba(255,255,255,0.05);
+    color: #d4af0f;
+    border-radius: 12px;
+    padding: 12px;
+    cursor: pointer;
+}
+
+.pedido-card, .menu-item {
+    border: 1px solid rgba(212,175,15,0.3);
+    border-radius: 16px;
+    padding: 20px;
+    margin-top: 20px;
+    background: rgba(255,255,255,0.03);
+}
+
+.menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 18px;
+    align-items: start;
+}
+
+.menu-item.large {
+    margin-top: 10px;
+}
+
+.selected, .checked {
+    border-color: #d4af0f;
+}
+
+.action-btn {
+    margin-top: 12px;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.action-btn:hover {
+    transform: scale(1.02);
+    opacity: 0.95;
+}
+
+.menu-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    margin-top: 20px;
+}
+
+.action-btn.gold {
+    background: linear-gradient(135deg, #c9a227, #f5d76e);
+    color: #111;
+    font-weight: 700;
+    border: none;
+    box-shadow: 0 0 12px rgba(201, 162, 39, 0.35);
+}
+
+.action-btn.gold:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 18px rgba(245, 215, 110, 0.6);
+}
+
+.user {
+    position: absolute;
+    top: 20px;
+    right: 30px;
+    font-weight: 600;
+}
+
+.top-bar {
+    position: relative;
+}

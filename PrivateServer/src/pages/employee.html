@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funcionários</title>
+
+    <link rel="stylesheet" href="../styles/Global.css">
+    <link rel="stylesheet" href="../styles/employee.css">
+</head>
+<body>
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <button id="toggleSidebar" class="toggle-btn">☰</button>
+        </div>
+
+        <div class="sidebar-content">
+            <ul>
+                <li><a href="admin.html">Início / Dashboard</a></li>
+                <li><a href="#">Restaurante</a></li>
+                <li><a href="#">Faturamento</a></li>
+                <li><a href="#">Pratos / Menu</a></li>
+                <li><a href="employee.html" class="active">Funcionários</a></li>
+            </ul>
+
+            <div class="sidebar-extra">
+                <button class="mode-btn">Modo funcionário</button>
+                <button class="mode-btn">Modo cozinha</button>
+                <a href="#" class="logout">Sair</a>
+            </div>
+        </div>
+    </aside>
+    <main class="main-content">
+
+        <header class="topbar">
+            <h1>Funcionários</h1>
+            <div class="profile">Perfil</div>
+        </header>
+
+        <section class="employees-container">
+
+            <div class="employees-list" id="employeeList">
+            </div>
+
+            <button class="add-btn" id="addEmployeeBtn">+ Adicionar funcionário</button>
+
+        </section>
+
+    </main>
+
+    <footer>
+        <div class="footer-info">Endereço e Contatos</div>
+        <div class="powerby">Powered by Table4U</div>
+    </footer>
+
+    <script src="../scripts/employee.js"></script>
+</body>
+</html>
