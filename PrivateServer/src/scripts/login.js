@@ -48,7 +48,7 @@ function fazerLoginFuncionario() {
             window.location.href = '../pages/waiter.html';
             break;
         case 'cozinha':
-            window.location.href = '../pages/cozinha.html';
+            window.location.href = '../pages/kitchen.html';
             break;
         case 'adm':
             window.location.href = '../pages/admin.html';
