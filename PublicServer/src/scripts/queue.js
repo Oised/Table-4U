@@ -63,7 +63,7 @@ const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
         document.getElementById('step-status').style.display = 'none';
         document.getElementById('step-vez').style.display = 'none';
 
-        document.getElementById('pessoas-na-fila').textContent = "...";
+        document.getElementById('mesas-na-fila').textContent = "...";
     }
 
     // Busca dados reais do backend para atualizar Tela 1 e Tela 2
@@ -118,7 +118,18 @@ const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
     }
 }
 
-function sairDaFila() {
+async function sairDaFila() {
+    const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
+    if (usuario) {
+        try {
+            await fetch(`/fila/${usuario.email}`, {
+                method: "DELETE"
+            });
+        } catch(err) {
+            console.error(err);
+        }
+    }
+
     sessionStorage.removeItem('usuario-na-fila');
     sessionStorage.removeItem('fila-posicao');
     sessionStorage.removeItem('fila-tempo');
@@ -188,10 +199,10 @@ async function carregarDadosServidor() {
         if (response.ok) {
             const data = await response.json();
             
-            // Atualizar TELA 1: Pessoas na fila reais
-            const pessoasFilaEl = document.getElementById('pessoas-na-fila');
-            if (pessoasFilaEl && document.getElementById('step-entrar').style.display !== 'none') {
-                pessoasFilaEl.textContent = data.pessoas_na_fila;
+            // Atualizar TELA 1: Mesas na fila reais
+            const mesasFilaEl = document.getElementById('mesas-na-fila');
+            if (mesasFilaEl && document.getElementById('step-entrar').style.display !== 'none') {
+                mesasFilaEl.textContent = data.fila_tamanho;
             }
 
             // Atualizar TELA 2: Previsão da IA

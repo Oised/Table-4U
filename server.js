@@ -169,12 +169,40 @@ app.post("/fila", async (req, res) => {
         id_cliente: cliente.id_cliente
       }
     });
+    console.log(`[POST /fila] Cliente entrou na fila: ${email} com ${pessoas} pessoas.`);
 
     res.json({ mensagem: "Entrou na fila com sucesso!" });
 
   } catch (err) {
     console.error(err);
     res.status(500).json({ mensagem: "Erro ao entrar na fila" });
+  }
+});
+
+app.delete("/fila/:email", async (req, res) => {
+  const { email } = req.params;
+
+  try {
+    const cliente = await prisma.cliente.findUnique({
+      where: { email }
+    });
+
+    if (!cliente) {
+      return res.status(404).json({ mensagem: "Usuário não encontrado" });
+    }
+
+    const deleteResult = await prisma.fila.deleteMany({
+      where: {
+        id_cliente: cliente.id_cliente
+      }
+    });
+    console.log(`[DELETE /fila] Cliente saiu da fila: ${email}. Registros deletados: ${deleteResult.count}`);
+
+    res.json({ mensagem: "Saiu da fila com sucesso" });
+
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensagem: "Erro ao sair da fila" });
   }
 });
 
@@ -185,15 +213,8 @@ app.get("/tempo-espera", async (req, res) => {
       where: { status: "esperando" }
     });
 
-    // 1.5 MOCK DE DADOS PARA TESTAR A API:
-    // Se não tiver filas reais no banco, a gente injeta dados falsos para testar a predição!
-    if (filas.length === 0) {
-      filas = [
-        { numero_pessoas: 4, data_entrada: new Date() },
-        { numero_pessoas: 6, data_entrada: new Date(Date.now() - 30 * 60000) } // 30 minutos atrás
-      ];
-      console.log("Usando MOCK de dados para o modelo (banco vazio)");
-    }
+    // Removido o mock que injetava dados fictícios quando a fila estava vazia.
+    // Isso causava confusão, pois a fila nunca ficava com "0" mesas.
 
     // 2. Somar o total de pessoas na fila
     const totalPessoas = filas.reduce((acc, fila) => acc + fila.numero_pessoas, 0);
