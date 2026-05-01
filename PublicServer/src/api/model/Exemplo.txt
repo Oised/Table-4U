@@ -1,0 +1,35 @@
+onst express = require("express");
+const axios = require("axios");
+
+const app = express();
+app.use(express.json());
+
+app.post("/mesa/:id/previsao", async (req, res) => {
+  const mesaId = req.params.id;
+
+  // Exemplo: dados da mesa (pode vir do banco depois)
+  const mesa = {
+    Num_Pessoas: req.body.num_pessoas,
+    Check_in: new Date().toISOString().slice(0, 19).replace("T", " ")
+  };
+
+  try {
+    const response = await axios.post(
+      "http://localhost:5000/predict",
+      mesa
+    );
+
+    res.json({
+      mesa: mesaId,
+      tempo_estimado_min: response.data.tempo_espera_min
+    });
+
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).send("Erro ao calcular previsão");
+  }
+});
+
+app.listen(3000, () => {
+  console.log("Rodando...");
+});

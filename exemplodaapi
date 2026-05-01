@@ -1,0 +1,59 @@
+Explanation: Calculating the Root Mean Squared Error (RMSE) to measure the regression model's performance.
+
+
+from sklearn.metrics import mean_squared_error
+import numpy as np
+
+pred = model.predict(X_test)
+rmse = np.sqrt(mean_squared_error(y_test, pred))
+
+print("RMSE:", rmse)
+     
+RMSE: 5.4384548309202385
+Explanation: Importing required libraries for data manipulation, visualization, and modeling.
+
+
+import pandas as pd
+
+exemplo = {
+    "Num_Pessoas": 6,
+    "hora": 13,
+    "dia_semana": 2,
+    "mes": 8,
+    "fim_de_semana": 0,
+    "periodo": "almoco",
+
+    # manter consistência com featuretools
+    "DAY(Check_in)": 10,
+    "MONTH(Check_in)": 8,
+    "WEEKDAY(Check_in)": 2,
+    "YEAR(Check_in)": 2025
+}
+
+df_exemplo = pd.DataFrame([exemplo])
+     
+Explanation: One-hot encoding categorical variables to convert them into a numerical format suitable for the model.
+
+
+df_exemplo = pd.get_dummies(df_exemplo)
+
+# alinhar colunas com treino
+df_exemplo = df_exemplo.reindex(columns=X.columns, fill_value=0)
+     
+Explanation: Generating the final prediction for the sample data point.
+
+
+pred = model.predict(df_exemplo)
+
+print("Tempo previsto (min):", pred[0])
+     
+Tempo previsto (min): 120.45502
+Explanation: Persisting the trained model and its expected features to disk for future inference.
+
+
+import joblib
+
+joblib.dump(model, "modelo_xgboost.pkl")
+joblib.dump(X.columns, "colunas.pkl")
+     
+['colunas.pkl']

@@ -1,5 +1,14 @@
 let intervaloFila = null;
 let intervaloTimer10Min = null;
+let pessoasFilaCount = 2;
+
+function alterarPessoasFila(valor) {
+    pessoasFilaCount = Math.max(1, Math.min(20, pessoasFilaCount + valor));
+    const countEl = document.getElementById('pessoas-count-fila');
+    if (countEl) {
+        countEl.textContent = pessoasFilaCount;
+    }
+}
 
 document.addEventListener('DOMContentLoaded', function() {
     verificarStatusFila();
@@ -41,15 +50,12 @@ const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
         let posicao = sessionStorage.getItem('fila-posicao');
         let tempo = sessionStorage.getItem('fila-tempo');
 
-        if (!posicao || !tempo) {
-            posicao = Math.floor(Math.random() * 3) + 1; // Posição 1 a 3 para testar rápido
-            tempo = posicao * 15; 
-            sessionStorage.setItem('fila-posicao', posicao);
-            sessionStorage.setItem('fila-tempo', tempo);
+        if (posicao && tempo) {
+            atualizarTextosFila(posicao, tempo);
+            iniciarSimulacaoFilaAcelerada();
+        } else {
+            atualizarTextosFila("...", "...");
         }
-
-        atualizarTextosFila(posicao, tempo);
-        iniciarSimulacaoFilaAcelerada();
 
     } else {
         // TELA 1: Não está na fila
@@ -57,9 +63,11 @@ const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
         document.getElementById('step-status').style.display = 'none';
         document.getElementById('step-vez').style.display = 'none';
 
-        const pessoasAguardando = Math.floor(Math.random() * 15) + 3;
-        document.getElementById('pessoas-na-fila').textContent = pessoasAguardando;
+        document.getElementById('pessoas-na-fila').textContent = "...";
     }
+
+    // Busca dados reais do backend para atualizar Tela 1 e Tela 2
+    carregarDadosServidor();
 }
 
 function atualizarTextosFila(posicao, tempo) {
@@ -67,7 +75,7 @@ function atualizarTextosFila(posicao, tempo) {
     document.getElementById('tempo-espera').textContent = `~ ${tempo} min`;
 }
 
-function entrarNaFila() {
+async function entrarNaFila() {
 
 
 const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
@@ -78,18 +86,36 @@ const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
         return;
     }
 
+    // Registrar a entrada na fila no banco de dados
+    const agora = new Date();
+    const dataAtual = agora.toISOString().split('T')[0];
+    const horarioAtual = agora.toTimeString().substring(0, 5); // "HH:MM"
 
-    sessionStorage.setItem('usuario-na-fila', 'true');
-    sessionStorage.removeItem('usuario-vez-chegou');
-    
-    // Posição inicial curta para você não esperar muito no teste
-    const posicao = Math.floor(Math.random() * 2) + 1; 
-    const tempo = posicao * 15;
-    
-    sessionStorage.setItem('fila-posicao', posicao);
-    sessionStorage.setItem('fila-tempo', tempo);
+    try {
+        const response = await fetch("/fila", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+                pessoas: pessoasFilaCount,
+                email: usuario.email
+            })
+        });
 
-    verificarStatusFila();
+        if (!response.ok) {
+            alert("Erro ao tentar entrar na fila no servidor.");
+            return;
+        }
+
+        sessionStorage.setItem('usuario-na-fila', 'true');
+        sessionStorage.removeItem('usuario-vez-chegou');
+        sessionStorage.removeItem('fila-posicao');
+        sessionStorage.removeItem('fila-tempo');
+
+        verificarStatusFila();
+    } catch (err) {
+        console.error("Erro na requisição:", err);
+        alert("Erro de conexão com o servidor.");
+    }
 }
 
 function sairDaFila() {
@@ -153,4 +179,37 @@ function iniciarTimer10Minutos() {
                 `${minutos.toString().padStart(2, '0')}:${segundos.toString().padStart(2, '0')}`;
         }
     }, 1000);
+}
+
+// --- INTEGRAÇÃO COM BACKEND ---
+async function carregarDadosServidor() {
+    try {
+        const response = await fetch('/tempo-espera');
+        if (response.ok) {
+            const data = await response.json();
+            
+            // Atualizar TELA 1: Pessoas na fila reais
+            const pessoasFilaEl = document.getElementById('pessoas-na-fila');
+            if (pessoasFilaEl && document.getElementById('step-entrar').style.display !== 'none') {
+                pessoasFilaEl.textContent = data.pessoas_na_fila;
+            }
+
+            // Atualizar TELA 2: Previsão da IA
+            const tempoIaEl = document.getElementById('tempo-espera-ia');
+            if (tempoIaEl && document.getElementById('step-status').style.display !== 'none') {
+                tempoIaEl.textContent = `~ ${Math.round(data.tempo_estimado_minutos)} min`;
+                
+                // Se o usuário acabou de entrar, inicia os valores
+                let posicao = sessionStorage.getItem('fila-posicao');
+                if (!posicao) {
+                    sessionStorage.setItem('fila-posicao', data.fila_tamanho > 0 ? data.fila_tamanho : 1);
+                    sessionStorage.setItem('fila-tempo', Math.round(data.tempo_estimado_minutos));
+                    atualizarTextosFila(sessionStorage.getItem('fila-posicao'), sessionStorage.getItem('fila-tempo'));
+                    iniciarSimulacaoFilaAcelerada();
+                }
+            }
+        }
+    } catch (error) {
+        console.error("Erro ao buscar dados do servidor:", error);
+    }
 }
