@@ -21,11 +21,20 @@
             <h3 class="card-title">Status Atual</h3>
             
             <div class="info-destaque">
-                <span id="pessoas-na-fila" class="numero-destaque">12</span>
-                <span class="texto-destaque">pessoas aguardando</span>
+                <span id="mesas-na-fila" class="numero-destaque">0</span>
+                <span class="texto-destaque">mesas na sua frente</span>
             </div>
 
             <p class="card-sub">Deseja entrar na fila de espera para conseguir uma mesa?</p>
+
+            <div class="input-group" style="margin-bottom: 20px;">
+                <label class="input-label" style="display: block; margin-bottom: 8px; font-size: 0.9rem; color: #ccc;">Quantidade de pessoas</label>
+                <div class="pessoas-counter" style="display: flex; justify-content: center; align-items: center; gap: 15px; background: rgba(0,0,0,0.3); padding: 10px; border-radius: 8px; border: 1px solid rgba(181, 148, 16, 0.3);">
+                    <button class="counter-btn" onclick="alterarPessoasFila(-1)" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #B59410; background: transparent; color: #B59410; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">−</button>
+                    <span id="pessoas-count-fila" style="font-size: 1.2rem; font-weight: bold; width: 30px; text-align: center; color: #fff;">2</span>
+                    <button class="counter-btn" onclick="alterarPessoasFila(1)" style="width: 32px; height: 32px; border-radius: 50%; border: 1px solid #B59410; background: transparent; color: #B59410; cursor: pointer; font-size: 1.2rem; display: flex; align-items: center; justify-content: center; transition: all 0.3s;">+</button>
+                </div>
+            </div>
 
             <button class="action-btn btn-primary" onclick="entrarNaFila()">Entrar na Fila</button>
             <a href="../index.html" class="voltar-link">← Voltar ao início</a>
@@ -44,6 +53,10 @@
                 <div class="resumo-item">
                     <span class="resumo-label">Tempo Estimado</span>
                     <span class="resumo-valor" id="tempo-espera"></span>
+                </div>
+                <div class="resumo-item">
+                    <span class="resumo-label">Previsão IA (Modelo)</span>
+                    <span class="resumo-valor destaque-ouro" id="tempo-espera-ia">Calculando...</span>
                 </div>
             </div>
 
