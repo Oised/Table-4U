@@ -4,60 +4,71 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Table4U - Administração</title>
-    <link rel="stylesheet" href="../styles/Global.css">
-    <link rel="stylesheet" href="../styles/Adm.css">
+    <link rel="stylesheet" href="../../../PublicServer/src/styles/global.css">
+    <link rel="stylesheet" href="../styles/admin.css">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
 </head>
-<body>
-    <div class="admin-layout">
-        <aside class="sidebar" id="sidebar">
-            <div class="sidebar-header">
-                <button id="toggleSidebar" class="toggle-btn">☰</button>
+<body class="admin-body">
+    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <h1 class="nome-restaurante" style="font-size: 1.5rem;">Table4U</h1>
+            <p style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">Administrador</p>
+        </div>
+        <ul class="sidebar-menu">
+            <li><a href="admin.html" class="ativo">Início / Dashboard</a></li>
+            <li><a href="#">Restaurante</a></li>
+            <li><a href="#">Faturamento</a></li>
+            <li><a href="#">Pratos / Menu</a></li>
+            <li><a href="employee.html">Funcionários</a></li>
+            <li><a href="#">Modo Funcionário</a></li>
+            <li><a href="#">Modo Cozinha</a></li>
+        </ul>
+    </nav>
+    <header class="admin-header">
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+            <h2 class="page-title">Painel Administrativo</h2>
+            <div style="width: 24px;"></div>
+    </header>
+    <button class="perfil-btn" onclick="togglePerfil()">
+        <div class="perfil-iniciais"></div>
+    </button>
+    <div id="popup-perfil" class="popup-perfil">
+        <div class="perfil-topo">
+            <div class="perfil-avatar-grande"></div>
+            <div>
+                <p class="perfil-nome"></p>
+                <p class="perfil-email"></p>
             </div>
-            <div class="sidebar-content">
-                <ul>
-                    <li><a href="admin.html" class="active">Início / Dashboard</a></li>
-                    <li><a href="#">Restaurante</a></li>
-                    <li><a href="#">Faturamento</a></li>
-                    <li><a href="#">Pratos / Menu</a></li>
-                    <li><a href="employee.html">Funcionários</a></li>
-                </ul>
-                <div class="sidebar-extra">
-                    <button class="mode-btn">Modo funcionário</button>
-                    <button class="mode-btn">Modo cozinha</button>
-                    <a href="#" class="logout">Sair</a>
-                </div>
-            </div>
-        </aside>
-        <main class="main-content">
-            <header class="topbar">
-                <h1>Painel Administrativo</h1>
-                <div class="profile">Perfil</div>
-            </header>
-            <section class="stats-grid">
-                <div class="stat-card">
-                    <h3>Pedidos</h3>
-                    <div class="fake-chart"></div>
-                </div>
-                <div class="stat-card">
-                    <h3>Faturamento</h3>
-                    <div class="fake-chart"></div>
-                </div>
-                <div class="stat-card">
-                    <h3>Crescimento</h3>
-                    <div class="fake-chart"></div>
-                </div>
-            </section>
-            <section class="info-section">
-                <div class="info-box">Resumo geral do restaurante</div>
-                <div class="info-box">Relatórios e dados específicos</div>
-                <div class="info-box">Informações adicionais</div>
-            </section>
-        </main>
+        </div>
+        <a href="#" class="perfil-menu-item sair" onclick="sairFuncionario()">Sair</a>
     </div>
+    <main class="main-content">
+        <section class="stats-grid">
+            <div class="stat-card">
+                <h3>Pedidos</h3>
+                <div class="fake-chart"></div>
+            </div>
+            <div class="stat-card">
+                <h3>Faturamento</h3>
+                <div class="fake-chart"></div>
+            </div>
+            <div class="stat-card">
+                <h3>Crescimento</h3>
+                <div class="fake-chart"></div>
+            </div>
+        </section>
+        <section class="info-section">
+            <div class="info-box">Resumo geral do restaurante</div>
+            <div class="info-box">Relatórios e dados específicos</div>
+            <div class="info-box">Informações adicionais</div>
+        </section>
+    </main>
     <footer>
-        <div class="footer-info">Endereço e Contatos</div>
-        <div class="powerby">Powered by Table4U</div>
+        <p class="footer-info">Endereço e Contatos</p>
+        <p class="powerby">Powered by Table4U</p>
     </footer>
-    <script src="../scripts/Adm.js"></script>
+    <script src="../../../PublicServer/src/scripts/profile.js"></script>
+    <script src="../scripts/admin.js"></script>
 </body>
 </html>
