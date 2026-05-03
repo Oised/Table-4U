@@ -1,14 +1,12 @@
-const toggleBtn = document.getElementById("toggleSidebar");
-const sidebarMenu = document.getElementById("sidebarMenu");
-const sidebar = document.getElementById("sidebar");
-const menuToggle = document.getElementById("menuToggle");
-
-if (toggleBtn) {
-    toggleBtn.addEventListener("click", () => {
-        sidebarMenu.classList.toggle("show");
-    });
+function sairFuncionario() {
+    sessionStorage.clear();
+    window.location.href = 'login.html';
 }
 
-menuToggle.addEventListener("click", () => {
-    sidebar.classList.toggle("open");
-});
+function toggleSidebar() {
+    const sidebar = document.getElementById('sidebar');
+    const overlay = document.getElementById('sidebar-overlay');
+    
+    sidebar.classList.toggle('ativo');
+    overlay.classList.toggle('ativo');
+}

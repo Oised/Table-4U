@@ -4,25 +4,41 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>Cozinha</title>
-        <link rel="stylesheet" href="../styles/Global.css">
+        <link rel="stylesheet" href="../../../PublicServer/src/styles/global.css">
         <link rel="stylesheet" href="../styles/kitchen.css">
         <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
     </head>
-    <body>
-        <div class="sidebar" id="sidebar">
-            <button class="menu-toggle" id="menuToggle">☰</button>
-            <div class="sidebar-links">
-                <button class="sidebar-btn" onclick="window.location.href='kitchen.html'">Pedidos</button>
-                <button class="sidebar-btn" onclick="window.location.href='kitchen-menu.html'">Menu</button>
+    <body class="kitchen-body">
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1 class="nome-restaurante" style="font-size: 1.5rem;">Table4U</h1>
+                <p style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">Cozinha</p>
             </div>
+            <ul class="sidebar-menu">
+                <li><a href="#" onclick="window.location.href='kitchen.html'" class="ativo">Pedidos</a></li>
+                <li><a href="#" onclick="window.location.href='kitchen-menu.html'">Menu</a></li>
+            </ul>
+        </nav>
+        <header class="kitchen-header">
+            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
+            <h2 class="page-title">Pedidos</h2>
+            <div style="width: 24px;"></div>
+        </header>
+        <button class="perfil-btn" onclick="togglePerfil()">
+            <div class="perfil-iniciais"></div>
+        </button>
+        <div id="popup-perfil" class="popup-perfil">
+            <div class="perfil-topo">
+                <div class="perfil-avatar-grande"></div>
+                <div>
+                    <p class="perfil-nome"></p>
+                    <p class="perfil-email"></p>
+                </div>
+            </div>
+            <a href="#" class="perfil-menu-item sair" onclick="sairFuncionario()">Sair</a>
         </div>
         <main class="main">
-            <header class="Topbar">
-                <h2>Table4U</h2>
-                <div class="user">User 👤</div>
-            </header>
-            <h1 class="page-title">Pedidos</h1>
-            <div class="divider"></div>
             <section class="pedido-card">
                 <div class="pedido-header">
                     <span>Pedido #XX</span>
@@ -44,6 +60,7 @@
             <p class="footer-info">Endereço e Contatos</p>
             <p class="powerby">Powered by Table4U</p>
         </footer>
+        <script src="../../../PublicServer/src/scripts/profile.js"></script>
         <script src="../scripts/kitchen.js"></script>
     </body>
 </html>
