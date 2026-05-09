@@ -9,16 +9,16 @@
     text-align: center;
     position: sticky;
     top: 0;
-    background: rgba(18, 18, 18, 0.9);
+    background: var(--bg-header);
     backdrop-filter: blur(10px);
     z-index: 10;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .fila-title {
     font-family: 'Playfair Display', serif;
     font-size: 1.8rem;
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .fila-container {
@@ -33,8 +33,8 @@
 .fila-card {
     width: 100%;
     max-width: 380px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 20px;
     padding: 36px 28px;
     text-align: center;
@@ -42,25 +42,25 @@
 
 .status-icon {
     font-size: 2.5rem;
-    color: rgba(255,255,255,0.5);
+    color: var(--text-muted);
     margin-bottom: 12px;
 }
 
 .status-icon.dourado {
-    color: #B59410;
+    color: var(--gold-dark);
     animation: pulse 2s ease infinite;
 }
 
 .card-title {
     font-family: 'Playfair Display', serif;
     font-size: 1.6rem;
-    color: #fff;
+    color: var(--text-primary);
     margin-bottom: 8px;
 }
 
 .card-sub {
     font-size: 0.85rem;
-    color: rgba(255,255,255,0.45);
+    color: var(--text-muted);
     margin-bottom: 28px;
     line-height: 1.5;
 }
@@ -78,7 +78,7 @@
     font-family: 'Playfair Display', serif;
     font-size: 3rem;
     font-weight: 700;
-    color: #B59410;
+    color: var(--gold-dark);
     line-height: 1;
     margin-bottom: 8px;
 }
@@ -91,8 +91,8 @@
 }
 
 .fila-resumo {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 12px;
     padding: 20px;
     margin-bottom: 24px;
@@ -112,19 +112,19 @@
 
 .resumo-label {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.45);
+    color: var(--text-muted);
     text-transform: uppercase;
     letter-spacing: 1px;
 }
 
 .resumo-valor {
     font-size: 1rem;
-    color: #fff;
+    color: var(--text-primary);
     font-weight: 600;
 }
 
 .destaque-ouro {
-    color: #B59410;
+    color: var(--gold-dark);
     font-family: 'Playfair Display', serif;
     font-size: 1.2rem;
 }
@@ -140,12 +140,12 @@
     text-align: center;
     margin-top: 24px;
     font-size: 0.8rem;
-    color: rgba(255,255,255,0.35);
+    color: var(--text-muted);
     text-decoration: none;
     transition: color 0.2s;
 }
 
-.voltar-link:hover { color: rgba(255,255,255,0.7); }
+.voltar-link:hover { color: var(--text-secondary); }
 
 @keyframes pulse {
     0%, 100% { opacity: 1; transform: scale(1); }

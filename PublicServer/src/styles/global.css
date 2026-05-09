@@ -1,16 +1,101 @@
+/* ============================================================
+   TEMA: VARIÁVEIS CSS (CLARO / ESCURO)
+   O atributo [data-theme] é gerenciado pelo scripts/theme.js
+   ============================================================ */
+
+:root,
+[data-theme="dark"] {
+    --bg-base:            #121212;
+    --bg-overlay-start:   rgba(18, 18, 18, 0.85);
+    --bg-overlay-end:     rgba(18, 18, 18, 0.95);
+    --bg-card:            rgba(255, 255, 255, 0.03);
+    --bg-card-hover:      rgba(255, 255, 255, 0.06);
+    --bg-header:          rgba(18, 18, 18, 0.9);
+    --bg-footer:          rgba(0, 0, 0, 0.5);
+    --bg-popup:           #1a1a1a;
+    --bg-perfil-btn:      #1a1a1a;
+
+    --text-primary:       #FFFFFF;
+    --text-secondary:     rgba(255, 255, 255, 0.7);
+    --text-muted:         rgba(255, 255, 255, 0.45);
+
+    --border-card:        rgba(255, 255, 255, 0.1);
+    --border-subtle:      rgba(255, 255, 255, 0.05);
+    --border-divider:     rgba(255, 255, 255, 0.07);
+
+    --btn-secondary-bg:   rgba(255, 255, 255, 0.05);
+    --btn-secondary-text: #FFFFFF;
+    --btn-secondary-border: rgba(255, 255, 255, 0.2);
+
+    --input-bg:           rgba(255, 255, 255, 0.05);
+    --input-border:       rgba(255, 255, 255, 0.1);
+    --input-text:         #FFFFFF;
+    --input-placeholder:  rgba(255, 255, 255, 0.35);
+
+    --link-color:         #B59410;
+    --gold:               #E6BD1A;
+    --gold-dark:          #B59410;
+
+    /* Botão de tema */
+    --theme-btn-bg:       rgba(255, 255, 255, 0.08);
+    --theme-btn-border:   rgba(255, 255, 255, 0.15);
+    --theme-btn-hover:    rgba(255, 255, 255, 0.15);
+    --theme-btn-shadow:   rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="light"] {
+    --bg-base:            #F5F0E8;
+    --bg-overlay-start:   rgba(245, 240, 232, 0.88);
+    --bg-overlay-end:     rgba(245, 240, 232, 0.96);
+    --bg-card:            rgba(255, 255, 255, 0.75);
+    --bg-card-hover:      rgba(255, 255, 255, 0.9);
+    --bg-header:          rgba(245, 240, 232, 0.92);
+    --bg-footer:          rgba(220, 210, 195, 0.7);
+    --bg-popup:           #FFFFFF;
+    --bg-perfil-btn:      #FFFFFF;
+
+    --text-primary:       #1A1208;
+    --text-secondary:     rgba(26, 18, 8, 0.7);
+    --text-muted:         rgba(26, 18, 8, 0.45);
+
+    --border-card:        rgba(26, 18, 8, 0.12);
+    --border-subtle:      rgba(26, 18, 8, 0.07);
+    --border-divider:     rgba(26, 18, 8, 0.09);
+
+    --btn-secondary-bg:   rgba(26, 18, 8, 0.06);
+    --btn-secondary-text: #1A1208;
+    --btn-secondary-border: rgba(26, 18, 8, 0.2);
+
+    --input-bg:           rgba(255, 255, 255, 0.8);
+    --input-border:       rgba(26, 18, 8, 0.15);
+    --input-text:         #1A1208;
+    --input-placeholder:  rgba(26, 18, 8, 0.35);
+
+    --link-color:         #8A6E0A;
+    --gold:               #C49A10;
+    --gold-dark:          #8A6E0A;
+
+    /* Botão de tema */
+    --theme-btn-bg:       rgba(26, 18, 8, 0.07);
+    --theme-btn-border:   rgba(26, 18, 8, 0.15);
+    --theme-btn-hover:    rgba(26, 18, 8, 0.13);
+    --theme-btn-shadow:   rgba(0, 0, 0, 0.15);
+}
+
 /* --- 1. CONFIGURAÇÕES GERAIS (RESET) --- */
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 body, html {
     height: 100%;
     font-family: 'Poppins', sans-serif;
-    color: #FFFFFF;
-    background-color: #121212;
+    color: var(--text-primary);
+    background-color: var(--bg-base);
+    transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 body {
     background-image: 
-        linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.95)), 
+        linear-gradient(var(--bg-overlay-start), var(--bg-overlay-end)), 
         url('https://images.unsplash.com/photo-1599619126264-9f44a49c6703?q=80&w=2000&auto=format&fit=crop');
     background-size: cover;
     background-position: center;
@@ -25,7 +110,7 @@ body {
     font-family: 'Playfair Display', serif;
     font-weight: 700;
     line-height: 1.1;
-    color: #FFFFFF;
+    color: var(--text-primary);
 }
 
 .action-btn {
@@ -47,14 +132,14 @@ body {
 }
 
 .btn-primary {
-    background: linear-gradient(135deg, #E6BD1A 0%, #B59410 100%);
+    background: linear-gradient(135deg, var(--gold) 0%, var(--gold-dark) 100%);
     color: #121212;
 }
 
 .btn-secondary {
-    background-color: rgba(255, 255, 255, 0.05);
-    color: #FFFFFF;
-    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: var(--btn-secondary-bg);
+    color: var(--btn-secondary-text);
+    border: 1px solid var(--btn-secondary-border);
     backdrop-filter: blur(5px);
 }
 
@@ -91,8 +176,8 @@ body {
 
 .menu-card {
     display: flex;
-    background: rgba(255, 255, 255, 0.03);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 12px;
     overflow: hidden;
     margin-bottom: 15px;
@@ -110,12 +195,12 @@ body {
 
         /* --- RODAPÉ (FOOTER) --- */
         footer {
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: var(--bg-footer);
             padding: 20px 10px;
             font-size: 0.8rem;
             text-align: center;
             backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-subtle);
         }
 
         .footer-info {
@@ -144,16 +229,16 @@ body {
     width: 44px;
     height: 44px;
     border-radius: 50%;
-    border: 2px solid #B59410;
+    border: 2px solid var(--gold-dark);
     cursor: pointer;
     overflow: hidden;
     z-index: 50;
-    background: #1a1a1a;
+    background: var(--bg-perfil-btn);
     transition: all 0.2s;
 }
 
 .perfil-btn:hover {
-    border-color: #E6BD1A;
+    border-color: var(--gold);
     transform: scale(1.05);
 }
 
@@ -171,7 +256,7 @@ body {
     justify-content: center;
     font-family: 'Playfair Display', serif;
     font-size: 1rem;
-    color: #B59410;
+    color: var(--gold-dark);
     background: rgba(181,148,16,0.1);
 }
 
@@ -181,8 +266,8 @@ body {
     position: fixed;
     top: 74px;
     right: 20px;
-    background: #1a1a1a;
-    border: 1px solid rgba(255,255,255,0.1);
+    background: var(--bg-popup);
+    border: 1px solid var(--border-card);
     border-radius: 16px;
     padding: 24px;
     width: 280px;
@@ -204,34 +289,34 @@ body {
     gap: 14px;
     margin-bottom: 20px;
     padding-bottom: 20px;
-    border-bottom: 1px solid rgba(255,255,255,0.07);
+    border-bottom: 1px solid var(--border-divider);
 }
 
 .perfil-avatar-grande {
     width: 52px;
     height: 52px;
     border-radius: 50%;
-    border: 2px solid #B59410;
+    border: 2px solid var(--gold-dark);
     background: rgba(181,148,16,0.1);
     display: flex;
     align-items: center;
     justify-content: center;
     font-family: 'Playfair Display', serif;
     font-size: 1.2rem;
-    color: #B59410;
+    color: var(--gold-dark);
     flex-shrink: 0;
 }
 
 .perfil-nome {
     font-family: 'Playfair Display', serif;
     font-size: 1rem;
-    color: #fff;
+    color: var(--text-primary);
     margin-bottom: 2px;
 }
 
 .perfil-email {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.45);
+    color: var(--text-muted);
 }
 
 .perfil-menu-item {
@@ -240,7 +325,7 @@ body {
     gap: 10px;
     padding: 10px 8px;
     border-radius: 8px;
-    color: rgba(255,255,255,0.7);
+    color: var(--text-secondary);
     font-size: 0.85rem;
     cursor: pointer;
     transition: all 0.2s;
@@ -248,14 +333,14 @@ body {
 }
 
 .perfil-menu-item:hover {
-    background: rgba(255,255,255,0.05);
-    color: #fff;
+    background: var(--bg-card-hover);
+    color: var(--text-primary);
 }
 
 .perfil-menu-item.sair {
     color: rgba(255,80,80,0.7);
     margin-top: 8px;
-    border-top: 1px solid rgba(255,255,255,0.07);
+    border-top: 1px solid var(--border-divider);
     padding-top: 16px;
 }
 
@@ -266,6 +351,52 @@ body {
 
 .perfil-logado { display: none; }
 .perfil-deslogado { display: none; }
+
+/* ============================================================
+   BOTÃO DE ALTERNÂNCIA DE TEMA (injetado via theme.js)
+   ============================================================ */
+.theme-toggle-btn {
+    position: fixed;
+    /* Fica à esquerda do botão de perfil (que está em right:20px, width:44px) */
+    top: 20px;
+    right: 74px;
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    border: 1px solid var(--theme-btn-border);
+    background: var(--theme-btn-bg);
+    backdrop-filter: blur(8px);
+    cursor: pointer;
+    z-index: 50;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.1rem;
+    transition: background 0.2s, border-color 0.2s, transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 8px var(--theme-btn-shadow);
+    padding: 0;
+    line-height: 1;
+}
+
+.theme-toggle-btn:hover {
+    background: var(--theme-btn-hover);
+    transform: scale(1.08);
+}
+
+.theme-toggle-btn:active {
+    transform: scale(0.95);
+}
+
+/* Mostra apenas o ícone correto para cada tema */
+.theme-icon { display: none; line-height: 1; }
+
+/* Modo escuro → mostra lua (indica que pode mudar para claro) */
+[data-theme="dark"]  .theme-icon--moon,
+/* Modo claro  → mostra sol (indica que pode mudar para escuro) */
+[data-theme="light"] .theme-icon--sun  { display: inline; }
+
+/* Fallback quando ainda não há data-theme definido */
+:root:not([data-theme]) .theme-icon--moon { display: inline; }
 
 
 
@@ -300,5 +431,23 @@ body {
 
     .nome-restaurante {
         font-size: 2.2rem !important; /* Evita que o nome quebre de forma estranha */
+    }
+}
+/* Nas páginas sem botão de perfil (ex: login), o botão de tema fica na direita */
+body:not(:has(.perfil-btn)) .theme-toggle-btn {
+    right: 20px;
+}
+
+/* Ajustes mobile */
+@media (max-width: 480px) {
+    .theme-toggle-btn {
+        top: 12px;
+        right: 62px;
+        width: 38px;
+        height: 38px;
+        font-size: 1rem;
+    }
+    body:not(:has(.perfil-btn)) .theme-toggle-btn {
+        right: 12px;
     }
 }

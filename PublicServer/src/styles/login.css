@@ -22,7 +22,7 @@
     font-size: 0.75rem;
     text-transform: uppercase;
     letter-spacing: 3px;
-    color: #B59410;
+    color: var(--gold-dark);
     margin-bottom: 4px;
     font-weight: 300;
 }
@@ -31,14 +31,14 @@
     font-family: 'Playfair Display', serif;
     font-size: 2.4rem;
     font-weight: 700;
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .login-card {
     width: 100%;
     max-width: 380px;
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 20px;
     padding: 36px 28px;
 }
@@ -46,13 +46,13 @@
 .card-title {
     font-family: 'Playfair Display', serif;
     font-size: 1.6rem;
-    color: #fff;
+    color: var(--text-primary);
     margin-bottom: 6px;
 }
 
 .card-sub {
     font-size: 0.82rem;
-    color: rgba(255,255,255,0.45);
+    color: var(--text-muted);
     margin-bottom: 28px;
 }
 
@@ -65,17 +65,17 @@
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: rgba(255,255,255,0.45);
+    color: var(--text-muted);
     margin-bottom: 8px;
 }
 
 .login-input {
     width: 100%;
     padding: 14px 16px;
-    background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    background: var(--input-bg);
+    border: 1px solid var(--input-border);
     border-radius: 8px;
-    color: #fff;
+    color: var(--text-primary);
     font-family: 'Poppins', sans-serif;
     font-size: 0.9rem;
     outline: none;
@@ -83,11 +83,11 @@
 }
 
 .login-input:focus {
-    border-color: #B59410;
+    border-color: var(--gold-dark);
 }
 
 .login-input::placeholder {
-    color: rgba(255,255,255,0.25);
+    color: var(--input-placeholder);
 }
 
 .input-senha-wrapper {
@@ -115,7 +115,7 @@
 
 .esqueci-link {
     font-size: 0.78rem;
-    color: #B59410;
+    color: var(--gold-dark);
     text-align: right;
     cursor: pointer;
     margin-bottom: 20px;
@@ -130,16 +130,16 @@
     text-align: center;
     margin-top: 16px;
     font-size: 0.8rem;
-    color: rgba(255,255,255,0.35);
+    color: var(--text-muted);
     text-decoration: none;
     transition: color 0.2s;
 }
 
-.voltar-link:hover { color: rgba(255,255,255,0.7); }
+.voltar-link:hover { color: var(--text-secondary); }
 
 .codigo-info {
     font-size: 0.82rem;
-    color: #B59410;
+    color: var(--gold-dark);
     text-align: center;
     margin-bottom: 20px;
     padding: 10px;
@@ -150,7 +150,7 @@
 
 .sucesso-icon {
     font-size: 2.2rem;
-    color: #B59410;
+    color: var(--gold-dark);
     text-align: center;
     margin-bottom: 16px;
     animation: pulse 1.5s ease infinite;
@@ -165,7 +165,7 @@
     border-radius: 12px;
     padding: 14px 18px;
     font-size: 0.85rem;
-    color: #B59410;
+    color: var(--gold-dark);
     text-align: center;
     margin-bottom: 20px;
     line-height: 1.5;
@@ -173,7 +173,7 @@
 
 .login-cargo {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.35);
+    color: var(--text-muted);
     margin-top: 4px;
     text-transform: uppercase;
     letter-spacing: 2px;
@@ -189,8 +189,8 @@ select.login-input {
 }
 
 select.login-input option {
-    background-color: #1a1a1a;
-    color: #fff;
+    background-color: var(--bg-popup);
+    color: var(--text-primary);
     padding: 10px;
 }
 
@@ -208,8 +208,8 @@ select.login-input option {
 
 
 .toast {
-    background: #1a1a1a;
-    color: #fff;
+    background: var(--bg-popup);
+    color: var(--text-primary);
     border-left: 4px solid #B59410; /* Dourado Table4U */
     padding: 16px 20px;
     border-radius: 12px;

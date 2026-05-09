@@ -9,14 +9,14 @@
     text-align: center;
     position: sticky;
     top: 0;
-    background: rgba(18, 18, 18, 0.9);
+    background: var(--bg-header);
     backdrop-filter: blur(10px);
     z-index: 10;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .back-link {
-    color: #B59410;
+    color: var(--gold-dark);
     text-decoration: none;
     font-size: 0.9rem;
     position: absolute;
@@ -27,7 +27,7 @@
 .perfil-title {
     font-family: 'Playfair Display', serif;
     font-size: 1.8rem;
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .perfil-content {
@@ -39,8 +39,8 @@
 }
 
 .perfil-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 20px;
     padding: 32px 24px;
 }
@@ -48,7 +48,7 @@
 .secao-title {
     font-family: 'Playfair Display', serif;
     font-size: 1.2rem;
-    color: #B59410;
+    color: var(--gold-dark);
     margin-bottom: 20px;
     font-weight: 600;
 }
@@ -68,7 +68,7 @@
     font-size: 0.72rem;
     text-transform: uppercase;
     letter-spacing: 1.5px;
-    color: rgba(255,255,255,0.45);
+    color: var(--text-muted);
     margin-bottom: 8px;
 }
 
@@ -76,9 +76,9 @@
     width: 100%;
     padding: 14px 16px;
     background: rgba(255,255,255,0.05);
-    border: 1px solid rgba(255,255,255,0.1);
+    border: 1px solid var(--border-card);
     border-radius: 8px;
-    color: #fff;
+    color: var(--text-primary);
     font-family: 'Poppins', sans-serif;
     font-size: 0.9rem;
     outline: none;
@@ -86,18 +86,18 @@
 }
 
 .perfil-input:focus {
-    border-color: #B59410;
+    border-color: var(--gold-dark);
 }
 
 .seguranca-texto {
     font-size: 0.85rem;
-    color: rgba(255,255,255,0.5);
+    color: var(--text-muted);
     line-height: 1.5;
     margin-bottom: 16px;
 }
 
 .destaque-ouro {
-    color: #B59410;
+    color: var(--gold-dark);
     background: rgba(181, 148, 16, 0.08);
     padding: 10px 14px;
     border-radius: 8px;

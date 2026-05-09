@@ -9,14 +9,14 @@
     text-align: center;
     position: sticky;
     top: 0;
-    background: rgba(18, 18, 18, 0.9);
+    background: var(--bg-header);
     backdrop-filter: blur(10px);
     z-index: 10;
-    border-bottom: 1px solid rgba(255,255,255,0.05);
+    border-bottom: 1px solid var(--border-subtle);
 }
 
 .back-link {
-    color: #B59410;
+    color: var(--gold-dark);
     text-decoration: none;
     font-size: 0.9rem;
     position: absolute;
@@ -27,7 +27,7 @@
 .reservas-title {
     font-family: 'Playfair Display', serif;
     font-size: 1.8rem;
-    color: #fff;
+    color: var(--text-primary);
 }
 
 .reservas-content {
@@ -39,8 +39,8 @@
 }
 
 .reserva-card {
-    background: rgba(255,255,255,0.03);
-    border: 1px solid rgba(255,255,255,0.08);
+    background: var(--bg-card);
+    border: 1px solid var(--border-card);
     border-radius: 16px;
     padding: 24px;
     margin-bottom: 20px;
@@ -91,14 +91,14 @@
 
 .info-label {
     font-size: 0.75rem;
-    color: rgba(255,255,255,0.45);
+    color: var(--text-muted);
     text-transform: uppercase;
     margin-bottom: 4px;
 }
 
 .info-valor {
     font-size: 1.1rem;
-    color: #fff;
+    color: var(--text-primary);
     font-family: 'Playfair Display', serif;
 }
 

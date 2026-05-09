@@ -7,6 +7,14 @@
     <link rel="stylesheet" href="../styles/booking.css">
     <link rel="stylesheet" href="../styles/global.css">
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <script>
+        // Anti-flash: aplica o tema antes do render
+        (function() {
+            var saved = localStorage.getItem('table4u-theme');
+            var theme = saved || (window.matchMedia('(prefers-color-scheme: light)').matches ? 'light' : 'dark');
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
 </head>
 <body>
 
@@ -110,5 +118,6 @@
     <script src="../scripts/profile.js"></script>
     <script src="../scripts/booking.js"></script>
 
+    <script src="../scripts/theme.js"></script>
 </body>
 </html>

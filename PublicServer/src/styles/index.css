@@ -4,16 +4,15 @@
         body, html {
             height: 100%;
             font-family: 'Poppins', sans-serif;
-            color: #FFFFFF;
+            color: var(--text-primary);
             overflow: hidden; /* Evita rolagens desnecessárias na tela principal */
         }
 
         body {
-            /* FUNDO IDEAL PARA QUALQUER RESTAURANTE: Escuro, com textura sutil e detalhes dourados bokeh */
-            background-color: #121212; /* Fundo base escuro */
+            background-color: var(--bg-base);
             background-image: 
-                linear-gradient(rgba(18, 18, 18, 0.85), rgba(18, 18, 18, 0.95)), /* Camada de escurecimento */
-                url('https://images.unsplash.com/photo-1599619126264-9f44a49c6703?q=80&w=2000&auto=format&fit=crop'); /* Textura escura premium */
+                linear-gradient(var(--bg-overlay-start), var(--bg-overlay-end)),
+                url('https://images.unsplash.com/photo-1599619126264-9f44a49c6703?q=80&w=2000&auto=format&fit=crop');
             background-size: cover;
             background-position: center;
             display: flex;
@@ -39,7 +38,7 @@
             font-size: 0.8rem;
             text-transform: uppercase;
             letter-spacing: 3px;
-            color: #B59410; /* Dourado suave */
+            color: var(--gold-dark); /* Dourado suave */
             margin-bottom: 5px;
             font-weight: 300;
         }
@@ -49,7 +48,7 @@
             font-size: 3rem; /* Tamanho base mobile */
             font-weight: 1000;
             line-height: 1.1;
-            color: #FFFFFF;
+            color: var(--text-primary);
             max-width: 80%;
            
         }
@@ -97,25 +96,25 @@
 
         /* 2. Botões Secundários (Consulta: Menu) */
         .btn-secondary {
-            background-color: rgba(255, 255, 255, 0.05);
-            color: #FFFFFF;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            background-color: var(--btn-secondary-bg);
+            color: var(--btn-secondary-text);
+            border: 1px solid var(--btn-secondary-border);
             backdrop-filter: blur(5px);
         }
 
         .btn-secondary:hover {
-            background-color: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.5);
+            background-color: var(--bg-card-hover);
+            border-color: var(--border-card);
         }
 
         /* --- RODAPÉ (FOOTER) --- */
         footer {
-            background-color: rgba(0, 0, 0, 0.5);
+            background-color: var(--bg-footer);
             padding: 20px 10px;
             font-size: 0.8rem;
             text-align: center;
             backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            border-top: 1px solid var(--border-subtle);
         }
 
         .footer-info {
