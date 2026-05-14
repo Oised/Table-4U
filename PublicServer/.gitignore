@@ -1,7 +1,3 @@
-# frontend
-
-# backend
-
-# banco de dados
-
-/src/generated/prisma
+generated/
+node_modules/
+.env
