@@ -1,59 +1,735 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Acesso Funcionário - Table 4U</title>
-    <link rel="stylesheet" href="../../../PublicServer/src/styles/login.css">
-    <link rel="stylesheet" href="../../../PublicServer/src/styles/global.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Table4U — Acesso Interno</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            var saved = localStorage.getItem('t4u-private-theme');
+            var theme = saved || 'light';
+            document.documentElement.setAttribute('data-theme', theme);
+        })();
+    </script>
+    <style>
+        /* ── TOKENS ── */
+        :root,
+        [data-theme="light"] {
+            --bg-page:        #f0f2f5;
+            --bg-card:        #ffffff;
+            --bg-input:       #f7f8fa;
+            --bg-input-focus: #ffffff;
+            --bg-sidebar:     #1c2333;
+
+            --text-primary:   #111827;
+            --text-secondary: #6b7280;
+            --text-muted:     #9ca3af;
+            --text-on-dark:   #f9fafb;
+
+            --border:         #e5e7eb;
+            --border-focus:   #2c3e50;
+
+            --accent:         #2c3e50;
+            --accent-hover:   #1a252f;
+            --accent-subtle:  rgba(44, 62, 80, 0.07);
+
+            --badge-bg:       #e8f5e9;
+            --badge-text:     #2e7d32;
+
+            --error-bg:       #fff3f3;
+            --error-border:   #fca5a5;
+            --error-text:     #b91c1c;
+
+            --shadow-card:    0 1px 3px rgba(0,0,0,0.08), 0 8px 32px rgba(0,0,0,0.06);
+            --shadow-btn:     0 2px 8px rgba(44, 62, 80, 0.25);
+
+            --toggle-bg:      #e5e7eb;
+            --toggle-knob:    #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-page:        #111827;
+            --bg-card:        #1f2937;
+            --bg-input:       #111827;
+            --bg-input-focus: #111827;
+            --bg-sidebar:     #0d1117;
+
+            --text-primary:   #f9fafb;
+            --text-secondary: #9ca3af;
+            --text-muted:     #6b7280;
+            --text-on-dark:   #f9fafb;
+
+            --border:         #374151;
+            --border-focus:   #6b8cae;
+
+            --accent:         #3a6ea5;
+            --accent-hover:   #4a80be;
+            --accent-subtle:  rgba(58, 110, 165, 0.12);
+
+            --badge-bg:       rgba(46, 125, 50, 0.18);
+            --badge-text:     #81c784;
+
+            --error-bg:       rgba(185, 28, 28, 0.1);
+            --error-border:   rgba(252, 165, 165, 0.3);
+            --error-text:     #fca5a5;
+
+            --shadow-card:    0 1px 3px rgba(0,0,0,0.4), 0 8px 32px rgba(0,0,0,0.3);
+            --shadow-btn:     0 2px 8px rgba(0, 0, 0, 0.4);
+
+            --toggle-bg:      #374151;
+            --toggle-knob:    #9ca3af;
+        }
+
+        /* ── RESET ── */
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+        html { height: 100%; }
+
+        body {
+            min-height: 100vh;
+            font-family: 'DM Sans', sans-serif;
+            background-color: var(--bg-page);
+            color: var(--text-primary);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 24px 16px;
+            transition: background-color 0.25s ease, color 0.25s ease;
+        }
+
+        /* ── THEME TOGGLE ── */
+        #toggle-theme-btn {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            width: 56px;
+            height: 28px;
+            border-radius: 14px;
+            border: 1.5px solid var(--border);
+            background: var(--toggle-bg);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            padding: 3px;
+            transition: background 0.25s, border-color 0.25s;
+            z-index: 100;
+        }
+
+        #toggle-theme-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 2px;
+        }
+
+        .toggle-knob {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: var(--toggle-knob);
+            transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 11px;
+            flex-shrink: 0;
+        }
+
+        [data-theme="dark"] .toggle-knob {
+            transform: translateX(28px);
+        }
+
+        .toggle-label {
+            position: absolute;
+            right: 6px;
+            font-size: 10px;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+            pointer-events: none;
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        [data-theme="dark"] .toggle-label { left: 6px; right: auto; }
+
+        /* ── MAIN CARD ── */
+        .login-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            box-shadow: var(--shadow-card);
+            width: 100%;
+            max-width: 420px;
+            padding: 40px 40px 36px;
+            transition: background 0.25s, border-color 0.25s, box-shadow 0.25s;
+            animation: card-in 0.35s cubic-bezier(0.16, 1, 0.3, 1) both;
+        }
+
+        @keyframes card-in {
+            from { opacity: 0; transform: translateY(16px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ── HEADER INSIDE CARD ── */
+        .login-brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin-bottom: 28px;
+        }
+
+        .brand-icon {
+            width: 36px;
+            height: 36px;
+            background: var(--accent);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .brand-icon svg {
+            width: 18px;
+            height: 18px;
+            fill: none;
+            stroke: #fff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+        }
+
+        .brand-name {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 500;
+            font-size: 1.05rem;
+            letter-spacing: -0.3px;
+            color: var(--text-primary);
+        }
+
+        .brand-badge {
+            font-size: 0.6rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.8px;
+            background: var(--badge-bg);
+            color: var(--badge-text);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        .login-heading {
+            font-size: 1.35rem;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 4px;
+            letter-spacing: -0.3px;
+        }
+
+        .login-subheading {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 28px;
+        }
+
+        /* ── DIVIDER ── */
+        .divider {
+            height: 1px;
+            background: var(--border);
+            margin-bottom: 28px;
+        }
+
+        /* ── FORM ── */
+        #login-form {
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+
+        .field-group {
+            display: flex;
+            flex-direction: column;
+            gap: 6px;
+        }
+
+        .field-label {
+            font-size: 0.8rem;
+            font-weight: 500;
+            color: var(--text-secondary);
+            letter-spacing: 0.2px;
+        }
+
+        .input-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 12px;
+            width: 16px;
+            height: 16px;
+            color: var(--text-muted);
+            pointer-events: none;
+            flex-shrink: 0;
+        }
+
+        #username-input,
+        #password-input {
+            width: 100%;
+            height: 44px;
+            padding: 0 44px 0 40px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            background: var(--bg-input);
+            border: 1.5px solid var(--border);
+            border-radius: 10px;
+            outline: none;
+            transition: border-color 0.2s, background 0.2s, box-shadow 0.2s;
+        }
+
+        #username-input::placeholder,
+        #password-input::placeholder {
+            color: var(--text-muted);
+        }
+
+        #username-input:focus,
+        #password-input:focus {
+            border-color: var(--border-focus);
+            background: var(--bg-input-focus);
+            box-shadow: 0 0 0 3px var(--accent-subtle);
+        }
+
+        .toggle-password-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            cursor: pointer;
+            color: var(--text-muted);
+            padding: 4px;
+            display: flex;
+            align-items: center;
+            border-radius: 4px;
+            transition: color 0.2s;
+        }
+
+        .toggle-password-btn:hover { color: var(--text-primary); }
+        .toggle-password-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 1px;
+        }
+
+        .toggle-password-btn svg {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* ── ERROR ── */
+        #login-error {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 14px;
+            background: var(--error-bg);
+            border: 1px solid var(--error-border);
+            border-radius: 8px;
+            font-size: 0.82rem;
+            color: var(--error-text);
+            animation: shake 0.3s cubic-bezier(0.36, 0.07, 0.19, 0.97) both;
+        }
+
+        #login-error.visible { display: flex; }
+
+        @keyframes shake {
+            10%, 90% { transform: translateX(-1px); }
+            20%, 80% { transform: translateX(2px); }
+            30%, 50%, 70% { transform: translateX(-3px); }
+            40%, 60% { transform: translateX(3px); }
+        }
+
+        #login-error svg {
+            width: 14px;
+            height: 14px;
+            flex-shrink: 0;
+        }
+
+        /* ── SUBMIT BUTTON ── */
+        #login-submit-btn {
+            width: 100%;
+            height: 46px;
+            background: var(--accent);
+            color: #ffffff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.9rem;
+            font-weight: 600;
+            letter-spacing: 0.2px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: background 0.2s, transform 0.15s, box-shadow 0.2s;
+            box-shadow: var(--shadow-btn);
+            margin-top: 4px;
+        }
+
+        #login-submit-btn:hover {
+            background: var(--accent-hover);
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(44, 62, 80, 0.35);
+        }
+
+        #login-submit-btn:active {
+            transform: translateY(0);
+        }
+
+        #login-submit-btn:focus-visible {
+            outline: 2px solid var(--accent);
+            outline-offset: 3px;
+        }
+
+        #login-submit-btn svg {
+            width: 16px;
+            height: 16px;
+            stroke: #fff;
+            stroke-width: 2;
+            stroke-linecap: round;
+            stroke-linejoin: round;
+            fill: none;
+            flex-shrink: 0;
+        }
+
+        /* ── FOOTER ── */
+        .card-footer {
+            margin-top: 28px;
+            padding-top: 20px;
+            border-top: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .footer-system-label {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+            letter-spacing: 0.3px;
+        }
+
+        .footer-version {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.65rem;
+            color: var(--text-muted);
+            background: var(--accent-subtle);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* ── TOAST (REDIRECT NOTICE) ── */
+        #toast-container {
+            position: fixed;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            z-index: 200;
+            pointer-events: none;
+        }
+
+        .toast {
+            background: var(--accent);
+            color: #fff;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.83rem;
+            font-weight: 500;
+            padding: 10px 18px;
+            border-radius: 8px;
+            white-space: nowrap;
+            animation: toast-in 0.3s ease both;
+            pointer-events: auto;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.2);
+        }
+
+        @keyframes toast-in {
+            from { opacity: 0; transform: translateY(12px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+
+        @keyframes toast-out {
+            from { opacity: 1; transform: translateY(0); }
+            to   { opacity: 0; transform: translateY(8px); }
+        }
+
+        /* ── RESPONSIVE ── */
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 32px 24px 28px;
+                border-radius: 14px;
+            }
+
+            #toggle-theme-btn {
+                top: 16px;
+                right: 16px;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .login-card { padding: 28px 18px 24px; }
+        }
+    </style>
 </head>
-<body class="login-body">
+<body>
 
-    <div class="login-container">
+    <!-- THEME TOGGLE -->
+    <button id="toggle-theme-btn" aria-label="Alternar tema claro/escuro" title="Alternar tema">
+        <div class="toggle-knob">
+            <span id="toggle-icon">☀️</span>
+        </div>
+        <span class="toggle-label" id="toggle-label">L</span>
+    </button>
 
-        <div class="login-logo">
-            <p class="login-boas-vindas">Área Restrita</p>
-            <h1 class="login-nome">Table4U</h1>
-            <p class="login-cargo">Acesso para Funcionários</p>
+    <!-- LOGIN CARD -->
+    <main class="login-card" role="main">
+
+        <div class="login-brand">
+            <div class="brand-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24">
+                    <path d="M3 10l9-7 9 7v11a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/>
+                    <path d="M9 21V12h6v9"/>
+                </svg>
+            </div>
+            <span class="brand-name">Table4U</span>
+            <span class="brand-badge">Staff</span>
         </div>
 
-        <div class="login-card">
-            <h2 class="card-title">Entrar</h2>
-            <p class="card-sub">Use suas credenciais de funcionário</p>
+        <h1 class="login-heading">Acesso interno</h1>
+        <p class="login-subheading">Restrito à equipe do restaurante</p>
 
-            <div class="input-group">
-                <label class="input-label">E-mail</label>
-                <input type="text" id="func-email" class="login-input" placeholder="funcionario@table4u.com">
-            </div>
+        <div class="divider" aria-hidden="true"></div>
 
-            <div class="input-group">
-                <label class="input-label">Senha</label>
-                <div class="input-senha-wrapper">
-                    <input type="password" id="func-senha" class="login-input" placeholder="••••••••">
-                    <button class="toggle-senha" onclick="toggleSenha('func-senha', this)">👁</button>
+        <form id="login-form" novalidate>
+
+            <div class="field-group">
+                <label class="field-label" for="username-input">E-mail</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2z"/>
+                        <polyline points="22,6 12,13 2,6"/>
+                    </svg>
+                    <input
+                        type="email"
+                        id="username-input"
+                        name="email"
+                        placeholder="usuario@rest.com"
+                        autocomplete="email"
+                        required
+                        aria-required="true"
+                        aria-describedby="login-error"
+                    >
                 </div>
             </div>
 
-            <div class="input-group">
-            <label class="input-label">Cargo</label>
-            <select id="func-cargo" class="login-input">
-                <option value="recepcao">Recepção</option> <option value="garcom">Garçom</option>
-                <option value="cozinha">Cozinha</option>
-                <option value="adm">Administração</option>
-            </select>
-        </div>
+            <div class="field-group">
+                <label class="field-label" for="password-input">Senha</label>
+                <div class="input-wrapper">
+                    <svg class="input-icon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="3" y="11" width="18" height="11" rx="2" ry="2"/>
+                        <path d="M7 11V7a5 5 0 0 1 10 0v4"/>
+                    </svg>
+                    <input
+                        type="password"
+                        id="password-input"
+                        name="password"
+                        placeholder="••••••••"
+                        autocomplete="current-password"
+                        required
+                        aria-required="true"
+                        aria-describedby="login-error"
+                    >
+                    <button
+                        type="button"
+                        class="toggle-password-btn"
+                        id="toggle-password-btn"
+                        aria-label="Mostrar senha"
+                        title="Mostrar/ocultar senha"
+                    >
+                        <svg id="eye-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+                            <circle cx="12" cy="12" r="3"/>
+                        </svg>
+                    </button>
+                </div>
+            </div>
 
-            <button class="action-btn btn-primary" onclick="fazerLoginFuncionario()">Entrar</button>
-        </div>
+            <div id="login-error" role="alert" aria-live="assertive">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                    <circle cx="12" cy="12" r="10"/>
+                    <line x1="12" y1="8" x2="12" y2="12"/>
+                    <line x1="12" y1="16" x2="12.01" y2="16"/>
+                </svg>
+                <span id="login-error-msg">Credenciais inválidas. Tente novamente.</span>
+            </div>
 
-    </div>
+            <button type="submit" id="login-submit-btn">
+                <svg viewBox="0 0 24 24" aria-hidden="true">
+                    <path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/>
+                    <polyline points="10 17 15 12 10 7"/>
+                    <line x1="15" y1="12" x2="3" y2="12"/>
+                </svg>
+                Entrar
+            </button>
 
-    <footer>
-        <p class="footer-info">Endereço e Contatos</p>
-        <p class="powerby">Powered by Table4U</p>
-    </footer>
+        </form>
 
-    <script src="../scripts/login.js"></script>
+        <footer class="card-footer">
+            <span class="footer-system-label">Sistema interno · Table4U</span>
+            <span class="footer-version">v1.0.0</span>
+        </footer>
+
+    </main>
+
+    <div id="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+    <script>
+        // ── USERS ──
+        const USERS = [
+            { email: 'admin@rest.com',     password: 'admin123',    role: 'admin',    label: 'Administrador', dest: 'admin.html'     },
+            { email: 'garcom@rest.com',    password: 'garcom123',   role: 'waiter',   label: 'Garçom',        dest: 'waiter.html'    },
+            { email: 'cozinha@rest.com',   password: 'cozinha123',  role: 'kitchen',  label: 'Cozinha',       dest: 'kitchen.html'   },
+            { email: 'recepcao@rest.com',  password: 'recepcao123', role: 'reception',label: 'Recepção',      dest: 'reception.html' },
+        ];
+
+        // ── THEME ──
+        const THEME_KEY = 't4u-private-theme';
+        const toggleBtn = document.getElementById('toggle-theme-btn');
+        const toggleIcon = document.getElementById('toggle-icon');
+        const toggleLabel = document.getElementById('toggle-label');
+
+        function applyTheme(theme) {
+            document.documentElement.setAttribute('data-theme', theme);
+            localStorage.setItem(THEME_KEY, theme);
+            toggleIcon.textContent = theme === 'dark' ? '🌙' : '☀️';
+            toggleLabel.textContent = theme === 'dark' ? 'D' : 'L';
+            toggleBtn.setAttribute('aria-label', theme === 'dark' ? 'Mudar para modo claro' : 'Mudar para modo escuro');
+        }
+
+        // Init
+        applyTheme(localStorage.getItem(THEME_KEY) || 'light');
+
+        toggleBtn.addEventListener('click', () => {
+            const current = document.documentElement.getAttribute('data-theme') || 'light';
+            applyTheme(current === 'light' ? 'dark' : 'light');
+        });
+
+        // ── PASSWORD TOGGLE ──
+        const passwordInput = document.getElementById('password-input');
+        const togglePasswordBtn = document.getElementById('toggle-password-btn');
+        const eyeIcon = document.getElementById('eye-icon');
+
+        const EYE_OPEN = `<path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/><circle cx="12" cy="12" r="3"/>`;
+        const EYE_CLOSED = `<path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/><path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/><line x1="1" y1="1" x2="23" y2="23"/>`;
+
+        togglePasswordBtn.addEventListener('click', () => {
+            const isHidden = passwordInput.type === 'password';
+            passwordInput.type = isHidden ? 'text' : 'password';
+            eyeIcon.innerHTML = isHidden ? EYE_CLOSED : EYE_OPEN;
+            togglePasswordBtn.setAttribute('aria-label', isHidden ? 'Ocultar senha' : 'Mostrar senha');
+        });
+
+        // ── TOAST ──
+        function showToast(msg, duration = 3500) {
+            const container = document.getElementById('toast-container');
+            const toast = document.createElement('div');
+            toast.className = 'toast';
+            toast.textContent = msg;
+            container.appendChild(toast);
+            setTimeout(() => {
+                toast.style.animation = 'toast-out 0.3s ease forwards';
+                setTimeout(() => toast.remove(), 300);
+            }, duration);
+        }
+
+        // ── ERROR ──
+        function showError(msg) {
+            const el = document.getElementById('login-error');
+            document.getElementById('login-error-msg').textContent = msg;
+            el.classList.add('visible');
+            // Reset animation
+            el.style.animation = 'none';
+            el.offsetHeight;
+            el.style.animation = '';
+        }
+
+        function hideError() {
+            document.getElementById('login-error').classList.remove('visible');
+        }
+
+        // Clear error on input
+        document.getElementById('username-input').addEventListener('input', hideError);
+        document.getElementById('password-input').addEventListener('input', hideError);
+
+        // ── LOGIN ──
+        document.getElementById('login-form').addEventListener('submit', function (e) {
+            e.preventDefault();
+
+            const email = document.getElementById('username-input').value.trim().toLowerCase();
+            const password = document.getElementById('password-input').value;
+
+            if (!email) {
+                showError('Por favor, informe seu e-mail.');
+                document.getElementById('username-input').focus();
+                return;
+            }
+
+            if (!password) {
+                showError('Por favor, informe sua senha.');
+                document.getElementById('password-input').focus();
+                return;
+            }
+
+            const user = USERS.find(u => u.email === email && u.password === password);
+
+            if (!user) {
+                const emailMatch = USERS.find(u => u.email === email);
+                if (emailMatch) {
+                    showError('Senha incorreta. Verifique e tente novamente.');
+                } else {
+                    showError('E-mail não reconhecido. Contate o administrador.');
+                }
+                document.getElementById('password-input').value = '';
+                document.getElementById('password-input').focus();
+                return;
+            }
+
+            // Success
+            hideError();
+            const btn = document.getElementById('login-submit-btn');
+            btn.textContent = 'Redirecionando...';
+            btn.disabled = true;
+            btn.style.opacity = '0.7';
+
+            showToast(`✓ Bem-vindo(a)! Acessando como ${user.label}.`);
+
+            // Save session (optional)
+            sessionStorage.setItem('t4u-user', JSON.stringify({ email: user.email, role: user.role, label: user.label }));
+
+            setTimeout(() => {
+                window.location.href = user.dest;
+            }, 1400);
+        });
+
+        // Enter key on email → focus password
+        document.getElementById('username-input').addEventListener('keydown', function (e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                document.getElementById('password-input').focus();
+            }
+        });
+    </script>
 </body>
 </html>
