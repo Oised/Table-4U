@@ -1,74 +1,706 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Table4U - Administração</title>
-    <link rel="stylesheet" href="../../../PublicServer/src/styles/global.css">
-    <link rel="stylesheet" href="../styles/admin.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Table4U — Admin</title>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <script>
+        (function () {
+            var saved = localStorage.getItem('t4u-private-theme');
+            document.documentElement.setAttribute('data-theme', saved || 'light');
+        })();
+    </script>
+    <style>
+        :root, [data-theme="light"] {
+            --bg-page: #f0f2f5; --bg-card: #ffffff; --bg-input: #f7f8fa;
+            --bg-sidebar: #1c2333; --bg-sidebar-hover: #232e45; --bg-topbar: #ffffff;
+            --text-primary: #111827; --text-secondary: #6b7280; --text-muted: #9ca3af;
+            --text-on-dark: #f9fafb; --text-sidebar: #cbd5e1; --text-sidebar-muted: #64748b;
+            --border: #e5e7eb; --border-focus: #2c3e50;
+            --accent: #2c3e50; --accent-hover: #1a252f; --accent-subtle: rgba(44,62,80,0.07);
+            --status-available: #16a34a; --status-available-bg: #f0fdf4; --status-available-border: #bbf7d0;
+            --status-occupied: #2563eb; --status-occupied-bg: #eff6ff; --status-occupied-border: #bfdbfe;
+            --status-unavailable: #dc2626; --status-unavailable-bg: #fff5f5; --status-unavailable-border: #fecaca;
+            --status-warning: #d97706; --status-warning-bg: #fffbeb; --status-warning-border: #fde68a;
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
+            --shadow-modal: 0 8px 40px rgba(0,0,0,0.18);
+            --toggle-bg: #e5e7eb; --toggle-knob: #ffffff; --overlay: rgba(0,0,0,0.35);
+            --chart-bar: rgba(44,62,80,0.15); --chart-bar-active: #2c3e50;
+            --chart-line: #2c3e50; --chart-grid: #e5e7eb;
+        }
+        [data-theme="dark"] {
+            --bg-page: #111827; --bg-card: #1f2937; --bg-input: #111827;
+            --bg-sidebar: #0d1117; --bg-sidebar-hover: #161d2d; --bg-topbar: #1f2937;
+            --text-primary: #f9fafb; --text-secondary: #9ca3af; --text-muted: #6b7280;
+            --text-on-dark: #f9fafb; --text-sidebar: #cbd5e1; --text-sidebar-muted: #475569;
+            --border: #374151; --border-focus: #6b8cae;
+            --accent: #3a6ea5; --accent-hover: #4a80be; --accent-subtle: rgba(58,110,165,0.12);
+            --status-available: #4ade80; --status-available-bg: rgba(22,163,74,0.1); --status-available-border: rgba(74,222,128,0.3);
+            --status-occupied: #60a5fa; --status-occupied-bg: rgba(37,99,235,0.1); --status-occupied-border: rgba(96,165,250,0.3);
+            --status-unavailable: #f87171; --status-unavailable-bg: rgba(220,38,38,0.1); --status-unavailable-border: rgba(248,113,113,0.3);
+            --status-warning: #fbbf24; --status-warning-bg: rgba(217,119,6,0.1); --status-warning-border: rgba(251,191,36,0.3);
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
+            --shadow-modal: 0 8px 40px rgba(0,0,0,0.5);
+            --toggle-bg: #374151; --toggle-knob: #9ca3af; --overlay: rgba(0,0,0,0.55);
+            --chart-bar: rgba(58,110,165,0.2); --chart-bar-active: #3a6ea5;
+            --chart-line: #3a6ea5; --chart-grid: #374151;
+        }
+
+        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+        html, body { height: 100%; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg-page); color: var(--text-primary); display: flex; transition: background 0.25s, color 0.25s; overflow: hidden; }
+
+        /* ── SIDEBAR ── */
+        #sidebar { width: 220px; min-width: 220px; background: var(--bg-sidebar); display: flex; flex-direction: column; height: 100vh; transition: width 0.25s cubic-bezier(0.4,0,0.2,1), min-width 0.25s cubic-bezier(0.4,0,0.2,1); overflow: hidden; flex-shrink: 0; z-index: 50; }
+        #sidebar.collapsed { width: 56px; min-width: 56px; }
+        .sidebar-header { border-bottom: 1px solid rgba(255,255,255,0.06); min-height: 60px; }
+        .sidebar-toggle { background: none; border: none; cursor: pointer; color: var(--text-sidebar-muted); padding: 18px 14px; display: flex; align-items: center; gap: 10px; width: 100%; transition: color 0.2s, background 0.2s; white-space: nowrap; overflow: hidden; }
+        .sidebar-toggle:hover { color: var(--text-sidebar); background: var(--bg-sidebar-hover); }
+        .sidebar-toggle svg { width: 18px; height: 18px; flex-shrink: 0; }
+        .sidebar-brand { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; font-weight: 500; color: var(--text-on-dark); transition: opacity 0.2s; }
+        #sidebar.collapsed .sidebar-brand { opacity: 0; width: 0; }
+        .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; overflow-x: hidden; }
+        .nav-section-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-sidebar-muted); padding: 8px 16px 4px; white-space: nowrap; overflow: hidden; transition: opacity 0.2s; }
+        #sidebar.collapsed .nav-section-label { opacity: 0; }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; color: var(--text-sidebar); text-decoration: none; font-size: 0.875rem; border-radius: 0; cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap; border: none; background: none; width: 100%; text-align: left; position: relative; }
+        .nav-item:hover { background: var(--bg-sidebar-hover); color: #fff; }
+        .nav-item.active { background: var(--bg-sidebar-hover); color: #fff; }
+        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); border-radius: 0 2px 2px 0; }
+        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
+        .nav-label { transition: opacity 0.2s; white-space: nowrap; overflow: hidden; }
+        #sidebar.collapsed .nav-label { opacity: 0; width: 0; overflow: hidden; }
+        #sidebar.collapsed .nav-item[data-tooltip]:hover::after { content: attr(data-tooltip); position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); background: #1c2333; color: #fff; font-size: 0.78rem; padding: 5px 10px; border-radius: 6px; white-space: nowrap; pointer-events: none; z-index: 200; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
+        .sidebar-footer { padding: 0; border-top: 1px solid rgba(255,255,255,0.06); }
+        .nav-item.logout { color: #f87171; }
+        .nav-item.logout:hover { background: rgba(248,113,113,0.1); color: #fca5a5; }
+        .nav-item.disabled { opacity: 0.45; cursor: not-allowed; }
+        .nav-item.disabled:hover { background: none; color: var(--text-sidebar); }
+        .nav-badge { font-size: 0.6rem; font-weight: 700; background: rgba(255,255,255,0.12); color: var(--text-sidebar-muted); padding: 2px 6px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; margin-left: auto; flex-shrink: 0; }
+        #sidebar.collapsed .nav-badge { display: none; }
+
+        /* ── MAIN ── */
+        #main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
+
+        /* ── TOPBAR ── */
+        #topbar { height: 56px; background: var(--bg-topbar); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 12px; flex-shrink: 0; transition: background 0.25s, border-color 0.25s; }
+        .topbar-page-info { display: flex; align-items: center; gap: 8px; flex: 1; }
+        .topbar-page-icon { width: 28px; height: 28px; background: var(--accent-subtle); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+        .topbar-page-icon svg { width: 14px; height: 14px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .topbar-page-name { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); }
+        .topbar-separator { width: 1px; height: 14px; background: var(--border); }
+        .topbar-page-title { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+        .topbar-controls { display: flex; align-items: center; gap: 10px; }
+        #toggle-theme-btn { width: 44px; height: 24px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--toggle-bg); cursor: pointer; display: flex; align-items: center; padding: 2px; transition: background 0.25s, border-color 0.25s; }
+        .toggle-knob { width: 18px; height: 18px; border-radius: 50%; background: var(--toggle-knob); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
+        [data-theme="dark"] .toggle-knob { transform: translateX(20px); }
+        #profile-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); border: 2px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500; color: #fff; transition: border-color 0.2s, transform 0.15s; flex-shrink: 0; }
+        #profile-btn:hover { border-color: var(--accent); transform: scale(1.05); }
+        #profile-dropdown { display: none; position: absolute; top: 52px; right: 16px; width: 240px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-modal); z-index: 200; overflow: hidden; animation: dropdown-in 0.18s ease both; }
+        #profile-dropdown.open { display: block; }
+        @keyframes dropdown-in { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
+        .dropdown-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .dropdown-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: #fff; flex-shrink: 0; }
+        .dropdown-name { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
+        .dropdown-role { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
+        .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: 0.83rem; color: var(--text-secondary); cursor: pointer; transition: background 0.15s, color 0.15s; border: none; background: none; width: 100%; text-align: left; text-decoration: none; }
+        .dropdown-item:hover { background: var(--accent-subtle); color: var(--text-primary); }
+        .dropdown-item svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .dropdown-item.danger { color: #ef4444; }
+        .dropdown-item.danger:hover { background: rgba(239,68,68,0.07); }
+        .dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
+
+        /* ── CONTENT ── */
+        #content { flex: 1; overflow-y: auto; padding: 0; }
+        .content-inner { padding: 24px 24px 32px; }
+
+        /* ── SECTION VIEWS ── */
+        .section-view { display: none; }
+        .section-view.active { display: block; }
+
+        /* ── KPI CARDS ── */
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+        .kpi-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: var(--shadow-card); position: relative; overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.09); }
+        .kpi-card::after { content: ''; position: absolute; top: 0; right: 0; width: 60px; height: 60px; border-radius: 0 14px 0 60px; opacity: 0.06; }
+        .kpi-card.green::after { background: var(--status-available); }
+        .kpi-card.blue::after { background: var(--status-occupied); }
+        .kpi-card.red::after { background: var(--status-unavailable); }
+        .kpi-card.yellow::after { background: var(--status-warning); }
+        .kpi-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px; }
+        .kpi-value { font-family: 'IBM Plex Mono', monospace; font-size: 1.75rem; font-weight: 500; color: var(--text-primary); line-height: 1; margin-bottom: 6px; }
+        .kpi-delta { font-size: 0.75rem; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+        .kpi-delta.up { color: var(--status-available); }
+        .kpi-delta.down { color: var(--status-unavailable); }
+        .kpi-delta svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        .kpi-icon { position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+        .kpi-card.green .kpi-icon { background: var(--status-available-bg); color: var(--status-available); }
+        .kpi-card.blue .kpi-icon { background: var(--status-occupied-bg); color: var(--status-occupied); }
+        .kpi-card.red .kpi-icon { background: var(--status-unavailable-bg); color: var(--status-unavailable); }
+        .kpi-card.yellow .kpi-icon { background: var(--status-warning-bg); color: var(--status-warning); }
+        .kpi-icon svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ── CHARTS ROW ── */
+        .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+        .chart-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card); }
+        .chart-card.wide { grid-column: span 2; }
+        .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .chart-title { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }
+        .chart-subtitle { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+        .chart-legend { display: flex; gap: 14px; }
+        .legend-dot-item { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--text-secondary); }
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        /* SVG BAR CHART */
+        .chart-svg-wrap { width: 100%; overflow: hidden; }
+        .chart-svg-wrap svg { width: 100%; display: block; }
+        .bar-chart-group text { font-family: 'DM Sans', sans-serif; fill: var(--text-muted); font-size: 10px; }
+        .bar-rect { transition: opacity 0.15s; cursor: pointer; rx: 4; }
+        .bar-rect:hover { opacity: 0.75; }
+
+        /* DONUT CHART */
+        .donut-wrap { display: flex; align-items: center; gap: 24px; }
+        .donut-svg { flex-shrink: 0; }
+        .donut-legend { display: flex; flex-direction: column; gap: 10px; }
+        .donut-legend-item { display: flex; align-items: center; gap: 8px; }
+        .donut-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+        .donut-legend-label { font-size: 0.78rem; color: var(--text-secondary); }
+        .donut-legend-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; font-weight: 500; color: var(--text-primary); margin-left: auto; }
+
+        /* ── BOTTOM ROW ── */
+        .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .list-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card); }
+        .list-title { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; }
+        .list-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .list-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .list-rank { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-muted); width: 18px; flex-shrink: 0; }
+        .list-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+        .list-name { font-size: 0.83rem; font-weight: 500; color: var(--text-primary); flex: 1; min-width: 0; }
+        .list-meta { font-size: 0.72rem; color: var(--text-muted); }
+        .list-amount { font-family: 'IBM Plex Mono', monospace; font-size: 0.83rem; font-weight: 500; color: var(--text-primary); flex-shrink: 0; }
+        .list-bar-wrap { margin-top: 4px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+        .list-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+
+        /* ── ACTIVITY FEED ── */
+        .activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+        .activity-dot.green { background: var(--status-available); }
+        .activity-dot.blue { background: var(--status-occupied); }
+        .activity-dot.yellow { background: var(--status-warning); }
+        .activity-dot.red { background: var(--status-unavailable); }
+        .activity-text { font-size: 0.8rem; color: var(--text-secondary); flex: 1; line-height: 1.45; }
+        .activity-text strong { color: var(--text-primary); font-weight: 600; }
+        .activity-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; margin-top: 2px; }
+
+        /* ── PLACEHOLDER (seções vazias) ── */
+        .placeholder-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 480px; text-align: center; padding: 48px 24px; }
+        .placeholder-icon { width: 64px; height: 64px; border-radius: 18px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .placeholder-icon svg { width: 28px; height: 28px; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+        .placeholder-title { font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+        .placeholder-desc { font-size: 0.875rem; color: var(--text-secondary); max-width: 380px; line-height: 1.6; margin-bottom: 20px; }
+        .placeholder-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--status-warning-bg); color: var(--status-warning); border: 1px solid var(--status-warning-border); border-radius: 20px; font-size: 0.72rem; font-weight: 600; padding: 5px 12px; }
+        .placeholder-badge svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ── TOAST ── */
+        #toast-container { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 300; pointer-events: none; }
+        .toast { background: var(--accent); color: #fff; font-size: 0.83rem; font-weight: 500; padding: 10px 18px; border-radius: 8px; white-space: nowrap; animation: toast-in 0.3s ease both; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+        @keyframes toast-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes toast-out { from { opacity:1; } to { opacity:0; transform:translateY(8px); } }
+
+        @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 800px) {
+            #sidebar { display: none; }
+            .charts-row, .bottom-row { grid-template-columns: 1fr; }
+            .chart-card.wide { grid-column: span 1; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .content-inner { padding: 16px 12px 24px; }
+        }
+    </style>
 </head>
-<body class="admin-body">
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h1 class="nome-restaurante" style="font-size: 1.5rem;">Table4U</h1>
-            <p style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">Administrador</p>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="admin.html" class="ativo">Início / Dashboard</a></li>
-            <li><a href="#">Restaurante</a></li>
-            <li><a href="#">Faturamento</a></li>
-            <li><a href="#">Pratos / Menu</a></li>
-            <li><a href="employee.html">Funcionários</a></li>
-            <li><a href="#">Modo Funcionário</a></li>
-            <li><a href="#">Modo Cozinha</a></li>
-        </ul>
-    </nav>
-    <header class="admin-header">
-            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-            <h2 class="page-title">Painel Administrativo</h2>
-            <div style="width: 24px;"></div>
-    </header>
-    <button class="perfil-btn" onclick="togglePerfil()">
-        <div class="perfil-iniciais"></div>
-    </button>
-    <div id="popup-perfil" class="popup-perfil">
-        <div class="perfil-topo">
-            <div class="perfil-avatar-grande"></div>
-            <div>
-                <p class="perfil-nome"></p>
-                <p class="perfil-email"></p>
-            </div>
-        </div>
-        <a href="#" class="perfil-menu-item sair" onclick="sairFuncionario()">Sair</a>
+<body>
+
+<!-- ══════════════════════ SIDEBAR ══════════════════════ -->
+<nav id="sidebar" aria-label="Navegação lateral">
+    <div class="sidebar-header">
+        <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Recolher/expandir menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <span class="sidebar-brand">Table4U</span>
+        </button>
     </div>
-    <main class="main-content">
-        <section class="stats-grid">
-            <div class="stat-card">
-                <h3>Pedidos</h3>
-                <div class="fake-chart"></div>
+    <div class="sidebar-nav">
+        <div class="nav-section-label">Administração</div>
+        <button class="nav-item active" data-tooltip="Dashboard" data-section="dashboard" onclick="showSection('dashboard', this)">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            <span class="nav-label">Dashboard</span>
+        </button>
+        <button class="nav-item" data-tooltip="Restaurante" data-section="restaurante" onclick="showSection('restaurante', this)">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="nav-label">Restaurante</span>
+        </button>
+        <button class="nav-item" data-tooltip="Faturamento" data-section="faturamento" onclick="showSection('faturamento', this)">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span class="nav-label">Faturamento</span>
+        </button>
+        <button class="nav-item" data-tooltip="Pratos / Menu" data-section="menu" onclick="showSection('menu', this)">
+            <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+            <span class="nav-label">Pratos / Menu</span>
+        </button>
+        <button class="nav-item" data-tooltip="Funcionários" data-section="funcionarios" onclick="showSection('funcionarios', this)">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span class="nav-label">Funcionários</span>
+        </button>
+
+        <div class="nav-section-label">Modos</div>
+        <button class="nav-item disabled" data-tooltip="Modo Garçom" onclick="showToast('Em desenvolvimento')">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+            <span class="nav-label">Modo Garçom</span>
+            <span class="nav-badge">Em breve</span>
+        </button>
+        <button class="nav-item disabled" data-tooltip="Modo Cozinha" onclick="showToast('Em desenvolvimento')">
+            <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 0-2 2h-3"/></svg>
+            <span class="nav-label">Modo Cozinha</span>
+            <span class="nav-badge">Em breve</span>
+        </button>
+        <button class="nav-item disabled" data-tooltip="Modo Recepção" onclick="showToast('Em desenvolvimento')">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1 19.79 19.79 0 0 1 1.56 4.5 2 2 0 0 1 3.54 2.32h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l1.78-1.78a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span class="nav-label">Modo Recepção</span>
+            <span class="nav-badge">Em breve</span>
+        </button>
+    </div>
+    <div class="sidebar-footer">
+        <button class="nav-item logout" data-tooltip="Sair" onclick="logout()">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span class="nav-label">Sair</span>
+        </button>
+    </div>
+</nav>
+
+<!-- ══════════════════════ MAIN ══════════════════════ -->
+<div id="main">
+    <header id="topbar">
+        <div class="topbar-page-info">
+            <div class="topbar-page-icon" id="topbar-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
             </div>
-            <div class="stat-card">
-                <h3>Faturamento</h3>
-                <div class="fake-chart"></div>
+            <span class="topbar-page-name">Admin</span>
+            <div class="topbar-separator" aria-hidden="true"></div>
+            <span class="topbar-page-title" id="topbar-title">Dashboard</span>
+        </div>
+        <div class="topbar-controls">
+            <button id="toggle-theme-btn" aria-label="Alternar tema">
+                <div class="toggle-knob"><span id="toggle-icon">☀️</span></div>
+            </button>
+            <button id="profile-btn" aria-label="Menu do perfil">
+                <span id="profile-initials">A</span>
+            </button>
+        </div>
+    </header>
+
+    <div id="profile-dropdown" role="menu">
+        <div class="dropdown-header">
+            <div class="dropdown-avatar" id="dropdown-avatar">A</div>
+            <div>
+                <div class="dropdown-name" id="dropdown-name">Administrador</div>
+                <div class="dropdown-role" id="dropdown-role">admin@table4u.com</div>
             </div>
-            <div class="stat-card">
-                <h3>Crescimento</h3>
-                <div class="fake-chart"></div>
+        </div>
+        <button class="dropdown-item" onclick="showToast('Em desenvolvimento')">
+            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            Meu perfil
+        </button>
+        <button class="dropdown-item" onclick="showToast('Em desenvolvimento')">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+            Configurações
+        </button>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item danger" onclick="logout()">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sair
+        </button>
+    </div>
+
+    <!-- ══ CONTENT ══ -->
+    <main id="content">
+
+        <!-- ─── DASHBOARD ─── -->
+        <div class="section-view active" id="section-dashboard">
+            <div class="content-inner">
+
+                <!-- KPIs -->
+                <div class="kpi-grid">
+                    <div class="kpi-card green">
+                        <div class="kpi-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                        <div class="kpi-label">Faturamento hoje</div>
+                        <div class="kpi-value">R$4.820</div>
+                        <div class="kpi-delta up">
+                            <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+                            +12% vs ontem
+                        </div>
+                    </div>
+                    <div class="kpi-card blue">
+                        <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                        <div class="kpi-label">Clientes atendidos</div>
+                        <div class="kpi-value">87</div>
+                        <div class="kpi-delta up">
+                            <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+                            +5 vs ontem
+                        </div>
+                    </div>
+                    <div class="kpi-card yellow">
+                        <div class="kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></div>
+                        <div class="kpi-label">Ocupação atual</div>
+                        <div class="kpi-value">68%</div>
+                        <div class="kpi-delta up">
+                            <svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg>
+                            8 de 12 mesas
+                        </div>
+                    </div>
+                    <div class="kpi-card red">
+                        <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg></div>
+                        <div class="kpi-label">Ticket médio</div>
+                        <div class="kpi-value">R$55</div>
+                        <div class="kpi-delta down">
+                            <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
+                            -3% vs semana
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="charts-row">
+                    <!-- Bar Chart: Faturamento semanal -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <div class="chart-title">Faturamento — últimos 7 dias</div>
+                                <div class="chart-subtitle">Valores em R$</div>
+                            </div>
+                        </div>
+                        <div class="chart-svg-wrap">
+                            <svg viewBox="0 0 380 160" class="bar-chart-group" preserveAspectRatio="none">
+                                <!-- Grid lines -->
+                                <line x1="0" y1="20" x2="380" y2="20" stroke="var(--chart-grid)" stroke-width="1"/>
+                                <line x1="0" y1="60" x2="380" y2="60" stroke="var(--chart-grid)" stroke-width="1"/>
+                                <line x1="0" y1="100" x2="380" y2="100" stroke="var(--chart-grid)" stroke-width="1"/>
+                                <line x1="0" y1="140" x2="380" y2="140" stroke="var(--chart-grid)" stroke-width="1"/>
+                                <!-- Labels Y -->
+                                <text x="2" y="18" text-anchor="start" font-size="9">6k</text>
+                                <text x="2" y="58" text-anchor="start" font-size="9">4k</text>
+                                <text x="2" y="98" text-anchor="start" font-size="9">2k</text>
+                                <!-- Bars -->
+                                <rect class="bar-rect" x="30" y="82" width="32" height="58" fill="var(--chart-bar-active)" opacity="0.35"/>
+                                <rect class="bar-rect" x="80" y="60" width="32" height="80" fill="var(--chart-bar-active)" opacity="0.35"/>
+                                <rect class="bar-rect" x="130" y="40" width="32" height="100" fill="var(--chart-bar-active)" opacity="0.35"/>
+                                <rect class="bar-rect" x="180" y="70" width="32" height="70" fill="var(--chart-bar-active)" opacity="0.35"/>
+                                <rect class="bar-rect" x="230" y="50" width="32" height="90" fill="var(--chart-bar-active)" opacity="0.5"/>
+                                <rect class="bar-rect" x="280" y="30" width="32" height="110" fill="var(--chart-bar-active)" opacity="0.7"/>
+                                <rect class="bar-rect" x="330" y="22" width="32" height="118" fill="var(--chart-bar-active)"/>
+                                <!-- X Labels -->
+                                <text x="46" y="155" text-anchor="middle">Seg</text>
+                                <text x="96" y="155" text-anchor="middle">Ter</text>
+                                <text x="146" y="155" text-anchor="middle">Qua</text>
+                                <text x="196" y="155" text-anchor="middle">Qui</text>
+                                <text x="246" y="155" text-anchor="middle">Sex</text>
+                                <text x="296" y="155" text-anchor="middle">Sáb</text>
+                                <text x="346" y="155" text-anchor="middle" font-weight="600" fill="var(--text-primary)">Dom</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <!-- Donut Chart: Distribuição por categoria -->
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <div class="chart-title">Vendas por categoria</div>
+                                <div class="chart-subtitle">Distribuição de hoje</div>
+                            </div>
+                        </div>
+                        <div class="donut-wrap">
+                            <svg class="donut-svg" viewBox="0 0 120 120" width="120" height="120">
+                                <!-- Donut segments via stroke-dasharray trick -->
+                                <circle cx="60" cy="60" r="45" fill="none" stroke="var(--border)" stroke-width="18"/>
+                                <!-- Pratos principais: 40% = 113.1 of 282.7 -->
+                                <circle cx="60" cy="60" r="45" fill="none" stroke="#2c3e50" stroke-width="18"
+                                    stroke-dasharray="113 283" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+                                <!-- Bebidas: 28% = 79.2 -->
+                                <circle cx="60" cy="60" r="45" fill="none" stroke="#3a6ea5" stroke-width="18"
+                                    stroke-dasharray="79 283" stroke-dashoffset="-113" transform="rotate(-90 60 60)"/>
+                                <!-- Sobremesas: 18% = 50.9 -->
+                                <circle cx="60" cy="60" r="45" fill="none" stroke="#16a34a" stroke-width="18"
+                                    stroke-dasharray="51 283" stroke-dashoffset="-192" transform="rotate(-90 60 60)"/>
+                                <!-- Entradas: 14% = 39.6 -->
+                                <circle cx="60" cy="60" r="45" fill="none" stroke="#d97706" stroke-width="18"
+                                    stroke-dasharray="40 283" stroke-dashoffset="-243" transform="rotate(-90 60 60)"/>
+                                <text x="60" y="56" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" font-weight="500" fill="var(--text-primary)">R$4.8k</text>
+                                <text x="60" y="70" text-anchor="middle" font-family="DM Sans" font-size="8" fill="var(--text-muted)">total hoje</text>
+                            </svg>
+                            <div class="donut-legend">
+                                <div class="donut-legend-item">
+                                    <div class="donut-legend-dot" style="background:#2c3e50"></div>
+                                    <span class="donut-legend-label">Pratos</span>
+                                    <span class="donut-legend-val">40%</span>
+                                </div>
+                                <div class="donut-legend-item">
+                                    <div class="donut-legend-dot" style="background:#3a6ea5"></div>
+                                    <span class="donut-legend-label">Bebidas</span>
+                                    <span class="donut-legend-val">28%</span>
+                                </div>
+                                <div class="donut-legend-item">
+                                    <div class="donut-legend-dot" style="background:#16a34a"></div>
+                                    <span class="donut-legend-label">Sobremesas</span>
+                                    <span class="donut-legend-val">18%</span>
+                                </div>
+                                <div class="donut-legend-item">
+                                    <div class="donut-legend-dot" style="background:#d97706"></div>
+                                    <span class="donut-legend-label">Entradas</span>
+                                    <span class="donut-legend-val">14%</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Row -->
+                <div class="bottom-row">
+                    <!-- Top pratos -->
+                    <div class="list-card">
+                        <div class="list-title">🍽️ Pratos mais pedidos hoje</div>
+                        <div class="list-row">
+                            <span class="list-rank">#1</span>
+                            <div class="list-icon">🥩</div>
+                            <div style="flex:1; min-width:0">
+                                <div class="list-name">Picanha grelhada</div>
+                                <div class="list-bar-wrap"><div class="list-bar-fill" style="width:88%"></div></div>
+                            </div>
+                            <span class="list-amount">×22</span>
+                        </div>
+                        <div class="list-row">
+                            <span class="list-rank">#2</span>
+                            <div class="list-icon">🍝</div>
+                            <div style="flex:1; min-width:0">
+                                <div class="list-name">Massa ao sugo</div>
+                                <div class="list-bar-wrap"><div class="list-bar-fill" style="width:65%"></div></div>
+                            </div>
+                            <span class="list-amount">×16</span>
+                        </div>
+                        <div class="list-row">
+                            <span class="list-rank">#3</span>
+                            <div class="list-icon">🍤</div>
+                            <div style="flex:1; min-width:0">
+                                <div class="list-name">Camarão na manteiga</div>
+                                <div class="list-bar-wrap"><div class="list-bar-fill" style="width:52%"></div></div>
+                            </div>
+                            <span class="list-amount">×13</span>
+                        </div>
+                        <div class="list-row">
+                            <span class="list-rank">#4</span>
+                            <div class="list-icon">🥗</div>
+                            <div style="flex:1; min-width:0">
+                                <div class="list-name">Salada tropical</div>
+                                <div class="list-bar-wrap"><div class="list-bar-fill" style="width:38%"></div></div>
+                            </div>
+                            <span class="list-amount">×9</span>
+                        </div>
+                        <div class="list-row">
+                            <span class="list-rank">#5</span>
+                            <div class="list-icon">🍰</div>
+                            <div style="flex:1; min-width:0">
+                                <div class="list-name">Petit gateau</div>
+                                <div class="list-bar-wrap"><div class="list-bar-fill" style="width:28%"></div></div>
+                            </div>
+                            <span class="list-amount">×7</span>
+                        </div>
+                    </div>
+
+                    <!-- Atividade recente -->
+                    <div class="list-card">
+                        <div class="list-title">⚡ Atividade recente</div>
+                        <div class="activity-item">
+                            <div class="activity-dot green"></div>
+                            <div class="activity-text"><strong>Mesa 3</strong> realizou check-in — 4 pessoas</div>
+                            <div class="activity-time">18:42</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-dot blue"></div>
+                            <div class="activity-text"><strong>Mesa 7</strong> fez novo pedido — R$148,00</div>
+                            <div class="activity-time">18:39</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-dot green"></div>
+                            <div class="activity-text"><strong>Mesa 1</strong> encerrou conta — R$212,00</div>
+                            <div class="activity-time">18:25</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-dot yellow"></div>
+                            <div class="activity-text">Estoque de <strong>salmão</strong> abaixo do mínimo</div>
+                            <div class="activity-time">18:10</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-dot blue"></div>
+                            <div class="activity-text"><strong>Mesa 9</strong> fez novo pedido — R$86,00</div>
+                            <div class="activity-time">17:58</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-dot red"></div>
+                            <div class="activity-text"><strong>Mesa 5</strong> marcada como indisponível</div>
+                            <div class="activity-time">17:40</div>
+                        </div>
+                        <div class="activity-item">
+                            <div class="activity-dot green"></div>
+                            <div class="activity-text"><strong>Mesa 11</strong> realizou check-in — 2 pessoas</div>
+                            <div class="activity-time">17:32</div>
+                        </div>
+                    </div>
+                </div>
+
             </div>
-        </section>
-        <section class="info-section">
-            <div class="info-box">Resumo geral do restaurante</div>
-            <div class="info-box">Relatórios e dados específicos</div>
-            <div class="info-box">Informações adicionais</div>
-        </section>
+        </div>
+
+        <!-- ─── RESTAURANTE ─── -->
+        <div class="section-view" id="section-restaurante">
+            <div class="content-inner">
+                <div class="placeholder-page">
+                    <div class="placeholder-icon">
+                        <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                    </div>
+                    <div class="placeholder-title">Informações do Restaurante</div>
+                    <div class="placeholder-desc">Esta seção exibirá dados detalhados do restaurante: configurações gerais, horários de funcionamento, capacidade, fotos e informações de contato.</div>
+                    <div class="placeholder-badge">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Em implementação
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── FATURAMENTO ─── -->
+        <div class="section-view" id="section-faturamento">
+            <div class="content-inner">
+                <div class="placeholder-page">
+                    <div class="placeholder-icon">
+                        <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    </div>
+                    <div class="placeholder-title">Faturamento & Financeiro</div>
+                    <div class="placeholder-desc">Esta seção exibirá relatórios financeiros completos: faturamento por período, comparativos mensais, custos, margem de lucro e exportação de dados.</div>
+                    <div class="placeholder-badge">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Em implementação
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── MENU ─── -->
+        <div class="section-view" id="section-menu">
+            <div class="content-inner">
+                <div class="placeholder-page">
+                    <div class="placeholder-icon">
+                        <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+                    </div>
+                    <div class="placeholder-title">Pratos & Menu</div>
+                    <div class="placeholder-desc">Esta seção exibirá o estado atual do menu: disponibilidade de pratos, gestão de categorias, preços, fotos e controle de estoque de ingredientes.</div>
+                    <div class="placeholder-badge">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Em implementação
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ─── FUNCIONÁRIOS ─── -->
+        <div class="section-view" id="section-funcionarios">
+            <div class="content-inner">
+                <div class="placeholder-page">
+                    <div class="placeholder-icon">
+                        <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+                    </div>
+                    <div class="placeholder-title">Funcionários</div>
+                    <div class="placeholder-desc">Esta seção exibirá informações sobre a equipe: cadastro de funcionários, cargos, escala de trabalho, desempenho e histórico de atividades.</div>
+                    <div class="placeholder-badge">
+                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+                        Em implementação
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </main>
-    <footer>
-        <p class="footer-info">Endereço e Contatos</p>
-        <p class="powerby">Powered by Table4U</p>
-    </footer>
-    <script src="../../../PublicServer/src/scripts/profile.js"></script>
-    <script src="../scripts/admin.js"></script>
+</div>
+
+<div id="toast-container" aria-live="polite"></div>
+
+<script>
+    // ── THEME ──
+    const html = document.documentElement;
+    const themeBtn = document.getElementById('toggle-theme-btn');
+    const themeIcon = document.getElementById('toggle-icon');
+
+    function applyTheme(t) {
+        html.setAttribute('data-theme', t);
+        localStorage.setItem('t4u-private-theme', t);
+        themeIcon.textContent = t === 'dark' ? '🌙' : '☀️';
+    }
+    applyTheme(localStorage.getItem('t4u-private-theme') || 'light');
+    themeBtn.addEventListener('click', () => {
+        applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    });
+
+    // ── SIDEBAR TOGGLE ──
+    document.getElementById('sidebar-toggle-btn').addEventListener('click', () => {
+        document.getElementById('sidebar').classList.toggle('collapsed');
+    });
+
+    // ── PROFILE DROPDOWN ──
+    const profileBtn = document.getElementById('profile-btn');
+    const dropdown = document.getElementById('profile-dropdown');
+    profileBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        dropdown.classList.toggle('open');
+    });
+    document.addEventListener('click', (e) => {
+        if (!dropdown.contains(e.target)) dropdown.classList.remove('open');
+    });
+
+    // ── SECTION NAVIGATION ──
+    const sectionTitles = {
+        dashboard: 'Dashboard',
+        restaurante: 'Restaurante',
+        faturamento: 'Faturamento',
+        menu: 'Pratos / Menu',
+        funcionarios: 'Funcionários'
+    };
+
+    const sectionIcons = {
+        dashboard: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
+        restaurante: `<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+        faturamento: `<svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+        menu: `<svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>`,
+        funcionarios: `<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`
+    };
+
+    function showSection(id, navEl) {
+        // Hide all
+        document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        // Show target
+        document.getElementById('section-' + id).classList.add('active');
+        if (navEl) navEl.classList.add('active');
+        // Update topbar
+        document.getElementById('topbar-title').textContent = sectionTitles[id] || id;
+        document.getElementById('topbar-icon').innerHTML = sectionIcons[id] || '';
+    }
+
+    // ── TOAST ──
+    function showToast(msg, duration = 3200) {
+        const c = document.getElementById('toast-container');
+        const t = document.createElement('div');
+        t.className = 'toast'; t.textContent = msg; c.appendChild(t);
+        setTimeout(() => { t.style.animation = 'toast-out 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, duration);
+    }
+
+    // ── LOGOUT ──
+    function logout() { showToast('Saindo...'); setTimeout(() => window.location.href = 'login.html', 1000); }
+</script>
 </body>
 </html>
