@@ -2,7 +2,7 @@
 <html lang="pt" data-theme="light">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
     <title>Table4U — Fechar Conta</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <script>
@@ -12,423 +12,711 @@
         })();
     </script>
     <style>
-        :root,
-        [data-theme="light"] {
-            --bg-page:         #f0f2f5;
-            --bg-card:         #ffffff;
-            --bg-sidebar:      #1c2333;
-            --bg-sidebar-hover:#232e45;
-            --bg-topbar:       #ffffff;
-            --text-primary:    #111827;
-            --text-secondary:  #6b7280;
-            --text-muted:      #9ca3af;
-            --text-on-dark:    #f9fafb;
-            --text-sidebar:    #cbd5e1;
-            --text-sidebar-muted: #64748b;
-            --border:          #e5e7eb;
-            --border-focus:    #2c3e50;
-            --accent:          #2c3e50;
-            --accent-hover:    #1a252f;
-            --accent-subtle:   rgba(44,62,80,0.07);
-            --shadow-card:     0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
-            --toggle-bg:       #e5e7eb;
-            --toggle-knob:     #ffffff;
+        :root, [data-theme="light"] {
+            --bg-page: #f0f2f5; --bg-card: #ffffff; --bg-input: #f7f8fa;
+            --bg-sidebar: #1c2333; --bg-sidebar-hover: #232e45; --bg-topbar: #ffffff;
+            --text-primary: #111827; --text-secondary: #6b7280; --text-muted: #9ca3af;
+            --text-on-dark: #f9fafb; --text-sidebar: #cbd5e1; --text-sidebar-muted: #64748b;
+            --border: #e5e7eb; --border-focus: #2c3e50;
+            --accent: #2c3e50; --accent-hover: #1a252f; --accent-subtle: rgba(44,62,80,0.07);
+            --danger: #dc2626; --danger-subtle: rgba(220,38,38,0.07); --danger-border: rgba(220,38,38,0.2);
+            --success: #16a34a; --success-bg: #f0fdf4; --success-border: #bbf7d0;
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
+            --shadow-modal: 0 8px 40px rgba(0,0,0,0.18);
+            --toggle-bg: #e5e7eb; --toggle-knob: #ffffff; --overlay: rgba(0,0,0,0.4);
+            --receipt-stripe: #f9fafb;
+            --dashed-border: #d1d5db;
         }
-
         [data-theme="dark"] {
-            --bg-page:         #111827;
-            --bg-card:         #1f2937;
-            --bg-sidebar:      #0d1117;
-            --bg-sidebar-hover:#161d2d;
-            --bg-topbar:       #1f2937;
-            --text-primary:    #f9fafb;
-            --text-secondary:  #9ca3af;
-            --text-muted:      #6b7280;
-            --text-on-dark:    #f9fafb;
-            --text-sidebar:    #cbd5e1;
-            --text-sidebar-muted: #475569;
-            --border:          #374151;
-            --border-focus:    #6b8cae;
-            --accent:          #3a6ea5;
-            --accent-hover:    #4a80be;
-            --accent-subtle:   rgba(58,110,165,0.12);
-            --shadow-card:     0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
-            --toggle-bg:       #374151;
-            --toggle-knob:     #9ca3af;
+            --bg-page: #111827; --bg-card: #1f2937; --bg-input: #111827;
+            --bg-sidebar: #0d1117; --bg-sidebar-hover: #161d2d; --bg-topbar: #1f2937;
+            --text-primary: #f9fafb; --text-secondary: #9ca3af; --text-muted: #6b7280;
+            --text-on-dark: #f9fafb; --text-sidebar: #cbd5e1; --text-sidebar-muted: #475569;
+            --border: #374151; --border-focus: #6b8cae;
+            --accent: #3a6ea5; --accent-hover: #4a80be; --accent-subtle: rgba(58,110,165,0.12);
+            --danger: #f87171; --danger-subtle: rgba(248,113,113,0.08); --danger-border: rgba(248,113,113,0.2);
+            --success: #4ade80; --success-bg: rgba(22,163,74,0.1); --success-border: rgba(74,222,128,0.3);
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
+            --shadow-modal: 0 8px 40px rgba(0,0,0,0.5);
+            --toggle-bg: #374151; --toggle-knob: #9ca3af; --overlay: rgba(0,0,0,0.6);
+            --receipt-stripe: rgba(255,255,255,0.02);
+            --dashed-border: #4b5563;
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; }
+        body { font-family: 'DM Sans', sans-serif; background: var(--bg-page); color: var(--text-primary); display: flex; transition: background 0.25s, color 0.25s; overflow: hidden; }
 
-        body {
-            font-family: 'DM Sans', sans-serif;
-            background: var(--bg-page);
-            color: var(--text-primary);
-            display: flex;
-            transition: background 0.25s, color 0.25s;
-            overflow: hidden;
-        }
-
-        /* ── SIDEBAR ── */
-        #sidebar {
-            width: 220px; min-width: 220px;
-            background: var(--bg-sidebar);
-            display: flex; flex-direction: column;
-            height: 100vh;
-            transition: width 0.25s cubic-bezier(0.4,0,0.2,1), min-width 0.25s cubic-bezier(0.4,0,0.2,1);
-            overflow: hidden; flex-shrink: 0; z-index: 50;
-        }
+        /* SIDEBAR */
+        #sidebar { width: 220px; min-width: 220px; background: var(--bg-sidebar); display: flex; flex-direction: column; height: 100vh; transition: width 0.25s cubic-bezier(0.4,0,0.2,1), min-width 0.25s cubic-bezier(0.4,0,0.2,1); overflow: hidden; flex-shrink: 0; z-index: 50; }
         #sidebar.collapsed { width: 56px; min-width: 56px; }
-
         .sidebar-header { border-bottom: 1px solid rgba(255,255,255,0.06); min-height: 60px; }
-
-        .sidebar-toggle {
-            background: none; border: none; cursor: pointer;
-            color: var(--text-sidebar-muted);
-            padding: 18px 14px;
-            display: flex; align-items: center; gap: 10px;
-            width: 100%;
-            transition: color 0.2s, background 0.2s;
-            white-space: nowrap; overflow: hidden;
-        }
+        .sidebar-toggle { background: none; border: none; cursor: pointer; color: var(--text-sidebar-muted); padding: 18px 14px; display: flex; align-items: center; gap: 10px; width: 100%; transition: color 0.2s, background 0.2s; white-space: nowrap; overflow: hidden; }
         .sidebar-toggle:hover { color: var(--text-sidebar); background: var(--bg-sidebar-hover); }
         .sidebar-toggle svg { width: 18px; height: 18px; flex-shrink: 0; }
-        .sidebar-brand {
-            font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; font-weight: 500;
-            color: var(--text-on-dark); transition: opacity 0.2s;
-        }
+        .sidebar-brand { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; font-weight: 500; color: var(--text-on-dark); transition: opacity 0.2s; }
         #sidebar.collapsed .sidebar-brand { opacity: 0; width: 0; }
-
         .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; overflow-x: hidden; }
-
-        .nav-section-label {
-            font-size: 0.62rem; font-weight: 600; text-transform: uppercase;
-            letter-spacing: 0.1em; color: var(--text-sidebar-muted);
-            padding: 8px 16px 4px; white-space: nowrap; overflow: hidden;
-            transition: opacity 0.2s;
-        }
+        .nav-section-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-sidebar-muted); padding: 8px 16px 4px; white-space: nowrap; transition: opacity 0.2s; }
         #sidebar.collapsed .nav-section-label { opacity: 0; }
-
-        .nav-item {
-            display: flex; align-items: center; gap: 12px;
-            padding: 10px 14px; color: var(--text-sidebar);
-            font-size: 0.875rem; border: none; background: none;
-            width: 100%; text-align: left; cursor: pointer;
-            transition: background 0.15s, color 0.15s;
-            white-space: nowrap; text-decoration: none; position: relative;
-        }
+        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; color: var(--text-sidebar); text-decoration: none; font-size: 0.875rem; border: none; background: none; width: 100%; text-align: left; cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap; position: relative; }
         .nav-item:hover { background: var(--bg-sidebar-hover); color: #fff; }
         .nav-item.active { background: var(--bg-sidebar-hover); color: #fff; }
-        .nav-item.active::before {
-            content: ''; position: absolute; left: 0; top: 0; bottom: 0;
-            width: 3px; background: var(--accent); border-radius: 0 2px 2px 0;
-        }
-        .nav-item svg {
-            width: 18px; height: 18px; flex-shrink: 0;
-            fill: none; stroke: currentColor; stroke-width: 1.8;
-            stroke-linecap: round; stroke-linejoin: round;
-        }
+        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); border-radius: 0 2px 2px 0; }
+        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
         .nav-label { transition: opacity 0.2s; white-space: nowrap; overflow: hidden; }
         #sidebar.collapsed .nav-label { opacity: 0; width: 0; overflow: hidden; }
-
-        #sidebar.collapsed .nav-item[data-tooltip]:hover::after {
-            content: attr(data-tooltip);
-            position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%);
-            background: #1c2333; color: #fff; font-size: 0.78rem;
-            padding: 5px 10px; border-radius: 6px; white-space: nowrap;
-            pointer-events: none; z-index: 200; box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-        }
-
+        #sidebar.collapsed .nav-item[data-tooltip]:hover::after { content: attr(data-tooltip); position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); background: #1c2333; color: #fff; font-size: 0.78rem; padding: 5px 10px; border-radius: 6px; white-space: nowrap; pointer-events: none; z-index: 200; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
         .sidebar-footer { padding: 0; border-top: 1px solid rgba(255,255,255,0.06); }
         .nav-item.logout { color: #f87171; }
         .nav-item.logout:hover { background: rgba(248,113,113,0.1); color: #fca5a5; }
 
-        /* ── MAIN ── */
+        /* MAIN */
         #main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
 
-        /* ── TOPBAR ── */
-        #topbar {
-            height: 56px; background: var(--bg-topbar);
-            border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; padding: 0 20px; gap: 12px;
-            flex-shrink: 0; transition: background 0.25s, border-color 0.25s;
-        }
+        /* TOPBAR */
+        #topbar { height: 56px; background: var(--bg-topbar); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 12px; flex-shrink: 0; transition: background 0.25s, border-color 0.25s; }
         .topbar-page-info { display: flex; align-items: center; gap: 8px; flex: 1; }
-        .topbar-page-icon {
-            width: 28px; height: 28px; background: var(--accent-subtle);
-            border-radius: 7px; display: flex; align-items: center; justify-content: center;
-        }
-        .topbar-page-icon svg {
-            width: 14px; height: 14px; fill: none; stroke: var(--accent);
-            stroke-width: 2; stroke-linecap: round; stroke-linejoin: round;
-        }
+        .topbar-page-icon { width: 28px; height: 28px; background: var(--accent-subtle); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
+        .topbar-page-icon svg { width: 14px; height: 14px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .topbar-page-name { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); }
         .topbar-separator { width: 1px; height: 14px; background: var(--border); }
         .topbar-page-title { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
         .topbar-controls { display: flex; align-items: center; gap: 10px; }
-
-        #toggle-theme-btn {
-            width: 44px; height: 24px; border-radius: 12px;
-            border: 1.5px solid var(--border); background: var(--toggle-bg);
-            cursor: pointer; display: flex; align-items: center; padding: 2px;
-            transition: background 0.25s, border-color 0.25s;
-        }
-        .toggle-knob {
-            width: 18px; height: 18px; border-radius: 50%;
-            background: var(--toggle-knob);
-            transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 10px; flex-shrink: 0;
-        }
+        #toggle-theme-btn { width: 44px; height: 24px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--toggle-bg); cursor: pointer; display: flex; align-items: center; padding: 2px; transition: background 0.25s, border-color 0.25s; }
+        .toggle-knob { width: 18px; height: 18px; border-radius: 50%; background: var(--toggle-knob); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
         [data-theme="dark"] .toggle-knob { transform: translateX(20px); }
-
-        #profile-btn {
-            width: 34px; height: 34px; border-radius: 50%;
-            background: var(--accent); border: 2px solid var(--border);
-            cursor: pointer; display: flex; align-items: center; justify-content: center;
-            font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500;
-            color: #fff; transition: border-color 0.2s, transform 0.15s; flex-shrink: 0;
-        }
+        #profile-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); border: 2px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500; color: #fff; transition: border-color 0.2s, transform 0.15s; flex-shrink: 0; }
         #profile-btn:hover { border-color: var(--accent); transform: scale(1.05); }
-
-        #profile-dropdown {
-            display: none; position: absolute; top: 52px; right: 16px;
-            width: 240px; background: var(--bg-card); border: 1px solid var(--border);
-            border-radius: 12px; box-shadow: 0 8px 40px rgba(0,0,0,0.18);
-            z-index: 200; overflow: hidden; animation: dropdown-in 0.18s ease both;
-        }
+        #profile-dropdown { display: none; position: absolute; top: 52px; right: 16px; width: 240px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-modal); z-index: 200; overflow: hidden; animation: dropdown-in 0.18s ease both; }
         #profile-dropdown.open { display: block; }
         @keyframes dropdown-in { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
-
-        .dropdown-header {
-            padding: 16px; border-bottom: 1px solid var(--border);
-            display: flex; align-items: center; gap: 10px;
-        }
-        .dropdown-avatar {
-            width: 36px; height: 36px; border-radius: 50%; background: var(--accent);
-            display: flex; align-items: center; justify-content: center;
-            font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: #fff; flex-shrink: 0;
-        }
+        .dropdown-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .dropdown-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: #fff; flex-shrink: 0; }
         .dropdown-name { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
         .dropdown-role { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
-        .dropdown-item {
-            display: flex; align-items: center; gap: 10px; padding: 11px 16px;
-            font-size: 0.83rem; color: var(--text-secondary); cursor: pointer;
-            transition: background 0.15s, color 0.15s; border: none; background: none;
-            width: 100%; text-align: left; text-decoration: none;
-        }
+        .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: 0.83rem; color: var(--text-secondary); cursor: pointer; transition: background 0.15s, color 0.15s; border: none; background: none; width: 100%; text-align: left; }
         .dropdown-item:hover { background: var(--accent-subtle); color: var(--text-primary); }
         .dropdown-item svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .dropdown-item.danger { color: #ef4444; }
         .dropdown-item.danger:hover { background: rgba(239,68,68,0.07); }
         .dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
-        /* ── CONTENT ── */
-        #content { flex: 1; overflow-y: auto; padding: 24px 20px; display: flex; align-items: center; justify-content: center; }
+        /* CONTENT */
+        #content { flex: 1; overflow-y: auto; padding: 20px 16px 100px; }
 
-        .wip-card {
+        /* ── RECEIPT CARD ── */
+        .receipt-card {
             background: var(--bg-card);
             border: 1px solid var(--border);
             border-radius: 16px;
-            padding: 48px 40px;
             box-shadow: var(--shadow-card);
+            overflow: hidden;
+            max-width: 480px;
+            margin: 0 auto;
+        }
+
+        /* Receipt header */
+        .receipt-header {
+            padding: 20px 20px 16px;
+            border-bottom: 2px dashed var(--dashed-border);
             text-align: center;
-            max-width: 420px;
-            width: 100%;
         }
 
-        .wip-icon { font-size: 2.8rem; margin-bottom: 16px; }
-
-        .wip-title {
-            font-size: 1.1rem; font-weight: 600;
-            color: var(--text-primary); margin-bottom: 8px;
-        }
-
-        .wip-desc {
-            font-size: 0.85rem; color: var(--text-secondary);
-            line-height: 1.6; margin-bottom: 8px;
-        }
-
-        .wip-table-info {
+        .receipt-brand {
             font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.78rem; color: var(--text-muted);
-            margin-bottom: 28px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            letter-spacing: 0.15em;
+            margin-bottom: 6px;
         }
 
-        .btn-release {
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 12px 24px; margin-bottom: 12px;
-            background: var(--accent); color: #fff;
-            border: none; border-radius: 10px;
-            font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600;
-            cursor: pointer; width: 100%; justify-content: center;
+        .receipt-table {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            letter-spacing: -0.5px;
+            margin-bottom: 4px;
+        }
+
+        .receipt-meta {
+            font-size: 0.75rem;
+            color: var(--text-muted);
+            font-family: 'IBM Plex Mono', monospace;
+        }
+
+        /* Receipt items */
+        .receipt-body { padding: 0 20px; }
+
+        /* Round group */
+        .round-group { padding: 14px 0 0; }
+
+        .round-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.65rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--text-muted);
+            margin-bottom: 8px;
+        }
+
+        .round-label::after {
+            content: '';
+            flex: 1;
+            height: 1px;
+            background: var(--border);
+        }
+
+        .receipt-line {
+            display: flex;
+            align-items: flex-start;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 6px 0;
+            font-size: 0.875rem;
+        }
+
+        .receipt-line:nth-child(even) {
+            background: var(--receipt-stripe);
+            margin: 0 -20px;
+            padding: 6px 20px;
+        }
+
+        .receipt-line-left { flex: 1; min-width: 0; }
+
+        .receipt-line-name {
+            color: var(--text-primary);
+            font-weight: 500;
+            line-height: 1.3;
+        }
+
+        .receipt-line-note {
+            font-size: 0.72rem;
+            color: var(--text-muted);
+            font-style: italic;
+            margin-top: 1px;
+        }
+
+        .receipt-line-right {
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .receipt-line-qty {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.7rem;
+            color: var(--text-muted);
+        }
+
+        .receipt-line-price {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.83rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        /* Subtotal per round */
+        .round-subtotal {
+            display: flex;
+            justify-content: flex-end;
+            gap: 8px;
+            padding: 8px 0 12px;
+            border-bottom: 1px solid var(--border);
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        .round-subtotal span:last-child {
+            font-family: 'IBM Plex Mono', monospace;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        /* ── SUMMARY ── */
+        .receipt-summary {
+            padding: 16px 20px;
+            border-top: 2px dashed var(--dashed-border);
+        }
+
+        .summary-line {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 5px 0;
+            font-size: 0.875rem;
+        }
+
+        .summary-line-label { color: var(--text-secondary); }
+        .summary-line-value { font-family: 'IBM Plex Mono', monospace; color: var(--text-primary); font-weight: 500; }
+
+        /* Service charge toggle */
+        .service-charge-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
+
+        .service-label { display: flex; align-items: center; gap: 8px; }
+
+        .service-label-text { font-size: 0.875rem; color: var(--text-secondary); }
+
+        .service-tag {
+            font-size: 0.62rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.06em;
+            color: var(--accent);
+            background: var(--accent-subtle);
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+
+        /* Toggle switch */
+        .switch {
+            width: 40px; height: 22px;
+            border-radius: 11px;
+            border: none;
+            cursor: pointer;
+            display: flex; align-items: center;
+            padding: 2px;
+            transition: background 0.25s;
+            background: var(--toggle-bg);
+            flex-shrink: 0;
+        }
+
+        .switch.on { background: var(--accent); }
+
+        .switch-knob {
+            width: 18px; height: 18px;
+            border-radius: 50%;
+            background: var(--toggle-knob);
+            transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
+            flex-shrink: 0;
+        }
+
+        .switch.on .switch-knob { transform: translateX(18px); }
+
+        .service-value {
+            font-family: 'IBM Plex Mono', monospace;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: var(--text-primary);
+            min-width: 72px;
+            text-align: right;
+        }
+
+        /* Total */
+        .summary-total {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 10px;
+            padding: 14px 0 4px;
+            border-top: 2px solid var(--border);
+        }
+
+        .total-label { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
+        .total-value { font-family: 'IBM Plex Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent); }
+
+        /* Empty state */
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
+        .empty-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+        .empty-desc { font-size: 0.83rem; color: var(--text-secondary); line-height: 1.6; }
+
+        /* ── ACTION BAR ── */
+        .action-bar {
+            position: fixed;
+            bottom: 0; left: 220px; right: 0;
+            background: var(--bg-topbar);
+            border-top: 1px solid var(--border);
+            padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0));
+            display: flex;
+            gap: 10px;
+            z-index: 30;
+            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
+            transition: left 0.25s cubic-bezier(0.4,0,0.2,1);
+        }
+        #sidebar.collapsed ~ * .action-bar,
+        body.sidebar-collapsed .action-bar { left: 56px; }
+        @media (max-width: 600px) { .action-bar { left: 0; } }
+
+        .action-btn {
+            flex: 1;
+            padding: 13px 16px;
+            border-radius: 12px;
+            border: none;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
             transition: background 0.15s, transform 0.1s;
-            box-shadow: 0 2px 8px rgba(44,62,80,0.25);
+            text-decoration: none;
         }
-        .btn-release:hover { background: var(--accent-hover); transform: translateY(-1px); }
-        .btn-release:active { transform: translateY(0); }
-            display: inline-flex; align-items: center; gap: 8px;
-            padding: 11px 20px;
-            background: var(--accent-subtle); color: var(--accent);
-            border: 1px solid var(--border); border-radius: 10px;
-            font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600;
-            cursor: pointer; text-decoration: none;
-            transition: background 0.15s, color 0.15s;
-        }
-        .btn-back:hover { background: var(--border); color: var(--text-primary); }
-        .btn-back svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        @media (max-width: 600px) {
-            #sidebar { display: none; }
-            #content { padding: 16px; }
-            .wip-card { padding: 36px 24px; }
-        }
+        .action-btn:active { transform: scale(0.98); }
+
+        .action-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+
+        .btn-back { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--border); flex: 0 0 auto; padding: 13px 18px; }
+        .btn-back:hover { background: var(--border); }
+
+        .btn-close { background: var(--accent); color: #fff; }
+        .btn-close:hover { background: var(--accent-hover); }
+
+        /* CONFIRM MODAL */
+        #confirm-overlay { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 110; align-items: flex-end; justify-content: center; }
+        #confirm-overlay.open { display: flex; }
+        #confirm-modal { background: var(--bg-card); border-radius: 20px 20px 0 0; width: 100%; max-width: 480px; padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0)); box-shadow: var(--shadow-modal); animation: sheet-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
+        @keyframes sheet-up { from { transform: translateY(100%); } to { transform: translateY(0); } }
+        .confirm-handle { width: 36px; height: 4px; background: var(--border); border-radius: 2px; margin: 0 auto 16px; }
+        .confirm-icon { font-size: 2.2rem; text-align: center; margin-bottom: 10px; }
+        .confirm-title { font-size: 1rem; font-weight: 700; color: var(--text-primary); text-align: center; margin-bottom: 6px; }
+        .confirm-total { font-family: 'IBM Plex Mono', monospace; font-size: 1.4rem; font-weight: 700; color: var(--accent); text-align: center; margin-bottom: 6px; }
+        .confirm-desc { font-size: 0.82rem; color: var(--text-secondary); text-align: center; line-height: 1.5; margin-bottom: 20px; }
+        .confirm-actions { display: flex; gap: 10px; }
+        .confirm-btn { flex: 1; padding: 13px; border-radius: 10px; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+        .confirm-btn:active { transform: scale(0.98); }
+        .confirm-btn-secondary { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--border); }
+        .confirm-btn-primary { background: var(--success); color: #fff; }
+        .confirm-btn-primary:hover { filter: brightness(0.92); }
+
+        /* TOAST */
+        #toast-container { position: fixed; bottom: 90px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 300; pointer-events: none; }
+        .toast { background: var(--accent); color: #fff; font-size: 0.83rem; font-weight: 500; padding: 10px 18px; border-radius: 8px; white-space: nowrap; animation: toast-in 0.3s ease both; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+        @keyframes toast-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes toast-out { from { opacity:1; } to { opacity:0; transform:translateY(8px); } }
+
+        @media (max-width: 600px) { #sidebar { display: none; } }
     </style>
 </head>
 <body>
 
-    <!-- SIDEBAR -->
-    <nav id="sidebar" aria-label="Navegação lateral">
-        <div class="sidebar-header">
-            <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Recolher/expandir menu">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                    <line x1="3" y1="6"  x2="21" y2="6"/>
-                    <line x1="3" y1="12" x2="21" y2="12"/>
-                    <line x1="3" y1="18" x2="21" y2="18"/>
-                </svg>
-                <span class="sidebar-brand">Table4U</span>
-            </button>
-        </div>
-        <div class="sidebar-nav">
-            <div class="nav-section-label">Garçom</div>
-            <a class="nav-item" href="waiter.html" data-tooltip="Mesas">
-                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-                <span class="nav-label">Mesas</span>
-            </a>
-            <button class="nav-item active" data-tooltip="Pedidos">
-                <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-                <span class="nav-label">Pedidos</span>
-            </button>
-        </div>
-        <div class="sidebar-footer">
-            <button class="nav-item logout" data-tooltip="Sair" onclick="logout()">
-                <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                <span class="nav-label">Sair</span>
-            </button>
-        </div>
-    </nav>
+<nav id="sidebar" aria-label="Navegação lateral">
+    <div class="sidebar-header">
+        <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Recolher/expandir menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <span class="sidebar-brand">Table4U</span>
+        </button>
+    </div>
+    <div class="sidebar-nav">
+        <div class="nav-section-label">Garçom</div>
+        <a class="nav-item" href="waiter.html" data-tooltip="Mesas">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+            <span class="nav-label">Mesas</span>
+        </a>
+        <button class="nav-item" data-tooltip="Pedido" onclick="showToast('Você não pode fazer isso aqui!')">
+            <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+            <span class="nav-label">Pedido</span>
+        </button>
+        <button class="nav-item active" data-tooltip="Fechar Conta">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span class="nav-label">Fechar Conta</span>
+        </button>
+    </div>
+    <div class="sidebar-footer">
+        <button class="nav-item logout" data-tooltip="Sair" onclick="logout()">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span class="nav-label">Sair</span>
+        </button>
+    </div>
+</nav>
 
-    <!-- MAIN -->
-    <div id="main">
-        <header id="topbar">
-            <div class="topbar-page-info">
-                <div class="topbar-page-icon" aria-hidden="true">
-                    <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/></svg>
-                </div>
-                <span class="topbar-page-name">Garçom</span>
-                <div class="topbar-separator" aria-hidden="true"></div>
-                <span class="topbar-page-title">Fechar Conta</span>
+<div id="main">
+    <header id="topbar">
+        <div class="topbar-page-info">
+            <div class="topbar-page-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             </div>
-            <div class="topbar-controls">
-                <button id="toggle-theme-btn" aria-label="Alternar tema">
-                    <div class="toggle-knob"><span id="toggle-icon">☀️</span></div>
-                </button>
-                <button id="profile-btn" aria-label="Menu do perfil">
-                    <span id="profile-initials">G</span>
-                </button>
-            </div>
-        </header>
-
-        <div id="profile-dropdown">
-            <div class="dropdown-header">
-                <div class="dropdown-avatar" id="dropdown-avatar">G</div>
-                <div>
-                    <div class="dropdown-name" id="dropdown-name">Garçom</div>
-                    <div class="dropdown-role" id="dropdown-role">garcom@rest.com</div>
-                </div>
-            </div>
-            <div class="dropdown-divider"></div>
-            <button class="dropdown-item danger" onclick="logout()">
-                <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-                Sair
+            <span class="topbar-page-name">Garçom</span>
+            <div class="topbar-separator" aria-hidden="true"></div>
+            <span class="topbar-page-title" id="topbar-title">Fechar Conta</span>
+        </div>
+        <div class="topbar-controls">
+            <button id="toggle-theme-btn" aria-label="Alternar tema">
+                <div class="toggle-knob"><span id="toggle-icon">☀️</span></div>
+            </button>
+            <button id="profile-btn" aria-label="Menu do perfil">
+                <span id="profile-initials">G</span>
             </button>
         </div>
+    </header>
 
-        <main id="content">
-            <div class="wip-card">
-                <div class="wip-icon">💳</div>
-                <div class="wip-title">Fechar Conta</div>
-                <p class="wip-desc">Esta página está em desenvolvimento. Em breve você poderá visualizar e fechar a conta de uma mesa a partir daqui.</p>
-                <p class="wip-table-info" id="table-info">—</p>
-                <button class="btn-release" id="btn-release" onclick="releaseTable()">
-                    ✅ Liberar mesa (teste)
-                </button>
-                <a class="btn-back" href="waiter.html">
-                    <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
-                    Voltar às mesas
-                </a>
+    <div id="profile-dropdown">
+        <div class="dropdown-header">
+            <div class="dropdown-avatar" id="dropdown-avatar">G</div>
+            <div>
+                <div class="dropdown-name" id="dropdown-name">Garçom</div>
+                <div class="dropdown-role" id="dropdown-role">garcom@rest.com</div>
             </div>
-        </main>
+        </div>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item danger" onclick="logout()">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sair
+        </button>
     </div>
 
-    <script>
-        // Table param
-        const params = new URLSearchParams(window.location.search);
-        const tableId = params.get('table');
-        if (tableId) document.getElementById('table-info').textContent = `Mesa ${tableId}`;
+    <main id="content"></main>
+</div>
 
-        // Release table (test button)
-        function releaseTable() {
-            if (!tableId) { alert('Nenhuma mesa identificada.'); return; }
+<!-- ACTION BAR -->
+<div class="action-bar" id="action-bar" style="display:none">
+    <a class="action-btn btn-back" href="waiter.html">
+        <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
+    </a>
+    <button class="action-btn btn-close" onclick="openConfirmModal()">
+        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
+        Fechar e liberar mesa
+    </button>
+</div>
 
-            // Read tables state from sessionStorage (set by waiter.html if implemented)
-            // For now: just navigate back with a flag so waiter.html can mark it available
-            sessionStorage.setItem(`t4u-release-table-${tableId}`, 'true');
+<!-- CONFIRM MODAL -->
+<div id="confirm-overlay" role="dialog" aria-modal="true">
+    <div id="confirm-modal">
+        <div class="confirm-handle" aria-hidden="true"></div>
+        <div class="confirm-icon">💳</div>
+        <div class="confirm-title">Confirmar fechamento?</div>
+        <div class="confirm-total" id="confirm-total-display">R$ 0,00</div>
+        <p class="confirm-desc">A conta será encerrada e a mesa ficará disponível novamente.</p>
+        <div class="confirm-actions">
+            <button class="confirm-btn confirm-btn-secondary" onclick="closeConfirmModal()">Cancelar</button>
+            <button class="confirm-btn confirm-btn-primary" onclick="closeTable()">✓ Confirmar</button>
+        </div>
+    </div>
+</div>
 
-            const btn = document.getElementById('btn-release');
-            btn.textContent = '✓ Mesa liberada!';
-            btn.disabled = true;
-            btn.style.opacity = '0.7';
+<div id="toast-container" aria-live="polite"></div>
 
-            setTimeout(() => { window.location.href = 'waiter.html'; }, 1000);
-        }
+<script>
+    const params  = new URLSearchParams(window.location.search);
+    const tableId = params.get('table') || '?';
 
-        // Theme
-        const THEME_KEY = 't4u-private-theme';
-        function applyTheme(t) {
-            document.documentElement.setAttribute('data-theme', t);
-            localStorage.setItem(THEME_KEY, t);
-            document.getElementById('toggle-icon').textContent = t === 'dark' ? '🌙' : '☀️';
-        }
-        applyTheme(localStorage.getItem(THEME_KEY) || 'light');
-        document.getElementById('toggle-theme-btn').addEventListener('click', () => {
-            applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-        });
+    let serviceChargeOn = true;
+    let subtotalGlobal = 0;
 
-        // Sidebar
-        document.getElementById('sidebar-toggle-btn').addEventListener('click', () => {
-            document.getElementById('sidebar').classList.toggle('collapsed');
-        });
+    // ── THEME ──
+    function applyTheme(t) {
+        document.documentElement.setAttribute('data-theme', t);
+        localStorage.setItem('t4u-private-theme', t);
+        document.getElementById('toggle-icon').textContent = t === 'dark' ? '🌙' : '☀️';
+    }
+    applyTheme(localStorage.getItem('t4u-private-theme') || 'light');
+    document.getElementById('toggle-theme-btn').addEventListener('click', () => {
+        applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
+    });
 
-        // Profile
-        function getUser() {
-            try { return JSON.parse(sessionStorage.getItem('t4u-user')) || { label: 'Garçom', email: 'garcom@rest.com' }; }
-            catch { return { label: 'Garçom', email: 'garcom@rest.com' }; }
-        }
+    // ── SIDEBAR ──
+    document.getElementById('sidebar-toggle-btn').addEventListener('click', () => {
+        const sidebar = document.getElementById('sidebar');
+        sidebar.classList.toggle('collapsed');
+        document.body.classList.toggle('sidebar-collapsed', sidebar.classList.contains('collapsed'));
+        const bar = document.getElementById('action-bar');
+        if (bar) bar.style.left = sidebar.classList.contains('collapsed') ? '56px' : '220px';
+    });
+
+    // ── PROFILE ──
+    function getUser() {
+        try { return JSON.parse(sessionStorage.getItem('t4u-user')) || { label: 'Garçom', email: 'garcom@rest.com' }; }
+        catch { return { label: 'Garçom', email: 'garcom@rest.com' }; }
+    }
+    function initProfileUI() {
         const user = getUser();
-        const initials = user.label.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-        document.getElementById('profile-initials').textContent = initials;
-        document.getElementById('dropdown-avatar').textContent  = initials;
-        document.getElementById('dropdown-name').textContent    = user.label;
-        document.getElementById('dropdown-role').textContent    = user.email;
+        const initials = user.label.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+        ['profile-initials','dropdown-avatar'].forEach(id => document.getElementById(id).textContent = initials);
+        document.getElementById('dropdown-name').textContent = user.label;
+        document.getElementById('dropdown-role').textContent = user.email;
+    }
+    const profileBtn = document.getElementById('profile-btn');
+    const profileDropdown = document.getElementById('profile-dropdown');
+    profileBtn.addEventListener('click', e => { e.stopPropagation(); profileDropdown.classList.toggle('open'); });
+    document.addEventListener('click', () => profileDropdown.classList.remove('open'));
+    profileDropdown.addEventListener('click', e => e.stopPropagation());
+    function logout() { sessionStorage.removeItem('t4u-user'); window.location.href = 'login.html'; }
 
-        const profileBtn = document.getElementById('profile-btn');
-        const profileDropdown = document.getElementById('profile-dropdown');
-        profileBtn.addEventListener('click', e => { e.stopPropagation(); profileDropdown.classList.toggle('open'); });
-        document.addEventListener('click', () => profileDropdown.classList.remove('open'));
-        profileDropdown.addEventListener('click', e => e.stopPropagation());
+    // ── HELPERS ──
+    function fmt(n) { return 'R$ ' + n.toFixed(2).replace('.', ','); }
+    function fmtTime(ts) { return new Date(ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); }
+    function fmtDate(ts) { return new Date(ts).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' }); }
 
-        function logout() { sessionStorage.removeItem('t4u-user'); window.location.href = 'login.html'; }
-    </script>
+    // ── LOAD ORDERS ──
+    function getOrders() {
+        try { return JSON.parse(sessionStorage.getItem(`t4u-orders-table-${tableId}`)) || []; }
+        catch { return []; }
+    }
+
+    // ── RENDER ──
+    function render() {
+        const orders = getOrders();
+        const content = document.getElementById('content');
+        document.getElementById('topbar-title').textContent = `Fechar Conta — Mesa ${tableId}`;
+
+        if (!orders.length) {
+            content.innerHTML = `
+                <div class="receipt-card">
+                    <div class="empty-state">
+                        <div class="empty-icon">🧾</div>
+                        <div class="empty-title">Nenhum pedido registrado</div>
+                        <p class="empty-desc">Esta mesa ainda não possui pedidos. Volte e realize um pedido primeiro.</p>
+                    </div>
+                </div>
+                <div style="max-width:480px;margin:12px auto 0">
+                    <a class="action-btn btn-back" href="waiter.html" style="display:flex;align-items:center;gap:8px;padding:13px 18px;background:var(--accent-subtle);color:var(--accent);border:1px solid var(--border);border-radius:12px;text-decoration:none;font-weight:600;font-size:0.875rem">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+                        Voltar às mesas
+                    </a>
+                </div>`;
+            return;
+        }
+
+        // Calculate subtotal from all rounds
+        subtotalGlobal = orders.reduce((s, r) => s + r.total, 0);
+        const serviceAmt = serviceChargeOn ? subtotalGlobal * 0.1 : 0;
+        const totalFinal = subtotalGlobal + serviceAmt;
+
+        // First order timestamp for date ref
+        const openedAt = orders[0].timestamp;
+        const closedAt = Date.now();
+
+        // Build rounds HTML
+        let roundsHTML = orders.map((round, idx) => {
+            const roundTotal = round.items.reduce((s, i) => s + i.price * i.qty, 0);
+            const itemsHTML = round.items.map((item, i) => `
+                <div class="receipt-line">
+                    <div class="receipt-line-left">
+                        <div class="receipt-line-name">${item.name}</div>
+                        ${item.note ? `<div class="receipt-line-note">📝 ${item.note}</div>` : ''}
+                    </div>
+                    <div class="receipt-line-right">
+                        <div class="receipt-line-qty">×${item.qty}</div>
+                        <div class="receipt-line-price">${fmt(item.price * item.qty)}</div>
+                    </div>
+                </div>`).join('');
+
+            return `
+                <div class="round-group">
+                    <div class="round-label">Rodada ${idx + 1} · ${fmtTime(round.timestamp)}</div>
+                    ${itemsHTML}
+                    <div class="round-subtotal">
+                        <span>Subtotal rodada ${idx + 1}</span>
+                        <span>${fmt(roundTotal)}</span>
+                    </div>
+                </div>`;
+        }).join('');
+
+        content.innerHTML = `
+            <div class="receipt-card">
+                <div class="receipt-header">
+                    <div class="receipt-brand">Table4U · Nota de consumo</div>
+                    <div class="receipt-table">Mesa ${tableId}</div>
+                    <div class="receipt-meta">Abertura ${fmtDate(openedAt)} ${fmtTime(openedAt)} · ${orders.length} rodada${orders.length !== 1 ? 's' : ''}</div>
+                </div>
+
+                <div class="receipt-body">
+                    ${roundsHTML}
+                </div>
+
+                <div class="receipt-summary">
+                    <div class="summary-line">
+                        <span class="summary-line-label">Subtotal</span>
+                        <span class="summary-line-value" id="subtotal-display">${fmt(subtotalGlobal)}</span>
+                    </div>
+
+                    <div class="service-charge-row">
+                        <div class="service-label">
+                            <span class="service-label-text">Taxa de serviço</span>
+                            <span class="service-tag">10%</span>
+                        </div>
+                        <div style="display:flex;align-items:center;gap:10px">
+                            <span class="service-value" id="service-display">${fmt(serviceAmt)}</span>
+                            <button class="switch ${serviceChargeOn ? 'on' : ''}" id="service-switch" onclick="toggleService()" aria-label="Incluir taxa de serviço">
+                                <div class="switch-knob"></div>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="summary-total">
+                        <span class="total-label">Total</span>
+                        <span class="total-value" id="total-display">${fmt(totalFinal)}</span>
+                    </div>
+                </div>
+            </div>`;
+
+        document.getElementById('action-bar').style.display = 'flex';
+        updateConfirmTotal();
+    }
+
+    function toggleService() {
+        serviceChargeOn = !serviceChargeOn;
+        const serviceAmt = serviceChargeOn ? subtotalGlobal * 0.1 : 0;
+        const totalFinal = subtotalGlobal + serviceAmt;
+        const sw = document.getElementById('service-switch');
+        if (sw) sw.classList.toggle('on', serviceChargeOn);
+        const sd = document.getElementById('service-display');
+        if (sd) sd.textContent = fmt(serviceAmt);
+        const td = document.getElementById('total-display');
+        if (td) td.textContent = fmt(totalFinal);
+        updateConfirmTotal();
+    }
+
+    function updateConfirmTotal() {
+        const serviceAmt = serviceChargeOn ? subtotalGlobal * 0.1 : 0;
+        const total = subtotalGlobal + serviceAmt;
+        const el = document.getElementById('confirm-total-display');
+        if (el) el.textContent = fmt(total);
+    }
+
+    // ── CONFIRM MODAL ──
+    function openConfirmModal() {
+        updateConfirmTotal();
+        document.getElementById('confirm-overlay').classList.add('open');
+        document.body.style.overflow = 'hidden';
+    }
+    function closeConfirmModal() {
+        document.getElementById('confirm-overlay').classList.remove('open');
+        document.body.style.overflow = '';
+    }
+
+    document.getElementById('confirm-overlay').addEventListener('click', function(e) {
+        if (e.target === this) closeConfirmModal();
+    });
+
+    // ── CLOSE TABLE ──
+    function closeTable() {
+        closeConfirmModal();
+        // Clear orders
+        sessionStorage.removeItem(`t4u-orders-table-${tableId}`);
+        // Signal waiter.html to mark table as available
+        sessionStorage.setItem(`t4u-release-table-${tableId}`, 'true');
+        showToast('✓ Conta fechada! Mesa liberada.');
+        setTimeout(() => { window.location.href = 'waiter.html'; }, 1200);
+    }
+
+    // ── TOAST ──
+    function showToast(msg, duration=3000) {
+        const c = document.getElementById('toast-container');
+        const t = document.createElement('div');
+        t.className = 'toast'; t.textContent = msg; c.appendChild(t);
+        setTimeout(() => { t.style.animation='toast-out 0.3s ease forwards'; setTimeout(()=>t.remove(),300); }, duration);
+    }
+
+    // ── INIT ──
+    initProfileUI();
+    render();
+</script>
 </body>
 </html>

@@ -13,71 +13,37 @@
     </script>
     <style>
         :root, [data-theme="light"] {
-            --bg-page:          #f0f2f5;
-            --bg-card:          #ffffff;
-            --bg-input:         #f7f8fa;
-            --bg-sidebar:       #1c2333;
-            --bg-sidebar-hover: #232e45;
-            --bg-topbar:        #ffffff;
-            --text-primary:     #111827;
-            --text-secondary:   #6b7280;
-            --text-muted:       #9ca3af;
-            --text-on-dark:     #f9fafb;
-            --text-sidebar:     #cbd5e1;
-            --text-sidebar-muted: #64748b;
-            --border:           #e5e7eb;
-            --border-focus:     #2c3e50;
-            --accent:           #2c3e50;
-            --accent-hover:     #1a252f;
-            --accent-subtle:    rgba(44,62,80,0.07);
-            --danger:           #dc2626;
-            --danger-subtle:    rgba(220,38,38,0.07);
-            --danger-border:    rgba(220,38,38,0.2);
-            --shadow-card:      0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
-            --shadow-fab:       0 4px 16px rgba(44,62,80,0.35);
-            --shadow-modal:     0 8px 40px rgba(0,0,0,0.18);
-            --toggle-bg:        #e5e7eb;
-            --toggle-knob:      #ffffff;
-            --overlay:          rgba(0,0,0,0.4);
-            --note-bg:          #fffbeb;
-            --note-border:      #fde68a;
+            --bg-page: #f0f2f5; --bg-card: #ffffff; --bg-input: #f7f8fa;
+            --bg-sidebar: #1c2333; --bg-sidebar-hover: #232e45; --bg-topbar: #ffffff;
+            --text-primary: #111827; --text-secondary: #6b7280; --text-muted: #9ca3af;
+            --text-on-dark: #f9fafb; --text-sidebar: #cbd5e1; --text-sidebar-muted: #64748b;
+            --border: #e5e7eb; --border-focus: #2c3e50;
+            --accent: #2c3e50; --accent-hover: #1a252f; --accent-subtle: rgba(44,62,80,0.07);
+            --danger: #dc2626; --danger-subtle: rgba(220,38,38,0.07); --danger-border: rgba(220,38,38,0.2);
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
+            --shadow-fab: 0 4px 16px rgba(44,62,80,0.35); --shadow-modal: 0 8px 40px rgba(0,0,0,0.18);
+            --toggle-bg: #e5e7eb; --toggle-knob: #ffffff; --overlay: rgba(0,0,0,0.4);
+            --note-bg: #fffbeb; --note-border: #fde68a;
         }
         [data-theme="dark"] {
-            --bg-page:          #111827;
-            --bg-card:          #1f2937;
-            --bg-input:         #111827;
-            --bg-sidebar:       #0d1117;
-            --bg-sidebar-hover: #161d2d;
-            --bg-topbar:        #1f2937;
-            --text-primary:     #f9fafb;
-            --text-secondary:   #9ca3af;
-            --text-muted:       #6b7280;
-            --text-on-dark:     #f9fafb;
-            --text-sidebar:     #cbd5e1;
-            --text-sidebar-muted: #475569;
-            --border:           #374151;
-            --border-focus:     #6b8cae;
-            --accent:           #3a6ea5;
-            --accent-hover:     #4a80be;
-            --accent-subtle:    rgba(58,110,165,0.12);
-            --danger:           #f87171;
-            --danger-subtle:    rgba(248,113,113,0.08);
-            --danger-border:    rgba(248,113,113,0.2);
-            --shadow-card:      0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
-            --shadow-fab:       0 4px 20px rgba(0,0,0,0.5);
-            --shadow-modal:     0 8px 40px rgba(0,0,0,0.5);
-            --toggle-bg:        #374151;
-            --toggle-knob:      #9ca3af;
-            --overlay:          rgba(0,0,0,0.6);
-            --note-bg:          rgba(251,191,36,0.08);
-            --note-border:      rgba(251,191,36,0.25);
+            --bg-page: #111827; --bg-card: #1f2937; --bg-input: #111827;
+            --bg-sidebar: #0d1117; --bg-sidebar-hover: #161d2d; --bg-topbar: #1f2937;
+            --text-primary: #f9fafb; --text-secondary: #9ca3af; --text-muted: #6b7280;
+            --text-on-dark: #f9fafb; --text-sidebar: #cbd5e1; --text-sidebar-muted: #475569;
+            --border: #374151; --border-focus: #6b8cae;
+            --accent: #3a6ea5; --accent-hover: #4a80be; --accent-subtle: rgba(58,110,165,0.12);
+            --danger: #f87171; --danger-subtle: rgba(248,113,113,0.08); --danger-border: rgba(248,113,113,0.2);
+            --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
+            --shadow-fab: 0 4px 20px rgba(0,0,0,0.5); --shadow-modal: 0 8px 40px rgba(0,0,0,0.5);
+            --toggle-bg: #374151; --toggle-knob: #9ca3af; --overlay: rgba(0,0,0,0.6);
+            --note-bg: rgba(251,191,36,0.08); --note-border: rgba(251,191,36,0.25);
         }
 
         *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
         html, body { height: 100%; }
         body { font-family: 'DM Sans', sans-serif; background: var(--bg-page); color: var(--text-primary); display: flex; transition: background 0.25s, color 0.25s; overflow: hidden; }
 
-        /* ── SIDEBAR ── */
+        /* SIDEBAR */
         #sidebar { width: 220px; min-width: 220px; background: var(--bg-sidebar); display: flex; flex-direction: column; height: 100vh; transition: width 0.25s cubic-bezier(0.4,0,0.2,1), min-width 0.25s cubic-bezier(0.4,0,0.2,1); overflow: hidden; flex-shrink: 0; z-index: 50; }
         #sidebar.collapsed { width: 56px; min-width: 56px; }
         .sidebar-header { border-bottom: 1px solid rgba(255,255,255,0.06); min-height: 60px; }
@@ -105,10 +71,10 @@
         .nav-item.logout { color: #f87171; }
         .nav-item.logout:hover { background: rgba(248,113,113,0.1); color: #fca5a5; }
 
-        /* ── MAIN ── */
+        /* MAIN */
         #main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; position: relative; }
 
-        /* ── TOPBAR ── */
+        /* TOPBAR */
         #topbar { height: 56px; background: var(--bg-topbar); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 16px; gap: 12px; flex-shrink: 0; transition: background 0.25s, border-color 0.25s; position: relative; z-index: 40; }
         .topbar-page-info { display: flex; align-items: center; gap: 8px; flex: 1; min-width: 0; }
         .topbar-page-icon { width: 28px; height: 28px; background: var(--accent-subtle); border-radius: 7px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
@@ -136,16 +102,16 @@
         .dropdown-item.danger:hover { background: var(--danger-subtle); }
         .dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
 
-        /* ── CONTENT ── */
+        /* CONTENT */
         #content { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 12px 120px; scroll-behavior: smooth; }
 
-        /* ── CATEGORY ── */
+        /* CATEGORY */
         .category-section { margin-bottom: 4px; }
         .category-header { display: flex; align-items: center; gap: 8px; padding: 12px 4px 8px; position: sticky; top: 0; z-index: 10; background: var(--bg-page); }
         .category-icon { font-size: 1rem; }
         .category-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
 
-        /* ── DISH CARD ── */
+        /* DISH CARD */
         .dish-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow-card); transition: border-color 0.2s; }
         .dish-card.has-quantity { border-color: var(--accent); }
         .dish-main { display: flex; align-items: center; gap: 10px; padding: 13px 12px; }
@@ -173,7 +139,7 @@
         .note-input::placeholder { color: var(--text-muted); font-weight: 300; }
         .note-input:focus { border-color: var(--border-focus); }
 
-        /* ── FABs ── */
+        /* FABs */
         .fab-container { position: fixed; bottom: 20px; right: 16px; display: flex; flex-direction: column; gap: 10px; z-index: 30; align-items: flex-end; }
         .fab { display: flex; align-items: center; gap: 8px; padding: 13px 18px; border-radius: 50px; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; box-shadow: var(--shadow-fab); transition: transform 0.15s, box-shadow 0.15s; white-space: nowrap; }
         .fab:hover { transform: translateY(-2px); }
@@ -185,7 +151,7 @@
         .fab-cancel:hover { background: var(--danger-subtle); }
         .fab-badge { background: rgba(255,255,255,0.22); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 1px 7px; border-radius: 20px; font-family: 'IBM Plex Mono', monospace; }
 
-        /* ── REVIEW MODAL ── */
+        /* REVIEW MODAL */
         #modal-overlay { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 100; align-items: flex-end; justify-content: center; }
         #modal-overlay.open { display: flex; }
         #modal { background: var(--bg-card); border-radius: 20px 20px 0 0; width: 100%; max-width: 540px; max-height: 88vh; overflow-y: auto; box-shadow: var(--shadow-modal); animation: sheet-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
@@ -217,7 +183,7 @@
         .modal-btn-secondary { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--border); }
         .modal-btn-secondary:hover { background: var(--border); }
 
-        /* ── CANCEL MODAL ── */
+        /* CANCEL MODAL */
         #cancel-overlay { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 110; align-items: center; justify-content: center; padding: 20px; }
         #cancel-overlay.open { display: flex; }
         #cancel-modal { background: var(--bg-card); border-radius: 16px; padding: 24px; width: 100%; max-width: 300px; box-shadow: var(--shadow-modal); animation: fade-in 0.2s ease both; }
@@ -227,10 +193,10 @@
         .cancel-desc { font-size: 0.82rem; color: var(--text-secondary); text-align: center; line-height: 1.5; margin-bottom: 20px; }
         .cancel-actions { display: flex; gap: 10px; }
 
-        /* ── TOAST ── */
+        /* TOAST */
         #toast-container { position: fixed; bottom: 100px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 300; pointer-events: none; }
         .toast { background: var(--accent); color: #fff; font-size: 0.83rem; font-weight: 500; padding: 10px 18px; border-radius: 8px; white-space: nowrap; animation: toast-in 0.3s ease both; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
-        @keyframes toast-in  { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes toast-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
         @keyframes toast-out { from { opacity:1; } to { opacity:0; transform:translateY(8px); } }
 
         @media (max-width: 600px) { #sidebar { display: none; } }
@@ -238,7 +204,6 @@
 </head>
 <body>
 
-<!-- SIDEBAR -->
 <nav id="sidebar" aria-label="Navegação lateral">
     <div class="sidebar-header">
         <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Recolher/expandir menu">
@@ -248,7 +213,7 @@
     </div>
     <div class="sidebar-nav">
         <div class="nav-section-label">Garçom</div>
-        <a class="nav-item" href="waiter.html" data-tooltip="Mesas">
+        <a class="nav-item" href="waiter.html" data-tooltip="Mesas" id="nav-mesas" onclick="handleNavMesas(event)">
             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
             <span class="nav-label">Mesas</span>
         </a>
@@ -258,6 +223,12 @@
         </button>
         <div class="nav-section-label" style="margin-top:8px;">Ir para</div>
         <div id="sidebar-categories"></div>
+        <div style="border-top:1px solid rgba(255,255,255,0.06);margin-top:8px;padding-top:8px;">
+            <button class="nav-item" data-tooltip="Fechar Conta" onclick="showToast('Você não pode fazer isso aqui!')">
+                <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                <span class="nav-label">Fechar Conta</span>
+            </button>
+        </div>
     </div>
     <div class="sidebar-footer">
         <button class="nav-item logout" data-tooltip="Sair" onclick="logout()">
@@ -267,7 +238,6 @@
     </div>
 </nav>
 
-<!-- MAIN -->
 <div id="main">
     <header id="topbar">
         <div class="topbar-page-info">
@@ -355,7 +325,6 @@
 <div id="toast-container" aria-live="polite"></div>
 
 <script>
-    // ── MENU DATA (replace with GET /api/menu/items) ──
     const MENU = [
         { id: 'entradas', label: 'Entradas', icon: '🥗', items: [
             { id: 1, name: 'Bruschetta ao tomate',  price: 22.90, description: 'Fatias de pão italiano grelhado com tomate fresco, manjericão e azeite extra virgem.' },
@@ -383,19 +352,16 @@
         ]},
     ];
 
-    // ── STATE ──
-    const selection = {}; // { [dishId]: { qty, note } }
+    const selection = {};
     const params  = new URLSearchParams(window.location.search);
     const tableId = params.get('table') || '?';
 
-    // ── INIT ──
     document.getElementById('topbar-title').textContent = `Pedido — Mesa ${tableId}`;
     initProfileUI();
     renderMenu();
     renderSidebarCategories();
     applyTheme(localStorage.getItem('t4u-private-theme') || 'light');
 
-    // ── RENDER ──
     function renderMenu() {
         const content = document.getElementById('content');
         content.innerHTML = '';
@@ -429,13 +395,12 @@
                     <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div class="dish-qty">
-                    <button class="qty-btn" onclick="changeQty(${dish.id},1)" aria-label="Adicionar">▲</button>
+                    <button class="qty-btn" onclick="changeQty(${dish.id},1)">▲</button>
                     <input class="qty-value" type="number" min="0" max="99" value="${s.qty}"
                         id="qty-${dish.id}"
                         onchange="setQty(${dish.id},this.value)"
-                        onkeydown="if(event.key==='Enter')this.blur()"
-                        aria-label="Quantidade">
-                    <button class="qty-btn" onclick="changeQty(${dish.id},-1)" aria-label="Remover">▼</button>
+                        onkeydown="if(event.key==='Enter')this.blur()">
+                    <button class="qty-btn" onclick="changeQty(${dish.id},-1)">▼</button>
                 </div>
             </div>
             <div class="dish-panel">
@@ -456,15 +421,11 @@
             btn.className = 'nav-item category';
             btn.setAttribute('data-tooltip', cat.label);
             btn.innerHTML = `<div class="cat-dot"></div><span class="nav-label">${cat.icon} ${cat.label}</span>`;
-            btn.addEventListener('click', () => {
-                document.getElementById(`anchor-${cat.id}`)
-                    ?.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            });
+            btn.addEventListener('click', () => document.getElementById(`anchor-${cat.id}`)?.scrollIntoView({ behavior: 'smooth', block: 'start' }));
             container.appendChild(btn);
         });
     }
 
-    // ── QTY ──
     function changeQty(id, delta) { setQty(id, (selection[id]?.qty || 0) + delta); }
 
     function setQty(id, raw) {
@@ -505,7 +466,6 @@
 
     function fmtPrice(n) { return 'R$ ' + n.toFixed(2).replace('.', ','); }
 
-    // ── REVIEW MODAL ──
     function openReviewModal() {
         const items = getSelectedItems();
         if (!items.length) { showToast('Nenhum item selecionado.'); return; }
@@ -525,7 +485,7 @@
                     </div>
                 </div>`).join('') +
             `<div class="review-total">
-                <span class="review-total-label">Total</span>
+                <span class="review-total-label">Total desta rodada</span>
                 <span class="review-total-value">${fmtPrice(total)}</span>
             </div>`;
         document.getElementById('modal-overlay').classList.add('open');
@@ -540,7 +500,7 @@
     function confirmOrder() {
         const items = getSelectedItems();
         const total = items.reduce((s, i) => s + i.price * i.qty, 0);
-        // TODO: POST /api/orders { tableId, items, total }
+        // Save this round to sessionStorage — checkout.html reads this
         const key = `t4u-orders-table-${tableId}`;
         const history = JSON.parse(sessionStorage.getItem(key) || '[]');
         history.push({ timestamp: Date.now(), items, total });
@@ -550,11 +510,18 @@
         setTimeout(() => { window.location.href = 'waiter.html'; }, 1200);
     }
 
-    // ── CANCEL ──
     function handleCancel() {
         const hasItems = Object.values(selection).some(s => s.qty > 0);
         if (hasItems) document.getElementById('cancel-overlay').classList.add('open');
         else window.location.href = 'waiter.html';
+    }
+
+    function handleNavMesas(e) {
+        const hasItems = Object.values(selection).some(s => s.qty > 0);
+        if (hasItems) {
+            e.preventDefault();
+            document.getElementById('cancel-overlay').classList.add('open');
+        }
     }
     function closeCancelModal() { document.getElementById('cancel-overlay').classList.remove('open'); }
     function doCancel() { window.location.href = 'waiter.html'; }
@@ -562,7 +529,6 @@
     document.getElementById('modal-overlay').addEventListener('click', function(e) { if (e.target===this) closeReviewModal(); });
     document.getElementById('cancel-overlay').addEventListener('click', function(e) { if (e.target===this) closeCancelModal(); });
 
-    // ── THEME ──
     function applyTheme(t) {
         document.documentElement.setAttribute('data-theme', t);
         localStorage.setItem('t4u-private-theme', t);
@@ -572,12 +538,10 @@
         applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
     });
 
-    // ── SIDEBAR ──
     document.getElementById('sidebar-toggle-btn').addEventListener('click', () => {
         document.getElementById('sidebar').classList.toggle('collapsed');
     });
 
-    // ── PROFILE ──
     function getUser() {
         try { return JSON.parse(sessionStorage.getItem('t4u-user')) || { label: 'Garçom', email: 'garcom@rest.com' }; }
         catch { return { label: 'Garçom', email: 'garcom@rest.com' }; }
@@ -596,7 +560,6 @@
     profileDropdown.addEventListener('click', e => e.stopPropagation());
     function logout() { sessionStorage.removeItem('t4u-user'); window.location.href = 'login.html'; }
 
-    // ── TOAST ──
     function showToast(msg, duration=3000) {
         const c = document.getElementById('toast-container');
         const t = document.createElement('div');
