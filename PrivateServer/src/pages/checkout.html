@@ -413,20 +413,8 @@
             <span class="sidebar-brand">Table4U</span>
         </button>
     </div>
-    <div class="sidebar-nav">
-        <div class="nav-section-label">Garçom</div>
-        <a class="nav-item" href="waiter.html" data-tooltip="Mesas">
-            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
-            <span class="nav-label">Mesas</span>
-        </a>
-        <button class="nav-item" data-tooltip="Pedido" onclick="showToast('Você não pode fazer isso aqui!')">
-            <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-            <span class="nav-label">Pedido</span>
-        </button>
-        <button class="nav-item active" data-tooltip="Fechar Conta">
-            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
-            <span class="nav-label">Fechar Conta</span>
-        </button>
+    <div class="sidebar-nav" id="sidebar-nav">
+        <!-- rendered by JS based on origin param -->
     </div>
     <div class="sidebar-footer">
         <button class="nav-item logout" data-tooltip="Sair" onclick="logout()">
@@ -442,7 +430,7 @@
             <div class="topbar-page-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
             </div>
-            <span class="topbar-page-name">Garçom</span>
+            <span class="topbar-page-name" id="topbar-origin-name">Garçom</span>
             <div class="topbar-separator" aria-hidden="true"></div>
             <span class="topbar-page-title" id="topbar-title">Fechar Conta</span>
         </div>
@@ -476,7 +464,7 @@
 
 <!-- ACTION BAR -->
 <div class="action-bar" id="action-bar" style="display:none">
-    <a class="action-btn btn-back" href="waiter.html">
+    <a class="action-btn btn-back" id="btn-back" href="waiter.html">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
     </a>
     <button class="action-btn btn-close" onclick="openConfirmModal()">
@@ -505,6 +493,51 @@
 <script>
     const params  = new URLSearchParams(window.location.search);
     const tableId = params.get('table') || '?';
+    const origin  = params.get('origin') || 'waiter'; // 'waiter' | 'reception'
+    const backUrl = origin === 'reception' ? 'reception.html' : 'waiter.html';
+
+    // ── ORIGIN-AWARE SETUP ──
+    (function applyOrigin() {
+        // 1. Sidebar nav
+        const sidebarNav = document.getElementById('sidebar-nav');
+        if (origin === 'reception') {
+            sidebarNav.innerHTML = `
+                <div class="nav-section-label">Recepção</div>
+                <a class="nav-item" href="reception.html" data-tooltip="Mesas">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    <span class="nav-label">Mesas</span>
+                </a>
+                <button class="nav-item active" data-tooltip="Fechar Conta">
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span class="nav-label">Fechar Conta</span>
+                </button>`;
+        } else {
+            sidebarNav.innerHTML = `
+                <div class="nav-section-label">Garçom</div>
+                <a class="nav-item" href="waiter.html" data-tooltip="Mesas">
+                    <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
+                    <span class="nav-label">Mesas</span>
+                </a>
+                <button class="nav-item" data-tooltip="Pedido" onclick="showToast('Você não pode fazer isso aqui!')">
+                    <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
+                    <span class="nav-label">Pedido</span>
+                </button>
+                <button class="nav-item active" data-tooltip="Fechar Conta">
+                    <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span class="nav-label">Fechar Conta</span>
+                </button>`;
+        }
+
+        // 2. Topbar origin label
+        const originLabel = origin === 'reception' ? 'Recepção' : 'Garçom';
+        document.getElementById('topbar-origin-name').textContent = originLabel;
+
+        // 3. Action bar back button
+        const btnBack = document.getElementById('btn-back');
+        if (btnBack) btnBack.href = backUrl;
+
+        // 4. Empty state back button (rendered later by render(), so patched there too)
+    })();
 
     let serviceChargeOn = true;
     let subtotalGlobal = 0;
@@ -575,7 +608,7 @@
                     </div>
                 </div>
                 <div style="max-width:480px;margin:12px auto 0">
-                    <a class="action-btn btn-back" href="waiter.html" style="display:flex;align-items:center;gap:8px;padding:13px 18px;background:var(--accent-subtle);color:var(--accent);border:1px solid var(--border);border-radius:12px;text-decoration:none;font-weight:600;font-size:0.875rem">
+                    <a class="action-btn btn-back" id="btn-back-empty" href="${backUrl}" style="display:flex;align-items:center;gap:8px;padding:13px 18px;background:var(--accent-subtle);color:var(--accent);border:1px solid var(--border);border-radius:12px;text-decoration:none;font-weight:600;font-size:0.875rem">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                         Voltar às mesas
                     </a>
@@ -703,7 +736,7 @@
         // Signal waiter.html to mark table as available
         sessionStorage.setItem(`t4u-release-table-${tableId}`, 'true');
         showToast('✓ Conta fechada! Mesa liberada.');
-        setTimeout(() => { window.location.href = 'waiter.html'; }, 1200);
+        setTimeout(() => { window.location.href = backUrl; }, 1200);
     }
 
     // ── TOAST ──
