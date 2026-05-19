@@ -1,74 +1,881 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Table4U - Administração</title>
-    <link rel="stylesheet" href="../../../PublicServer/src/styles/global.css">
-    <link rel="stylesheet" href="../styles/admin.css">
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@500;700&family=Poppins:wght@300;400;600&display=swap" rel="stylesheet">
+    <title>Table4U — Admin</title>
+
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/shared.css">
+
+    <!-- Tema aplicado antes do paint para evitar flash -->
+    <script>
+        (function () {
+            var t = localStorage.getItem('t4u-private-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', t);
+        })();
+    </script>
+
+    <style>
+        /* ── CONTENT ── */
+        #content { padding: 0; }
+        .content-inner { padding: 24px 24px 32px; }
+
+        /* ── SECTION VIEWS ── */
+        .section-view { display: none; }
+        .section-view.active { display: block; }
+
+        /* ── KPI CARDS ── */
+        .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; margin-bottom: 20px; }
+        .kpi-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 18px 20px; box-shadow: var(--shadow-card); position: relative; overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; }
+        .kpi-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.09); }
+        .kpi-card::after { content: ''; position: absolute; top: 0; right: 0; width: 60px; height: 60px; border-radius: 0 14px 0 60px; opacity: 0.06; }
+        .kpi-card.green::after { background: var(--status-available); }
+        .kpi-card.blue::after { background: var(--status-occupied); }
+        .kpi-card.red::after { background: var(--status-unavailable); }
+        .kpi-card.yellow::after { background: var(--status-warning); }
+        .kpi-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); margin-bottom: 8px; }
+        .kpi-value { font-family: 'IBM Plex Mono', monospace; font-size: 1.75rem; font-weight: 500; color: var(--text-primary); line-height: 1; margin-bottom: 6px; }
+        .kpi-delta { font-size: 0.75rem; font-weight: 500; display: flex; align-items: center; gap: 4px; }
+        .kpi-delta.up { color: var(--status-available); }
+        .kpi-delta.down { color: var(--status-unavailable); }
+        .kpi-delta svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+        .kpi-icon { position: absolute; top: 16px; right: 16px; width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; }
+        .kpi-card.green .kpi-icon { background: var(--status-available-bg); color: var(--status-available); }
+        .kpi-card.blue .kpi-icon { background: var(--status-occupied-bg); color: var(--status-occupied); }
+        .kpi-card.red .kpi-icon { background: var(--status-unavailable-bg); color: var(--status-unavailable); }
+        .kpi-card.yellow .kpi-icon { background: var(--status-warning-bg); color: var(--status-warning); }
+        .kpi-icon svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ── CHARTS ROW ── */
+        .charts-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 20px; }
+        .chart-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card); }
+        .chart-card.wide { grid-column: span 2; }
+        .chart-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+        .chart-title { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }
+        .chart-subtitle { font-size: 0.72rem; color: var(--text-muted); margin-top: 2px; }
+        .chart-legend { display: flex; gap: 14px; }
+        .legend-dot-item { display: flex; align-items: center; gap: 6px; font-size: 0.72rem; color: var(--text-secondary); }
+        .legend-dot { width: 8px; height: 8px; border-radius: 50%; }
+
+        /* SVG BAR CHART */
+        .chart-svg-wrap { width: 100%; overflow: hidden; }
+        .chart-svg-wrap svg { width: 100%; display: block; }
+        .bar-chart-group text { font-family: 'DM Sans', sans-serif; fill: var(--text-muted); font-size: 10px; }
+        .bar-rect { transition: opacity 0.15s; cursor: pointer; rx: 4; }
+        .bar-rect:hover { opacity: 0.75; }
+
+        /* DONUT CHART */
+        .donut-wrap { display: flex; align-items: center; gap: 24px; }
+        .donut-svg { flex-shrink: 0; }
+        .donut-legend { display: flex; flex-direction: column; gap: 10px; }
+        .donut-legend-item { display: flex; align-items: center; gap: 8px; }
+        .donut-legend-dot { width: 10px; height: 10px; border-radius: 3px; flex-shrink: 0; }
+        .donut-legend-label { font-size: 0.78rem; color: var(--text-secondary); }
+        .donut-legend-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; font-weight: 500; color: var(--text-primary); margin-left: auto; }
+
+        /* ── BOTTOM ROW ── */
+        .bottom-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+        .list-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card); }
+        .list-title { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; }
+        .list-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .list-row:last-child { border-bottom: none; padding-bottom: 0; }
+        .list-rank { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-muted); width: 18px; flex-shrink: 0; }
+        .list-icon { width: 32px; height: 32px; border-radius: 8px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+        .list-name { font-size: 0.83rem; font-weight: 500; color: var(--text-primary); flex: 1; min-width: 0; }
+        .list-meta { font-size: 0.72rem; color: var(--text-muted); }
+        .list-amount { font-family: 'IBM Plex Mono', monospace; font-size: 0.83rem; font-weight: 500; color: var(--text-primary); flex-shrink: 0; }
+        .list-bar-wrap { margin-top: 4px; height: 3px; background: var(--border); border-radius: 2px; overflow: hidden; }
+        .list-bar-fill { height: 100%; background: var(--accent); border-radius: 2px; }
+
+        /* ── ACTIVITY FEED ── */
+        .activity-item { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--border); }
+        .activity-item:last-child { border-bottom: none; }
+        .activity-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; margin-top: 5px; }
+        .activity-dot.green { background: var(--status-available); }
+        .activity-dot.blue { background: var(--status-occupied); }
+        .activity-dot.yellow { background: var(--status-warning); }
+        .activity-dot.red { background: var(--status-unavailable); }
+        .activity-text { font-size: 0.8rem; color: var(--text-secondary); flex: 1; line-height: 1.45; }
+        .activity-text strong { color: var(--text-primary); font-weight: 600; }
+        .activity-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; margin-top: 2px; }
+
+        /* ── PLACEHOLDER (seções vazias) ── */
+        .placeholder-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 480px; text-align: center; padding: 48px 24px; }
+        .placeholder-icon { width: 64px; height: 64px; border-radius: 18px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
+        .placeholder-icon svg { width: 28px; height: 28px; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+        .placeholder-title { font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
+        .placeholder-desc { font-size: 0.875rem; color: var(--text-secondary); max-width: 380px; line-height: 1.6; margin-bottom: 20px; }
+        .placeholder-badge { display: inline-flex; align-items: center; gap: 6px; background: var(--status-warning-bg); color: var(--status-warning); border: 1px solid var(--status-warning-border); border-radius: 20px; font-size: 0.72rem; font-weight: 600; padding: 5px 12px; }
+        .placeholder-badge svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* ── FUNCIONÁRIOS ── */
+        .func-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; }
+        .func-header-left { display: flex; flex-direction: column; gap: 2px; }
+        .func-header-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+        .func-header-sub { font-size: 0.78rem; color: var(--text-muted); }
+        .btn-add-func { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 9px 16px; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+        .btn-add-func:hover { background: var(--accent-hover); }
+        .btn-add-func:active { transform: scale(0.97); }
+        .btn-add-func svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        .func-table-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); overflow: hidden; }
+        .func-search-bar { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+        .func-search-bar svg { width: 15px; height: 15px; fill: none; stroke: var(--text-muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+        .func-search-input { flex: 1; border: none; background: none; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-primary); outline: none; }
+        .func-search-input::placeholder { color: var(--text-muted); }
+        .func-count-badge { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-muted); background: var(--accent-subtle); padding: 3px 8px; border-radius: 20px; flex-shrink: 0; }
+
+        .func-table { width: 100%; border-collapse: collapse; }
+        .func-table thead tr { border-bottom: 1px solid var(--border); }
+        .func-table th { padding: 10px 20px; text-align: left; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); white-space: nowrap; }
+        .func-table th:last-child { text-align: right; }
+        .func-table tbody tr { border-bottom: 1px solid var(--border); transition: background 0.12s; }
+        .func-table tbody tr:last-child { border-bottom: none; }
+        .func-table tbody tr:hover { background: var(--bg-input); }
+        .func-table td { padding: 13px 20px; vertical-align: middle; }
+        .func-avatar { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500; color: #fff; flex-shrink: 0; }
+        .func-name-cell { display: flex; align-items: center; gap: 12px; }
+        .func-name { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }
+        .func-email { font-size: 0.78rem; color: var(--text-muted); margin-top: 1px; }
+        .func-role-badge { display: inline-flex; align-items: center; font-size: 0.7rem; font-weight: 600; padding: 3px 10px; border-radius: 20px; }
+        .func-role-badge.admin { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--border); }
+        .func-role-badge.garcom { background: var(--status-occupied-bg); color: var(--status-occupied); border: 1px solid var(--status-occupied-border); }
+        .func-role-badge.cozinha { background: var(--status-warning-bg); color: var(--status-warning); border: 1px solid var(--status-warning-border); }
+        .func-role-badge.recepcao { background: var(--status-available-bg); color: var(--status-available); border: 1px solid var(--status-available-border); }
+        .func-actions { display: flex; align-items: center; justify-content: flex-end; gap: 6px; }
+        .func-btn { display: inline-flex; align-items: center; gap: 6px; border: none; border-radius: 8px; padding: 7px 12px; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 600; cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap; }
+        .func-btn svg { width: 13px; height: 13px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        .func-btn.edit { background: var(--accent-subtle); color: var(--accent); }
+        .func-btn.edit:hover { background: var(--border); }
+        .func-btn.remove { background: var(--status-unavailable-bg); color: var(--status-unavailable); border: 1px solid transparent; }
+        .func-btn.remove:hover { background: rgba(220,38,38,0.15); border-color: var(--status-unavailable-border); }
+        .func-empty { text-align: center; padding: 48px 24px; color: var(--text-muted); font-size: 0.875rem; }
+        .func-empty svg { width: 36px; height: 36px; fill: none; stroke: var(--border); stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; display: block; margin: 0 auto 12px; }
+
+        /* ── MODALS (funcionários) ── */
+        .fmodal-overlay { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 150; align-items: center; justify-content: center; }
+        .fmodal-overlay.open { display: flex; }
+        .fmodal { background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 440px; box-shadow: var(--shadow-modal); animation: fmodal-in 0.2s cubic-bezier(0.16,1,0.3,1) both; overflow: hidden; }
+        @keyframes fmodal-in { from { opacity:0; transform:scale(0.95) translateY(8px); } to { opacity:1; transform:scale(1) translateY(0); } }
+        .fmodal-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .fmodal-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .fmodal-icon svg { width: 18px; height: 18px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .fmodal-icon.danger { background: var(--status-unavailable-bg); }
+        .fmodal-icon.danger svg { stroke: var(--status-unavailable); }
+        .fmodal-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+        .fmodal-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+        .fmodal-close { margin-left: auto; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; border-radius: 6px; display: flex; align-items: center; transition: color 0.15s, background 0.15s; }
+        .fmodal-close:hover { color: var(--text-primary); background: var(--accent-subtle); }
+        .fmodal-close svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+        .fmodal-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 16px; }
+        .fmodal-field { display: flex; flex-direction: column; gap: 6px; }
+        .fmodal-label { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); }
+        .fmodal-input { background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 9px; padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-primary); outline: none; transition: border-color 0.15s; width: 100%; }
+        .fmodal-input:focus { border-color: var(--border-focus); }
+        .fmodal-input::placeholder { color: var(--text-muted); }
+        .fmodal-input.error { border-color: var(--status-unavailable); }
+        .fmodal-error { font-size: 0.72rem; color: var(--status-unavailable); display: none; }
+        .fmodal-error.visible { display: block; }
+        .fmodal-actions { display: flex; gap: 10px; padding: 0 24px 20px; }
+        .fmodal-btn { flex: 1; padding: 11px 16px; border-radius: 9px; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+        .fmodal-btn:active { transform: scale(0.98); }
+        .fmodal-btn.primary { background: var(--accent); color: #fff; }
+        .fmodal-btn.primary:hover { background: var(--accent-hover); }
+        .fmodal-btn.secondary { background: var(--accent-subtle); color: var(--text-secondary); border: 1px solid var(--border); }
+        .fmodal-btn.secondary:hover { background: var(--border); }
+        .fmodal-btn.danger { background: var(--status-unavailable); color: #fff; }
+        .fmodal-btn.danger:hover { background: #b91c1c; }
+        .fmodal-confirm-text { font-size: 0.875rem; color: var(--text-secondary); line-height: 1.6; }
+        .fmodal-confirm-text strong { color: var(--text-primary); }
+        .fmodal-select { background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 9px; padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-primary); outline: none; transition: border-color 0.15s; width: 100%; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+        .fmodal-select:focus { border-color: var(--border-focus); }
+
+        /* ══ MENU (Admin) ══ */
+        .menu-toolbar { display: flex; align-items: center; gap: 10px; margin-bottom: 18px; flex-wrap: wrap; }
+        .menu-toolbar-left { flex: 1; display: flex; align-items: center; gap: 8px; min-width: 0; }
+        .menu-search-wrap { display: flex; align-items: center; gap: 8px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; flex: 1; max-width: 320px; box-shadow: var(--shadow-card); }
+        .menu-search-wrap svg { width: 14px; height: 14px; fill: none; stroke: var(--text-muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
+        .menu-search-input { border: none; background: none; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-primary); outline: none; width: 100%; }
+        .menu-search-input::placeholder { color: var(--text-muted); }
+        .menu-filter-pills { display: flex; gap: 6px; flex-wrap: wrap; }
+        .filter-pill { display: inline-flex; align-items: center; gap: 5px; padding: 5px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg-card); font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+        .filter-pill:hover { border-color: var(--accent); color: var(--accent); }
+        .filter-pill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+        .btn-add-prato { display: inline-flex; align-items: center; gap: 8px; background: var(--accent); color: #fff; border: none; border-radius: 10px; padding: 9px 16px; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600; cursor: pointer; transition: background 0.15s, transform 0.1s; flex-shrink: 0; white-space: nowrap; }
+        .btn-add-prato:hover { background: var(--accent-hover); }
+        .btn-add-prato:active { transform: scale(0.97); }
+        .btn-add-prato svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
+
+        /* stats strip */
+        .menu-stats-strip { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
+        .menu-stat { display: flex; align-items: center; gap: 7px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 9px; padding: 7px 13px; font-size: 0.78rem; box-shadow: var(--shadow-card); }
+        .menu-stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .menu-stat-label { color: var(--text-secondary); }
+        .menu-stat-val { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--text-primary); margin-left: 2px; }
+
+        /* grid */
+        .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
+
+        /* prato card */
+        .prato-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; }
+        .prato-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.09); }
+        .prato-card.unavailable { opacity: 0.72; }
+        .prato-card-top { padding: 16px 16px 12px; flex: 1; }
+        .prato-card-row1 { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+        .prato-emoji { font-size: 1.6rem; line-height: 1; flex-shrink: 0; }
+        .prato-status-badge { font-size: 0.62rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; white-space: nowrap; flex-shrink: 0; margin-top: 2px; }
+        .prato-status-badge.available { background: var(--status-available-bg); color: var(--status-available); border: 1px solid var(--status-available-border); }
+        .prato-status-badge.unavailable { background: var(--status-unavailable-bg); color: var(--status-unavailable); border: 1px solid var(--status-unavailable-border); }
+        .prato-name { font-size: 0.9rem; font-weight: 700; color: var(--text-primary); margin-bottom: 3px; line-height: 1.3; }
+        .prato-cat-badge { display: inline-flex; align-items: center; font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); background: var(--accent-subtle); padding: 2px 7px; border-radius: 4px; margin-bottom: 7px; }
+        .prato-desc { font-size: 0.78rem; color: var(--text-secondary); line-height: 1.5; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+        .prato-price { font-family: 'IBM Plex Mono', monospace; font-size: 1rem; font-weight: 600; color: var(--accent); margin-top: 10px; }
+        .prato-card-footer { display: flex; align-items: center; justify-content: flex-end; gap: 6px; padding: 10px 14px; border-top: 1px solid var(--border); background: var(--bg-input); }
+        .prato-btn { display: inline-flex; align-items: center; gap: 5px; border: none; border-radius: 8px; padding: 6px 11px; font-family: 'DM Sans', sans-serif; font-size: 0.75rem; font-weight: 600; cursor: pointer; transition: background 0.15s; white-space: nowrap; }
+        .prato-btn svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        .prato-btn.toggle-avail { background: var(--status-available-bg); color: var(--status-available); }
+        .prato-btn.toggle-avail:hover { background: rgba(22,163,74,0.18); }
+        .prato-btn.toggle-unavail { background: var(--status-unavailable-bg); color: var(--status-unavailable); }
+        .prato-btn.toggle-unavail:hover { background: rgba(220,38,38,0.16); }
+        .prato-btn.edit { background: var(--accent-subtle); color: var(--accent); }
+        .prato-btn.edit:hover { background: var(--border); }
+        .prato-btn.del { background: var(--status-unavailable-bg); color: var(--status-unavailable); }
+        .prato-btn.del:hover { background: rgba(220,38,38,0.16); }
+
+        /* menu empty */
+        .menu-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; }
+        .menu-empty-icon { width: 60px; height: 60px; border-radius: 16px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+        .menu-empty-icon svg { width: 26px; height: 26px; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+        .menu-empty-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+        .menu-empty-desc { font-size: 0.83rem; color: var(--text-muted); max-width: 280px; line-height: 1.6; }
+
+        /* toggle confirm modal */
+        .tmodal-icon-wrap { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; }
+        .tmodal-icon-wrap svg { width: 20px; height: 20px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s; }
+        .tmodal-icon-wrap.activate   { background: var(--status-available-bg);   }
+        .tmodal-icon-wrap.activate svg { stroke: var(--status-available); }
+        .tmodal-icon-wrap.deactivate { background: var(--status-unavailable-bg); }
+        .tmodal-icon-wrap.deactivate svg { stroke: var(--status-unavailable); }
+        .tmodal-prato-name { font-size: 0.78rem; font-weight: 600; color: var(--text-primary); margin-top: 2px; }
+        .tmodal-motivo-label { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); margin-bottom: 6px; display: block; }
+        .tmodal-motivo-input { width: 100%; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 9px; padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-primary); outline: none; resize: none; min-height: 88px; transition: border-color 0.15s; }
+        .tmodal-motivo-input:focus { border-color: var(--border-focus); }
+        .tmodal-motivo-input::placeholder { color: var(--text-muted); }
+        .tmodal-motivo-input.error { border-color: var(--status-unavailable); }
+        .tmodal-motivo-error { font-size: 0.72rem; color: var(--status-unavailable); display: none; margin-top: 4px; }
+        .tmodal-motivo-error.visible { display: block; }
+        .pmodal-btn.activate { background: var(--status-available); color: #fff; }
+        .pmodal-btn.activate:hover { background: #15803d; }
+        .pmodal-btn.deactivate { background: var(--status-unavailable); color: #fff; }
+        .pmodal-btn.deactivate:hover { background: #b91c1c; }
+
+        /* prato modal */
+        .pmodal-overlay { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 150; align-items: center; justify-content: center; }
+        .pmodal-overlay.open { display: flex; }
+        .pmodal { background: var(--bg-card); border-radius: 16px; width: 100%; max-width: 460px; box-shadow: var(--shadow-modal); animation: fmodal-in 0.2s cubic-bezier(0.16,1,0.3,1) both; overflow: hidden; max-height: 90vh; overflow-y: auto; }
+        .pmodal-header { padding: 20px 24px 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 12px; }
+        .pmodal-icon { width: 38px; height: 38px; border-radius: 10px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; font-size: 1.3rem; flex-shrink: 0; }
+        .pmodal-title { font-size: 0.95rem; font-weight: 600; color: var(--text-primary); }
+        .pmodal-subtitle { font-size: 0.75rem; color: var(--text-muted); margin-top: 2px; }
+        .pmodal-close { margin-left: auto; background: none; border: none; cursor: pointer; color: var(--text-muted); padding: 4px; border-radius: 6px; display: flex; align-items: center; transition: color 0.15s, background 0.15s; }
+        .pmodal-close:hover { color: var(--text-primary); background: var(--accent-subtle); }
+        .pmodal-close svg { width: 17px; height: 17px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; }
+        .pmodal-body { padding: 20px 24px 24px; display: flex; flex-direction: column; gap: 14px; }
+        .pmodal-row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .pmodal-field { display: flex; flex-direction: column; gap: 5px; }
+        .pmodal-label { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); }
+        .pmodal-input { background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 9px; padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-primary); outline: none; transition: border-color 0.15s; width: 100%; }
+        .pmodal-input:focus { border-color: var(--border-focus); }
+        .pmodal-input::placeholder { color: var(--text-muted); }
+        .pmodal-input.error { border-color: var(--status-unavailable); }
+        .pmodal-textarea { background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 9px; padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-primary); outline: none; transition: border-color 0.15s; width: 100%; resize: vertical; min-height: 80px; }
+        .pmodal-textarea:focus { border-color: var(--border-focus); }
+        .pmodal-textarea::placeholder { color: var(--text-muted); }
+        .pmodal-select { background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 9px; padding: 10px 13px; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-primary); outline: none; transition: border-color 0.15s; width: 100%; cursor: pointer; appearance: none; background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%239ca3af' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpolyline points='6 9 12 15 18 9'/%3E%3C/svg%3E"); background-repeat: no-repeat; background-position: right 12px center; }
+        .pmodal-select:focus { border-color: var(--border-focus); }
+        .pmodal-error { font-size: 0.72rem; color: var(--status-unavailable); display: none; }
+        .pmodal-error.visible { display: block; }
+        .pmodal-avail-row { display: flex; align-items: center; justify-content: space-between; background: var(--bg-input); border: 1.5px solid var(--border); border-radius: 9px; padding: 10px 14px; }
+        .pmodal-avail-label { font-size: 0.875rem; color: var(--text-secondary); }
+        .pswitch { width: 40px; height: 22px; border-radius: 11px; border: none; cursor: pointer; display: flex; align-items: center; padding: 2px; transition: background 0.25s; background: var(--toggle-bg); flex-shrink: 0; }
+        .pswitch.on { background: var(--status-available); }
+        .pswitch-knob { width: 18px; height: 18px; border-radius: 50%; background: var(--toggle-knob); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); flex-shrink: 0; }
+        .pswitch.on .pswitch-knob { transform: translateX(18px); }
+        .pmodal-actions { display: flex; gap: 10px; padding: 0 24px 20px; }
+        .pmodal-btn { flex: 1; padding: 11px 16px; border-radius: 9px; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; transition: background 0.15s, transform 0.1s; }
+        .pmodal-btn:active { transform: scale(0.98); }
+        .pmodal-btn.primary { background: var(--accent); color: #fff; }
+        .pmodal-btn.primary:hover { background: var(--accent-hover); }
+        .pmodal-btn.secondary { background: var(--accent-subtle); color: var(--text-secondary); border: 1px solid var(--border); }
+        .pmodal-btn.secondary:hover { background: var(--border); }
+        .pmodal-btn.danger { background: var(--status-unavailable); color: #fff; }
+        .pmodal-btn.danger:hover { background: #b91c1c; }
+
+        /* ── TOAST ── */
+        #toast-container { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 300; pointer-events: none; }
+        .toast { background: var(--accent); color: #fff; font-size: 0.83rem; font-weight: 500; padding: 10px 18px; border-radius: 8px; white-space: nowrap; animation: toast-in 0.3s ease both; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
+        @keyframes toast-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+        @keyframes toast-out { from { opacity:1; } to { opacity:0; transform:translateY(8px); } }
+
+        /* ── AUDIT LOG ── */
+        .audit-header { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 20px; gap: 16px; }
+        .audit-header-left { display: flex; flex-direction: column; gap: 2px; }
+        .audit-header-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+        .audit-header-sub { font-size: 0.78rem; color: var(--text-muted); }
+        .audit-header-actions { display: flex; gap: 8px; flex-shrink: 0; }
+        .audit-clear-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 9px; border: 1.5px solid var(--border); background: var(--bg-card); color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
+        .audit-clear-btn:hover { background: var(--status-unavailable-bg); color: var(--status-unavailable); border-color: var(--status-unavailable-border); }
+        .audit-clear-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .audit-filters { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
+        .audit-filter-group { display: flex; align-items: center; gap: 8px; }
+        .audit-filter-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); white-space: nowrap; }
+        .audit-pills { display: flex; gap: 6px; }
+        .audit-pill { padding: 5px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg-card); color: var(--text-secondary); font-family: 'DM Sans', sans-serif; font-size: 0.78rem; font-weight: 500; cursor: pointer; transition: all 0.15s; }
+        .audit-pill.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+        .audit-pill.deactivate.active { background: var(--status-unavailable); border-color: var(--status-unavailable); }
+        .audit-pill.activate.active { background: var(--status-available); border-color: var(--status-available); }
+        .audit-pill:not(.active):hover { background: var(--accent-subtle); color: var(--text-primary); }
+        .audit-search-wrap { display: flex; align-items: center; gap: 8px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; flex: 1; max-width: 280px; box-shadow: var(--shadow-card); }
+        .audit-search-wrap svg { width: 14px; height: 14px; fill: none; stroke: var(--text-muted); stroke-width: 2; stroke-linecap: round; flex-shrink: 0; }
+        .audit-search-input { border: none; background: none; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; color: var(--text-primary); outline: none; width: 100%; }
+        .audit-search-input::placeholder { color: var(--text-muted); }
+        .audit-stats { display: flex; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+        .audit-stat { display: flex; align-items: center; gap: 8px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 10px; padding: 10px 16px; box-shadow: var(--shadow-card); }
+        .audit-stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .audit-stat-label { font-size: 0.75rem; color: var(--text-muted); }
+        .audit-stat-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; font-weight: 500; color: var(--text-primary); margin-left: 4px; }
+        .audit-log-wrap { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); overflow: hidden; }
+        .audit-entry { display: flex; align-items: flex-start; gap: 14px; padding: 15px 18px; border-bottom: 1px solid var(--border); transition: background 0.12s; }
+        .audit-entry:last-child { border-bottom: none; }
+        .audit-entry:hover { background: var(--bg-input); }
+        .audit-entry-icon { width: 34px; height: 34px; border-radius: 9px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 2px; }
+        .audit-entry-icon.deactivate { background: var(--status-unavailable-bg); color: var(--status-unavailable); }
+        .audit-entry-icon.activate { background: var(--status-available-bg); color: var(--status-available); }
+        .audit-entry-icon svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+        .audit-entry-body { flex: 1; min-width: 0; }
+        .audit-entry-main { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; margin-bottom: 4px; }
+        .audit-entry-prato { font-size: 0.875rem; font-weight: 600; color: var(--text-primary); }
+        .audit-entry-action { font-size: 0.72rem; font-weight: 600; padding: 2px 8px; border-radius: 20px; }
+        .audit-entry-action.deactivate { background: var(--status-unavailable-bg); color: var(--status-unavailable); border: 1px solid var(--status-unavailable-border); }
+        .audit-entry-action.activate { background: var(--status-available-bg); color: var(--status-available); border: 1px solid var(--status-available-border); }
+        .audit-entry-motivo { font-size: 0.8rem; color: var(--text-secondary); line-height: 1.45; margin-bottom: 6px; font-style: italic; }
+        .audit-entry-motivo::before { content: '"'; }
+        .audit-entry-motivo::after { content: '"'; }
+        .audit-entry-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+        .audit-entry-user { display: flex; align-items: center; gap: 5px; font-size: 0.72rem; color: var(--text-muted); }
+        .audit-entry-user svg { width: 11px; height: 11px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .audit-entry-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); }
+        .audit-entry-origin { display: inline-flex; align-items: center; gap: 4px; font-size: 0.68rem; color: var(--text-muted); background: var(--accent-subtle); padding: 2px 7px; border-radius: 20px; }
+        .audit-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 64px 24px; text-align: center; }
+        .audit-empty-icon { width: 52px; height: 52px; border-radius: 14px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
+        .audit-empty-icon svg { width: 22px; height: 22px; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
+        .audit-empty-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
+        .audit-empty-desc { font-size: 0.8rem; color: var(--text-muted); max-width: 300px; line-height: 1.6; }
+
+        /* ── AUDIT TABS ── */
+        .audit-tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1.5px solid var(--border); padding-bottom: 0; }
+        .audit-tab { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border: none; background: none; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px; transition: color 0.15s, border-color 0.15s; border-radius: 0; }
+        .audit-tab svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
+        .audit-tab:hover { color: var(--text-primary); }
+        .audit-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+        .audit-tab-count { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 600; background: var(--accent-subtle); color: var(--accent); padding: 1px 6px; border-radius: 20px; min-width: 20px; text-align: center; }
+        .audit-tab.active .audit-tab-count { background: rgba(44,62,80,0.12); }
+        [data-theme="dark"] .audit-tab.active .audit-tab-count { background: rgba(58,110,165,0.2); }
+        .audit-tab-panel { display: none; }
+        .audit-tab-panel.active { display: block; }
+
+        /* date filter */
+        .audit-date-input { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 9px; padding: 6px 11px; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; color: var(--text-primary); outline: none; cursor: pointer; transition: border-color 0.15s; }
+        .audit-date-input:focus { border-color: var(--border-focus); }
+
+        /* new audit entry action types */
+        .audit-entry-icon.adicionar { background: var(--status-occupied-bg); color: var(--status-occupied); }
+        .audit-entry-icon.editar { background: var(--status-warning-bg); color: var(--status-warning); }
+        .audit-entry-icon.remover { background: var(--status-unavailable-bg); color: var(--status-unavailable); }
+        .audit-entry-action.adicionar { background: var(--status-occupied-bg); color: var(--status-occupied); border: 1px solid var(--status-occupied-border); }
+        .audit-entry-action.editar { background: var(--status-warning-bg); color: var(--status-warning); border: 1px solid var(--status-warning-border); }
+        .audit-entry-action.remover { background: var(--status-unavailable-bg); color: var(--status-unavailable); border: 1px solid var(--status-unavailable-border); }
+
+        /* diff block */
+        .audit-entry-diff { font-size: 0.75rem; color: var(--text-muted); background: var(--bg-input); border: 1px solid var(--border); border-radius: 7px; padding: 6px 10px; margin-bottom: 6px; line-height: 1.6; }
+        .audit-diff-row { display: flex; gap: 6px; align-items: baseline; }
+        .audit-diff-field { font-weight: 600; color: var(--text-secondary); min-width: 60px; }
+        .audit-diff-old { text-decoration: line-through; color: var(--status-unavailable); }
+        .audit-diff-new { color: var(--status-available); }
+
+        @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
+        @media (max-width: 800px) {
+            #sidebar { display: none; }
+            .charts-row, .bottom-row { grid-template-columns: 1fr; }
+            .chart-card.wide { grid-column: span 1; }
+            .kpi-grid { grid-template-columns: repeat(2, 1fr); }
+            .content-inner { padding: 16px 12px 24px; }
+        }
+    </style>
 </head>
-<body class="admin-body">
-    <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header">
-            <h1 class="nome-restaurante" style="font-size: 1.5rem;">Table4U</h1>
-            <p style="color: rgba(255,255,255,0.5); font-size: 0.8rem;">Administrador</p>
-        </div>
-        <ul class="sidebar-menu">
-            <li><a href="admin.html" class="ativo">Início / Dashboard</a></li>
-            <li><a href="#">Restaurante</a></li>
-            <li><a href="#">Faturamento</a></li>
-            <li><a href="#">Pratos / Menu</a></li>
-            <li><a href="employee.html">Funcionários</a></li>
-            <li><a href="#">Modo Funcionário</a></li>
-            <li><a href="#">Modo Cozinha</a></li>
-        </ul>
-    </nav>
-    <header class="admin-header">
-            <button class="menu-toggle" onclick="toggleSidebar()">☰</button>
-            <h2 class="page-title">Painel Administrativo</h2>
-            <div style="width: 24px;"></div>
-    </header>
-    <button class="perfil-btn" onclick="togglePerfil()">
-        <div class="perfil-iniciais"></div>
-    </button>
-    <div id="popup-perfil" class="popup-perfil">
-        <div class="perfil-topo">
-            <div class="perfil-avatar-grande"></div>
-            <div>
-                <p class="perfil-nome"></p>
-                <p class="perfil-email"></p>
-            </div>
-        </div>
-        <a href="#" class="perfil-menu-item sair" onclick="sairFuncionario()">Sair</a>
+<body>
+
+<nav id="sidebar" aria-label="Navegação lateral">
+    <div class="sidebar-header">
+        <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Recolher/expandir menu">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            <span class="sidebar-brand">Table4U</span>
+        </button>
     </div>
-    <main class="main-content">
-        <section class="stats-grid">
-            <div class="stat-card">
-                <h3>Pedidos</h3>
-                <div class="fake-chart"></div>
+    <div class="sidebar-nav">
+        <div class="nav-section-label">Administração</div>
+        <button class="nav-item active" data-tooltip="Dashboard" data-section="dashboard" onclick="showSection('dashboard', this)">
+            <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
+            <span class="nav-label">Dashboard</span>
+        </button>
+        <button class="nav-item" data-tooltip="Restaurante" data-section="restaurante" onclick="showSection('restaurante', this)">
+            <svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+            <span class="nav-label">Restaurante</span>
+        </button>
+        <button class="nav-item" data-tooltip="Faturamento" data-section="faturamento" onclick="showSection('faturamento', this)">
+            <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+            <span class="nav-label">Faturamento</span>
+        </button>
+        <button class="nav-item" data-tooltip="Pratos / Menu" data-section="menu" onclick="showSection('menu', this)">
+            <svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg>
+            <span class="nav-label">Pratos / Menu</span>
+        </button>
+        <button class="nav-item" data-tooltip="Funcionários" data-section="funcionarios" onclick="showSection('funcionarios', this)">
+            <svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <span class="nav-label">Funcionários</span>
+        </button>
+        <button class="nav-item" data-tooltip="Histórico de alterações" data-section="auditlog" onclick="showSection('auditlog', this)" id="nav-auditlog">
+            <svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            <span class="nav-label">Histórico</span>
+        </button>
+
+        <div class="nav-section-label">Modos</div>
+        <button class="nav-item disabled" data-tooltip="Modo Garçom" onclick="showToast('Em desenvolvimento')">
+            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+            <span class="nav-label">Modo Garçom</span>
+            <span class="nav-badge">Em breve</span>
+        </button>
+        <button class="nav-item disabled" data-tooltip="Modo Cozinha" onclick="showToast('Em desenvolvimento')">
+            <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 0-2 2h-3"/></svg>
+            <span class="nav-label">Modo Cozinha</span>
+            <span class="nav-badge">Em breve</span>
+        </button>
+        <button class="nav-item disabled" data-tooltip="Modo Recepção" onclick="showToast('Em desenvolvimento')">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1 19.79 19.79 0 0 1 1.56 4.5 2 2 0 0 1 3.54 2.32h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l1.78-1.78a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span class="nav-label">Modo Recepção</span>
+            <span class="nav-badge">Em breve</span>
+        </button>
+    </div>
+    <div class="sidebar-footer">
+        <button class="nav-item logout" onclick="logout()" data-tooltip="Sair">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            <span class="nav-label">Sair</span>
+        </button>
+    </div>
+</nav>
+
+<div id="main">
+    <header id="topbar">
+        <div class="topbar-page-info">
+            <div class="topbar-page-icon" id="topbar-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
             </div>
-            <div class="stat-card">
-                <h3>Faturamento</h3>
-                <div class="fake-chart"></div>
+            <span class="topbar-page-name">Admin</span>
+            <div class="topbar-separator" aria-hidden="true"></div>
+            <span class="topbar-page-title" id="topbar-title">Dashboard</span>
+        </div>
+        <div class="topbar-controls">
+            <button id="toggle-theme-btn" aria-label="Alternar tema">
+                <div class="toggle-knob"><span id="toggle-icon">☀️</span></div>
+            </button>
+            <button id="profile-btn" aria-label="Menu do perfil">
+                <span id="profile-initials">A</span>
+            </button>
+        </div>
+    </header>
+
+    <div id="profile-dropdown" role="menu">
+        <div class="dropdown-header">
+            <div class="dropdown-avatar" id="dropdown-avatar">A</div>
+            <div>
+                <div class="dropdown-name" id="dropdown-name">Administrador</div>
+                <div class="dropdown-role" id="dropdown-role">admin@table4u.com</div>
             </div>
-            <div class="stat-card">
-                <h3>Crescimento</h3>
-                <div class="fake-chart"></div>
+        </div>
+        <div class="dropdown-divider"></div>
+        <button class="dropdown-item danger" onclick="logout()">
+            <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+            Sair
+        </button>
+    </div>
+
+    <main id="content">
+
+        <!-- DASHBOARD -->
+        <div class="section-view active" id="section-dashboard">
+            <div class="content-inner">
+                <div class="kpi-grid">
+                    <div class="kpi-card green">
+                        <div class="kpi-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div>
+                        <div class="kpi-label">Faturamento hoje</div>
+                        <div class="kpi-value">R$4.820</div>
+                        <div class="kpi-delta up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg> +12% vs ontem</div>
+                    </div>
+                    <div class="kpi-card blue">
+                        <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg></div>
+                        <div class="kpi-label">Clientes atendidos</div>
+                        <div class="kpi-value">87</div>
+                        <div class="kpi-delta up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg> +5 vs ontem</div>
+                    </div>
+                    <div class="kpi-card yellow">
+                        <div class="kpi-icon"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg></div>
+                        <div class="kpi-label">Ocupação atual</div>
+                        <div class="kpi-value">68%</div>
+                        <div class="kpi-delta up"><svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg> 8 de 12 mesas</div>
+                    </div>
+                    <div class="kpi-card red">
+                        <div class="kpi-icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg></div>
+                        <div class="kpi-label">Ticket médio</div>
+                        <div class="kpi-value">R$55</div>
+                        <div class="kpi-delta down"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg> -3% vs semana</div>
+                    </div>
+                </div>
+
+                <div class="charts-row">
+                    <div class="chart-card">
+                        <div class="chart-header"><div><div class="chart-title">Faturamento — últimos 7 dias</div><div class="chart-subtitle">Valores em R$</div></div></div>
+                        <div class="chart-svg-wrap">
+                            <svg viewBox="0 0 380 160" class="bar-chart-group" preserveAspectRatio="none">
+                                <line x1="0" y1="20" x2="380" y2="20" stroke="var(--chart-grid)" stroke-width="1"/>
+                                <line x1="0" y1="60" x2="380" y2="60" stroke="var(--chart-grid)" stroke-width="1"/>
+                                <line x1="0" y1="100" x2="380" y2="100" stroke="var(--chart-grid)" stroke-width="1"/>
+                                <line x1="0" y1="140" x2="380" y2="140" stroke="var(--chart-grid)" stroke-width="1"/>
+                                <text x="2" y="18" text-anchor="start" font-size="9">6k</text>
+                                <text x="2" y="58" text-anchor="start" font-size="9">4k</text>
+                                <text x="2" y="98" text-anchor="start" font-size="9">2k</text>
+                                <rect class="bar-rect" x="30" y="82" width="32" height="58" fill="var(--chart-bar-active)" opacity="0.35"/>
+                                <rect class="bar-rect" x="80" y="60" width="32" height="80" fill="var(--chart-bar-active)" opacity="0.35"/>
+                                <rect class="bar-rect" x="130" y="40" width="32" height="100" fill="var(--chart-bar-active)" opacity="0.35"/>
+                                <rect class="bar-rect" x="180" y="70" width="32" height="70" fill="var(--chart-bar-active)" opacity="0.35"/>
+                                <rect class="bar-rect" x="230" y="50" width="32" height="90" fill="var(--chart-bar-active)" opacity="0.5"/>
+                                <rect class="bar-rect" x="280" y="30" width="32" height="110" fill="var(--chart-bar-active)" opacity="0.7"/>
+                                <rect class="bar-rect" x="330" y="22" width="32" height="118" fill="var(--chart-bar-active)"/>
+                                <text x="46" y="155" text-anchor="middle">Seg</text>
+                                <text x="96" y="155" text-anchor="middle">Ter</text>
+                                <text x="146" y="155" text-anchor="middle">Qua</text>
+                                <text x="196" y="155" text-anchor="middle">Qui</text>
+                                <text x="246" y="155" text-anchor="middle">Sex</text>
+                                <text x="296" y="155" text-anchor="middle">Sáb</text>
+                                <text x="346" y="155" text-anchor="middle" font-weight="600" fill="var(--text-primary)">Dom</text>
+                            </svg>
+                        </div>
+                    </div>
+
+                    <div class="chart-card">
+                        <div class="chart-header"><div><div class="chart-title">Vendas por categoria</div><div class="chart-subtitle">Distribuição de hoje</div></div></div>
+                        <div class="donut-wrap">
+                            <svg class="donut-svg" viewBox="0 0 120 120" width="120" height="120">
+                                <circle cx="60" cy="60" r="45" fill="none" stroke="var(--border)" stroke-width="18"/>
+                                <circle cx="60" cy="60" r="45" fill="none" stroke="#2c3e50" stroke-width="18" stroke-dasharray="113 283" stroke-dashoffset="0" transform="rotate(-90 60 60)"/>
+                                <circle cx="60" cy="60" r="45" fill="none" stroke="#3a6ea5" stroke-width="18" stroke-dasharray="79 283" stroke-dashoffset="-113" transform="rotate(-90 60 60)"/>
+                                <circle cx="60" cy="60" r="45" fill="none" stroke="#16a34a" stroke-width="18" stroke-dasharray="51 283" stroke-dashoffset="-192" transform="rotate(-90 60 60)"/>
+                                <circle cx="60" cy="60" r="45" fill="none" stroke="#d97706" stroke-width="18" stroke-dasharray="40 283" stroke-dashoffset="-243" transform="rotate(-90 60 60)"/>
+                                <text x="60" y="56" text-anchor="middle" font-family="IBM Plex Mono" font-size="13" font-weight="500" fill="var(--text-primary)">R$4.8k</text>
+                                <text x="60" y="70" text-anchor="middle" font-family="DM Sans" font-size="8" fill="var(--text-muted)">total hoje</text>
+                            </svg>
+                            <div class="donut-legend">
+                                <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#2c3e50"></div><span class="donut-legend-label">Pratos</span><span class="donut-legend-val">40%</span></div>
+                                <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#3a6ea5"></div><span class="donut-legend-label">Bebidas</span><span class="donut-legend-val">28%</span></div>
+                                <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#16a34a"></div><span class="donut-legend-label">Sobremesas</span><span class="donut-legend-val">18%</span></div>
+                                <div class="donut-legend-item"><div class="donut-legend-dot" style="background:#d97706"></div><span class="donut-legend-label">Entradas</span><span class="donut-legend-val">14%</span></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bottom-row">
+                    <div class="list-card">
+                        <div class="list-title">🍽️ Pratos mais pedidos hoje</div>
+                        <div class="list-row"><span class="list-rank">#1</span><div class="list-icon">🥩</div><div style="flex:1; min-width:0"><div class="list-name">Picanha grelhada</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:88%"></div></div></div><span class="list-amount">×22</span></div>
+                        <div class="list-row"><span class="list-rank">#2</span><div class="list-icon">🍝</div><div style="flex:1; min-width:0"><div class="list-name">Massa ao sugo</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:65%"></div></div></div><span class="list-amount">×16</span></div>
+                        <div class="list-row"><span class="list-rank">#3</span><div class="list-icon">🍤</div><div style="flex:1; min-width:0"><div class="list-name">Camarão na manteiga</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:52%"></div></div></div><span class="list-amount">×13</span></div>
+                        <div class="list-row"><span class="list-rank">#4</span><div class="list-icon">🥗</div><div style="flex:1; min-width:0"><div class="list-name">Salada tropical</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:38%"></div></div></div><span class="list-amount">×9</span></div>
+                        <div class="list-row"><span class="list-rank">#5</span><div class="list-icon">🍰</div><div style="flex:1; min-width:0"><div class="list-name">Petit gateau</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:28%"></div></div></div><span class="list-amount">×7</span></div>
+                    </div>
+                    <div class="list-card">
+                        <div class="list-title">⚡ Atividade recente</div>
+                        <div class="activity-item"><div class="activity-dot green"></div><div class="activity-text"><strong>Mesa 3</strong> realizou check-in — 4 pessoas</div><div class="activity-time">18:42</div></div>
+                        <div class="activity-item"><div class="activity-dot blue"></div><div class="activity-text"><strong>Mesa 7</strong> fez novo pedido — R$148,00</div><div class="activity-time">18:39</div></div>
+                        <div class="activity-item"><div class="activity-dot green"></div><div class="activity-text"><strong>Mesa 1</strong> encerrou conta — R$212,00</div><div class="activity-time">18:25</div></div>
+                        <div class="activity-item"><div class="activity-dot yellow"></div><div class="activity-text">Estoque de <strong>salmão</strong> abaixo do mínimo</div><div class="activity-time">18:10</div></div>
+                        <div class="activity-item"><div class="activity-dot blue"></div><div class="activity-text"><strong>Mesa 9</strong> fez novo pedido — R$86,00</div><div class="activity-time">17:58</div></div>
+                        <div class="activity-item"><div class="activity-dot red"></div><div class="activity-text"><strong>Mesa 5</strong> marcada como indisponível</div><div class="activity-time">17:40</div></div>
+                        <div class="activity-item"><div class="activity-dot green"></div><div class="activity-text"><strong>Mesa 11</strong> realizou check-in — 2 pessoas</div><div class="activity-time">17:32</div></div>
+                    </div>
+                </div>
             </div>
-        </section>
-        <section class="info-section">
-            <div class="info-box">Resumo geral do restaurante</div>
-            <div class="info-box">Relatórios e dados específicos</div>
-            <div class="info-box">Informações adicionais</div>
-        </section>
+        </div>
+
+        <!-- RESTAURANTE -->
+        <div class="section-view" id="section-restaurante">
+            <div class="content-inner">
+                <div class="placeholder-page"><div class="placeholder-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="placeholder-title">Informações do Restaurante</div><div class="placeholder-desc">Esta seção exibirá dados detalhados do restaurante: configurações gerais, horários de funcionamento, capacidade, fotos e informações de contato.</div><div class="placeholder-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Em implementação</div></div>
+            </div>
+        </div>
+
+        <!-- FATURAMENTO -->
+        <div class="section-view" id="section-faturamento">
+            <div class="content-inner">
+                <div class="placeholder-page"><div class="placeholder-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="placeholder-title">Faturamento & Financeiro</div><div class="placeholder-desc">Esta seção exibirá relatórios financeiros completos: faturamento por período, comparativos mensais, custos, margem de lucro e exportação de dados.</div><div class="placeholder-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Em implementação</div></div>
+            </div>
+        </div>
+
+        <!-- MENU -->
+        <div class="section-view" id="section-menu">
+            <div class="content-inner">
+                <div class="menu-toolbar">
+                    <div class="menu-toolbar-left">
+                        <div class="menu-search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="menu-search-input" id="menu-search" type="text" placeholder="Buscar prato…" oninput="renderMenu()"></div>
+                        <div class="menu-filter-pills" id="menu-filter-pills">
+                            <button class="filter-pill active" data-cat="todos" onclick="setMenuFilter('todos', this)">Todos</button>
+                            <button class="filter-pill" data-cat="Entradas" onclick="setMenuFilter('Entradas', this)">Entradas</button>
+                            <button class="filter-pill" data-cat="Pratos principais" onclick="setMenuFilter('Pratos principais', this)">Principais</button>
+                            <button class="filter-pill" data-cat="Bebidas" onclick="setMenuFilter('Bebidas', this)">Bebidas</button>
+                            <button class="filter-pill" data-cat="Sobremesas" onclick="setMenuFilter('Sobremesas', this)">Sobremesas</button>
+                        </div>
+                    </div>
+                    <button class="btn-add-prato" onclick="openAddPratoModal()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Adicionar prato</button>
+                </div>
+                <div class="menu-stats-strip" id="menu-stats-strip"></div>
+                <div class="menu-grid" id="menu-grid"></div>
+            </div>
+        </div>
+
+        <!-- FUNCIONÁRIOS -->
+        <div class="section-view" id="section-funcionarios">
+            <div class="content-inner">
+                <div class="func-header">
+                    <div class="func-header-left"><div class="func-header-title">Funcionários</div><div class="func-header-sub">Gerencie o acesso da equipe ao sistema</div></div>
+                    <button class="btn-add-func" onclick="openAddModal()"><svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg> Adicionar funcionário</button>
+                </div>
+                <div class="func-table-card">
+                    <div class="func-search-bar"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="func-search-input" type="text" id="func-search" placeholder="Buscar por nome ou e-mail…" oninput="renderFuncionarios()"><span class="func-count-badge" id="func-count">— funcionários</span></div>
+                    <table class="func-table"><thead><tr><th>Funcionário</th><th>Cargo</th><th>Ações</th></tr></thead><tbody id="func-tbody"></tbody></table>
+                </div>
+            </div>
+        </div>
+
+        <!-- HISTÓRICO DE ALTERAÇÕES -->
+        <div class="section-view" id="section-auditlog">
+            <div class="content-inner">
+                <div class="audit-header"><div class="audit-header-left"><div class="audit-header-title">Histórico de alterações</div><div class="audit-header-sub">Registro de todas as ações importantes — cardápio e funcionários</div></div></div>
+                <div class="audit-tabs" id="audit-tabs">
+                    <button class="audit-tab active" data-tab="cardapio" onclick="setAuditTab('cardapio', this)"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/></svg> Cardápio <span class="audit-tab-count" id="tab-count-cardapio"></span></button>
+                    <button class="audit-tab" data-tab="funcionarios" onclick="setAuditTab('funcionarios', this)"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg> Funcionários <span class="audit-tab-count" id="tab-count-funcionarios"></span></button>
+                    <button class="audit-tab" data-tab="pedidos" onclick="setAuditTab('pedidos', this)"><svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg> Pedidos <span class="audit-tab-count" id="tab-count-pedidos"></span></button>
+                    <button class="audit-tab" data-tab="mesas" onclick="setAuditTab('mesas', this)"><svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg> Mesas <span class="audit-tab-count" id="tab-count-mesas"></span></button>
+                </div>
+                <div class="audit-tab-panel active" id="audit-panel-cardapio">
+                    <div class="audit-filters"><div class="audit-filter-group"><label class="audit-filter-label">Ação</label><div class="audit-pills" id="audit-filter-pills-cardapio"><button class="audit-pill active" onclick="setAuditFilterCardapio('todos',this)">Todas</button><button class="audit-pill" onclick="setAuditFilterCardapio('adicionar',this)">Adições</button><button class="audit-pill" onclick="setAuditFilterCardapio('editar',this)">Edições</button><button class="audit-pill deactivate" onclick="setAuditFilterCardapio('remover',this)">Remoções</button><button class="audit-pill deactivate" onclick="setAuditFilterCardapio('desativar',this)">Desativações</button><button class="audit-pill activate" onclick="setAuditFilterCardapio('ativar',this)">Ativações</button></div></div><div class="audit-filter-group"><label class="audit-filter-label">Data</label><input class="audit-date-input" id="audit-date-cardapio" type="date" onchange="renderAuditCardapio()"></div><div class="audit-search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="audit-search-input" id="audit-search-cardapio" type="text" placeholder="Buscar prato…" oninput="renderAuditCardapio()"></div></div>
+                    <div class="audit-stats" id="audit-stats-cardapio"></div>
+                    <div class="audit-log-wrap" id="audit-log-cardapio"></div>
+                </div>
+                <div class="audit-tab-panel" id="audit-panel-funcionarios">
+                    <div class="audit-filters"><div class="audit-filter-group"><label class="audit-filter-label">Ação</label><div class="audit-pills" id="audit-filter-pills-func"><button class="audit-pill active" onclick="setAuditFilterFunc('todos',this)">Todas</button><button class="audit-pill activate" onclick="setAuditFilterFunc('adicionar',this)">Adições</button><button class="audit-pill" onclick="setAuditFilterFunc('editar',this)">Edições</button><button class="audit-pill deactivate" onclick="setAuditFilterFunc('remover',this)">Remoções</button></div></div><div class="audit-filter-group"><label class="audit-filter-label">Data</label><input class="audit-date-input" id="audit-date-func" type="date" onchange="renderAuditFunc()"></div><div class="audit-search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="audit-search-input" id="audit-search-func" type="text" placeholder="Buscar funcionário…" oninput="renderAuditFunc()"></div></div>
+                    <div class="audit-stats" id="audit-stats-func"></div>
+                    <div class="audit-log-wrap" id="audit-log-func"></div>
+                </div>
+                <div class="audit-tab-panel" id="audit-panel-pedidos">
+                    <div class="audit-filters"><div class="audit-filter-group"><label class="audit-filter-label">Status</label><div class="audit-pills" id="audit-filter-pills-pedidos"><button class="audit-pill active" onclick="setAuditFilterPedidos('todos',this)">Todos</button><button class="audit-pill" onclick="setAuditFilterPedidos('anotado',this)">Anotados</button><button class="audit-pill activate" onclick="setAuditFilterPedidos('pronto',this)">Prontos</button></div></div><div class="audit-filter-group"><label class="audit-filter-label">Data</label><input class="audit-date-input" id="audit-date-pedidos" type="date" onchange="renderAuditPedidos()"></div><div class="audit-search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="audit-search-input" id="audit-search-pedidos" type="text" placeholder="Buscar por mesa, garçom…" oninput="renderAuditPedidos()"></div></div>
+                    <div class="audit-stats" id="audit-stats-pedidos"></div>
+                    <div class="audit-log-wrap" id="audit-log-pedidos"></div>
+                </div>
+                <div class="audit-tab-panel" id="audit-panel-mesas">
+                    <div class="audit-filters"><div class="audit-filter-group"><label class="audit-filter-label">Evento</label><div class="audit-pills" id="audit-filter-pills-mesas"><button class="audit-pill active" onclick="setAuditFilterMesas('todos',this)">Todos</button><button class="audit-pill activate" onclick="setAuditFilterMesas('checkin',this)">Check-in</button><button class="audit-pill" onclick="setAuditFilterMesas('checkout',this)">Check-out</button><button class="audit-pill activate" onclick="setAuditFilterMesas('disponivel',this)">Disponível</button><button class="audit-pill deactivate" onclick="setAuditFilterMesas('indisponivel',this)">Indisponível</button></div></div><div class="audit-filter-group"><label class="audit-filter-label">Data</label><input class="audit-date-input" id="audit-date-mesas" type="date" onchange="renderAuditMesas()"></div><div class="audit-search-wrap"><svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg><input class="audit-search-input" id="audit-search-mesas" type="text" placeholder="Buscar por mesa, responsável…" oninput="renderAuditMesas()"></div></div>
+                    <div class="audit-stats" id="audit-stats-mesas"></div>
+                    <div class="audit-log-wrap" id="audit-log-mesas"></div>
+                </div>
+            </div>
+        </div>
+
     </main>
-    <footer>
-        <p class="footer-info">Endereço e Contatos</p>
-        <p class="powerby">Powered by Table4U</p>
-    </footer>
-    <script src="../../../PublicServer/src/scripts/profile.js"></script>
-    <script src="../scripts/admin.js"></script>
+</div>
+
+<!-- MODAIS (FUNCIONÁRIOS) -->
+<div class="fmodal-overlay" id="modal-add" onclick="closeModalOnBg(event,'modal-add')">
+    <div class="fmodal"><div class="fmodal-header"><div class="fmodal-icon" id="add-modal-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div><div><div class="fmodal-title" id="add-modal-title">Adicionar funcionário</div><div class="fmodal-subtitle" id="add-modal-subtitle">Preencha os dados do novo membro</div></div><button class="fmodal-close" onclick="closeModal('modal-add')" aria-label="Fechar"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="fmodal-body"><input type="hidden" id="edit-id"><div class="fmodal-field"><label class="fmodal-label" for="input-nome">Nome completo</label><input class="fmodal-input" id="input-nome" type="text" placeholder="Ex: João da Silva" autocomplete="off"><span class="fmodal-error" id="error-nome">Informe o nome do funcionário.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-email">E-mail (login)</label><input class="fmodal-input" id="input-email" type="email" placeholder="Ex: joao@restaurante.com" autocomplete="off"><span class="fmodal-error" id="error-email">Informe um e-mail válido.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-cargo">Cargo</label><select class="fmodal-select" id="input-cargo"><option value="garcom">Garçom</option><option value="cozinha">Cozinha</option><option value="recepcao">Recepção</option><option value="admin">Administrador</option></select></div><div class="fmodal-field" id="edit-motivo-field" style="display:none"><label class="fmodal-label" for="input-edit-motivo">Motivo da edição <span style="color:var(--status-unavailable)">*</span></label><textarea class="tmodal-motivo-input" id="input-edit-motivo" placeholder="Ex: Promoção de cargo, correção de dados." maxlength="200" rows="3"></textarea><span class="tmodal-motivo-error" id="error-edit-motivo">Informe o motivo antes de salvar.</span></div></div>
+        <div class="fmodal-actions"><button class="fmodal-btn secondary" onclick="closeModal('modal-add')">Cancelar</button><button class="fmodal-btn primary" id="add-modal-confirm-btn" onclick="confirmAddEdit()">Adicionar</button></div>
+    </div>
+</div>
+
+<div class="fmodal-overlay" id="modal-remove" onclick="closeModalOnBg(event,'modal-remove')">
+    <div class="fmodal"><div class="fmodal-header"><div class="fmodal-icon danger"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div><div><div class="fmodal-title">Remover funcionário</div><div class="fmodal-subtitle">Esta ação não pode ser desfeita</div></div><button class="fmodal-close" onclick="closeModal('modal-remove')" aria-label="Fechar"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="fmodal-body"><p class="fmodal-confirm-text" id="remove-confirm-text">Tem certeza que deseja remover este funcionário? O acesso ao sistema será revogado imediatamente.</p><div class="fmodal-field"><label class="fmodal-label" for="remove-func-motivo">Motivo da remoção <span style="color:var(--status-unavailable)">*</span></label><textarea class="tmodal-motivo-input" id="remove-func-motivo" placeholder="Ex: Funcionário desligado da empresa." maxlength="200" rows="3"></textarea><span class="tmodal-motivo-error" id="remove-func-motivo-error">Informe o motivo antes de confirmar.</span></div></div>
+        <div class="fmodal-actions"><button class="fmodal-btn secondary" onclick="closeModal('modal-remove')">Cancelar</button><button class="fmodal-btn danger" onclick="confirmRemove()">Sim, remover</button></div>
+    </div>
+</div>
+
+<!-- MODAL TOGGLE DISPONIBILIDADE PRATO -->
+<div class="pmodal-overlay" id="modal-toggle-disp" onclick="if(event.target===this)closeToggleDispModal()">
+    <div class="pmodal" style="max-width:420px"><div class="pmodal-header"><div class="tmodal-icon-wrap" id="tmodal-icon-wrap"><svg id="tmodal-icon-svg" viewBox="0 0 24 24"></svg></div><div><div class="pmodal-title" id="tmodal-title">Confirmar ação</div><div class="tmodal-prato-name" id="tmodal-prato-name"></div></div><button class="pmodal-close" onclick="closeToggleDispModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="pmodal-body"><div class="pmodal-field"><label class="tmodal-motivo-label" for="tmodal-motivo">Motivo <span style="color:var(--status-unavailable)">*</span></label><textarea class="tmodal-motivo-input" id="tmodal-motivo" placeholder="Descreva o motivo da alteração…" maxlength="200" rows="3"></textarea><span class="tmodal-motivo-error" id="tmodal-motivo-error">Informe o motivo antes de confirmar.</span></div></div>
+        <div class="pmodal-actions"><button class="pmodal-btn secondary" onclick="closeToggleDispModal()">Cancelar</button><button class="pmodal-btn" id="tmodal-confirm-btn" onclick="confirmToggleDisp()">Confirmar</button></div>
+    </div>
+</div>
+
+<!-- MODAL PRATO ADD/EDIT -->
+<div class="pmodal-overlay" id="modal-prato" onclick="closePratoModalOnBg(event)">
+    <div class="pmodal"><div class="pmodal-header"><div class="pmodal-icon" id="pmodal-icon">🍽️</div><div><div class="pmodal-title" id="pmodal-title">Adicionar prato</div><div class="pmodal-subtitle" id="pmodal-subtitle">Preencha as informações do novo prato</div></div><button class="pmodal-close" onclick="closePratoModal()" aria-label="Fechar"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="pmodal-body"><input type="hidden" id="prato-edit-id"><div class="pmodal-field"><label class="pmodal-label" for="prato-nome">Nome do prato</label><input class="pmodal-input" id="prato-nome" type="text" placeholder="Ex: Risoto de cogumelos"><span class="pmodal-error" id="prato-error-nome">Informe o nome do prato.</span></div><div class="pmodal-row2"><div class="pmodal-field"><label class="pmodal-label" for="prato-categoria">Categoria</label><select class="pmodal-select" id="prato-categoria"><option value="Entradas">Entradas</option><option value="Pratos principais">Pratos principais</option><option value="Bebidas">Bebidas</option><option value="Sobremesas">Sobremesas</option></select></div><div class="pmodal-field"><label class="pmodal-label" for="prato-preco">Preço (R$)</label><input class="pmodal-input" id="prato-preco" type="number" min="0" step="0.01" placeholder="0,00"><span class="pmodal-error" id="prato-error-preco">Informe um preço válido.</span></div></div><div class="pmodal-field"><label class="pmodal-label" for="prato-desc">Descrição</label><textarea class="pmodal-textarea" id="prato-desc" placeholder="Ingredientes, modo de preparo, destaques…" maxlength="200"></textarea></div><div class="pmodal-field"><label class="pmodal-label" for="prato-emoji">Emoji / ícone</label><input class="pmodal-input" id="prato-emoji" type="text" placeholder="🍝" maxlength="4"></div><div class="pmodal-avail-row"><span class="pmodal-avail-label">Disponível no cardápio</span><button class="pswitch on" id="prato-avail-switch" onclick="togglePratoAvail()" aria-label="Disponibilidade"><div class="pswitch-knob"></div></button></div></div>
+        <div class="pmodal-actions"><button class="pmodal-btn secondary" onclick="closePratoModal()">Cancelar</button><button class="pmodal-btn primary" id="pmodal-confirm-btn" onclick="confirmPrato()">Adicionar</button></div>
+    </div>
+</div>
+
+<!-- MODAL DELETAR PRATO -->
+<div class="pmodal-overlay" id="modal-del-prato" onclick="if(event.target===this)closeDelPratoModal()">
+    <div class="pmodal" style="max-width:420px"><div class="pmodal-header"><div class="pmodal-icon" style="background:var(--status-unavailable-bg);font-size:1.1rem">🗑️</div><div><div class="pmodal-title">Remover prato</div><div class="pmodal-subtitle" id="del-prato-subtitle">Este prato será removido do cardápio.</div></div><button class="pmodal-close" onclick="closeDelPratoModal()"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
+        <div class="pmodal-body"><p class="fmodal-confirm-text" id="del-prato-text">Tem certeza?</p><div class="pmodal-field"><label class="pmodal-label" for="del-prato-motivo">Motivo da remoção <span style="color:var(--status-unavailable)">*</span></label><textarea class="tmodal-motivo-input" id="del-prato-motivo" placeholder="Ex: Prato substituído pelo novo cardápio." maxlength="200" rows="3"></textarea><span class="tmodal-motivo-error" id="del-prato-motivo-error">Informe o motivo antes de confirmar.</span></div></div>
+        <div class="pmodal-actions"><button class="pmodal-btn secondary" onclick="closeDelPratoModal()">Cancelar</button><button class="pmodal-btn danger" onclick="confirmDelPrato()">Remover</button></div>
+    </div>
+</div>
+
+<div id="toast-container" aria-live="polite"></div>
+
+<script src="../scripts/shared.js" defer></script>
+
+<script>
+    // ── NAVEGAÇÃO ──
+    const sectionTitles = {
+        dashboard: 'Dashboard', restaurante: 'Restaurante', faturamento: 'Faturamento',
+        menu: 'Pratos / Menu', funcionarios: 'Funcionários', auditlog: 'Histórico de alterações'
+    };
+    const sectionIcons = {
+        dashboard: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
+        restaurante: `<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+        faturamento: `<svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+        menu: `<svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>`,
+        funcionarios: `<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`,
+        auditlog: `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`
+    };
+    function showSection(id, navEl) {
+        document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+        document.getElementById('section-' + id).classList.add('active');
+        if (navEl) navEl.classList.add('active');
+        document.getElementById('topbar-title').textContent = sectionTitles[id] || id;
+        document.getElementById('topbar-icon').innerHTML = sectionIcons[id] || '';
+        if (id === 'auditlog') { updateAuditTabCounts(); renderAuditLog(); }
+    }
+
+    // ── FUNCIONÁRIOS (lógica original) ──
+    const cargoLabels = { admin: { label: 'Administrador', cls: 'admin' }, garcom: { label: 'Garçom', cls: 'garcom' }, cozinha: { label: 'Cozinha', cls: 'cozinha' }, recepcao: { label: 'Recepção', cls: 'recepcao' } };
+    let funcionarios = [
+        { id: 1, nome: 'Ana Ribeiro', email: 'ana@table4u.com', cargo: 'admin' },
+        { id: 2, nome: 'Carlos Mendes', email: 'carlos@table4u.com', cargo: 'garcom' },
+        { id: 3, nome: 'Fernanda Lima', email: 'fernanda@table4u.com', cargo: 'garcom' },
+        { id: 4, nome: 'Rafael Souza', email: 'rafael@table4u.com', cargo: 'cozinha' },
+        { id: 5, nome: 'Juliana Costa', email: 'juliana@table4u.com', cargo: 'recepcao' },
+    ];
+    let nextId = 6, pendingRemoveId = null, editingId = null;
+
+    function getInitials(nome) { const parts = nome.trim().split(' ').filter(Boolean); if (parts.length === 1) return parts[0][0].toUpperCase(); return (parts[0][0] + parts[parts.length-1][0]).toUpperCase(); }
+    function renderFuncionarios() {
+        const q = (document.getElementById('func-search').value || '').toLowerCase();
+        const list = funcionarios.filter(f => f.nome.toLowerCase().includes(q) || f.email.toLowerCase().includes(q));
+        document.getElementById('func-count').textContent = `${list.length} funcionário${list.length !== 1 ? 's' : ''}`;
+        const tbody = document.getElementById('func-tbody');
+        if (!list.length) { tbody.innerHTML = `<tr><td colspan="3"><div class="func-empty"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Nenhum funcionário encontrado.</div></td></tr>`; return; }
+        tbody.innerHTML = list.map(f => { const cargo = cargoLabels[f.cargo] || { label: f.cargo, cls: 'garcom' }; return `<tr><td><div class="func-name-cell"><div class="func-avatar">${getInitials(f.nome)}</div><div><div class="func-name">${escHtml(f.nome)}</div><div class="func-email">${escHtml(f.email)}</div></div></div></td><td><span class="func-role-badge ${cargo.cls}">${cargo.label}</span></td><td><div class="func-actions"><button class="func-btn edit" onclick="openEditModal(${f.id})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Gerenciar</button><button class="func-btn remove" onclick="openRemoveModal(${f.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Remover</button></div></td></tr>`; }).join('');
+    }
+    function openAddModal() { editingId = null; document.getElementById('edit-id').value = ''; document.getElementById('input-nome').value = ''; document.getElementById('input-email').value = ''; document.getElementById('input-cargo').value = 'garcom'; document.getElementById('input-edit-motivo').value = ''; document.getElementById('edit-motivo-field').style.display = 'none'; clearFuncErrors(); document.getElementById('add-modal-title').textContent = 'Adicionar funcionário'; document.getElementById('add-modal-subtitle').textContent = 'Preencha os dados do novo membro'; document.getElementById('add-modal-confirm-btn').textContent = 'Adicionar'; document.getElementById('add-modal-icon').innerHTML = `<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>`; document.getElementById('add-modal-icon').classList.remove('danger'); openModal('modal-add'); setTimeout(()=>document.getElementById('input-nome').focus(),80); }
+    function openEditModal(id) { const f = funcionarios.find(x=>x.id===id); if(!f)return; editingId=id; document.getElementById('edit-id').value=id; document.getElementById('input-nome').value=f.nome; document.getElementById('input-email').value=f.email; document.getElementById('input-cargo').value=f.cargo; document.getElementById('input-edit-motivo').value=''; document.getElementById('edit-motivo-field').style.display=''; clearFuncErrors(); document.getElementById('add-modal-title').textContent='Editar funcionário'; document.getElementById('add-modal-subtitle').textContent='Altere os dados do funcionário'; document.getElementById('add-modal-confirm-btn').textContent='Salvar alterações'; document.getElementById('add-modal-icon').innerHTML=`<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`; document.getElementById('add-modal-icon').classList.remove('danger'); openModal('modal-add'); setTimeout(()=>document.getElementById('input-nome').focus(),80); }
+    function confirmAddEdit() { let nome=document.getElementById('input-nome').value.trim(), email=document.getElementById('input-email').value.trim(), cargo=document.getElementById('input-cargo').value, valid=true; clearFuncErrors(); if(!nome){ showFuncError('error-nome','input-nome'); valid=false; } if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showFuncError('error-email','input-email'); valid=false; } if(editingId){ let motivo=document.getElementById('input-edit-motivo').value.trim(); if(!motivo){ document.getElementById('error-edit-motivo').classList.add('visible'); document.getElementById('input-edit-motivo').classList.add('error'); valid=false; } } if(!valid)return; if(editingId){ let f=funcionarios.find(x=>x.id===editingId); if(f){ let diff=[]; const campoLabels={nome:'Nome',email:'E-mail',cargo:'Cargo'}; const cargoPtBR=k=>cargoLabels[k]?.label||k; if(f.nome!==nome) diff.push({campo:campoLabels.nome,de:f.nome,para:nome}); if(f.email!==email) diff.push({campo:campoLabels.email,de:f.email,para:email}); if(f.cargo!==cargo) diff.push({campo:campoLabels.cargo,de:cargoPtBR(f.cargo),para:cargoPtBR(cargo)}); let motivo=document.getElementById('input-edit-motivo').value.trim(); f.nome=nome; f.email=email; f.cargo=cargo; writeAuditFunc({funcionario:nome,email,cargo,acao:'editar',motivo,diff,usuario:'Admin'}); } showToast(`✓ ${nome} atualizado com sucesso`); } else { funcionarios.push({id:nextId++,nome,email,cargo}); writeAuditFunc({funcionario:nome,email,cargo,acao:'adicionar',usuario:'Admin'}); showToast(`✓ ${nome} adicionado com sucesso`); } closeModal('modal-add'); renderFuncionarios(); }
+    function openRemoveModal(id){ let f=funcionarios.find(x=>x.id===id); if(!f)return; pendingRemoveId=id; document.getElementById('remove-confirm-text').innerHTML=`Tem certeza que deseja remover <strong>${escHtml(f.nome)}</strong> (${escHtml(f.email)})? O acesso ao sistema será revogado imediatamente.`; document.getElementById('remove-func-motivo').value=''; document.getElementById('remove-func-motivo-error').classList.remove('visible'); document.getElementById('remove-func-motivo').classList.remove('error'); openModal('modal-remove'); }
+    function confirmRemove(){ let f=funcionarios.find(x=>x.id===pendingRemoveId); if(!f)return; let motivo=document.getElementById('remove-func-motivo').value.trim(); if(!motivo){ document.getElementById('remove-func-motivo-error').classList.add('visible'); document.getElementById('remove-func-motivo').classList.add('error'); return; } let nome=f.nome,email=f.email,cargo=f.cargo; funcionarios=funcionarios.filter(x=>x.id!==pendingRemoveId); pendingRemoveId=null; writeAuditFunc({funcionario:nome,email,cargo,acao:'remover',motivo,usuario:'Admin'}); closeModal('modal-remove'); renderFuncionarios(); showToast(`${nome} removido do sistema`); }
+    function openModal(id){ document.getElementById(id).classList.add('open'); }
+    function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+    function closeModalOnBg(e,id){ if(e.target===document.getElementById(id)) closeModal(id); }
+    function showFuncError(errId,inputId){ document.getElementById(errId).classList.add('visible'); document.getElementById(inputId).classList.add('error'); }
+    function clearFuncErrors(){ ['error-nome','error-email','error-edit-motivo'].forEach(id=>document.getElementById(id).classList.remove('visible')); ['input-nome','input-email','input-edit-motivo'].forEach(id=>document.getElementById(id).classList.remove('error')); }
+
+    // ── MENU / PRATOS (lógica original) ──
+    const MENU_KEY = 't4u-menu';
+    const defaultMenu = [
+        { id:1, nome:'Bruschetta ao tomate', cat:'Entradas', preco:28.90, desc:'Pão italiano grelhado com tomate fresco, manjericão e azeite extravirgem.', emoji:'🍞', avail:true },
+        { id:2, nome:'Carpaccio de carne', cat:'Entradas', preco:42.00, desc:'Finas lâminas de filé mignon com alcaparras, parmesão e molho mostarda.', emoji:'🥩', avail:true },
+        { id:3, nome:'Sopa de cebola', cat:'Entradas', preco:34.00, desc:'Cebolas caramelizadas, caldo de carne, croutons e queijo gruyère gratinado.', emoji:'🍲', avail:false },
+        { id:4, nome:'Risoto de cogumelos', cat:'Pratos principais', preco:68.00, desc:'Arroz arbóreo com mix de cogumelos frescos, parmesão e manteiga trufa.', emoji:'🍚', avail:true },
+        { id:5, nome:'Salmão grelhado', cat:'Pratos principais', preco:89.00, desc:'Filé de salmão grelhado com crosta de ervas, aspargos salteados e purê.', emoji:'🐟', avail:true },
+        { id:6, nome:'Frango à parmegiana', cat:'Pratos principais', preco:58.00, desc:'Filé de frango empanado, molho de tomate artesanal, mozzarella e presunto.', emoji:'🍗', avail:true },
+        { id:7, nome:'Picanha na brasa', cat:'Pratos principais', preco:112.00, desc:'Picanha premium grelhada na brasa, acompanha farofa, vinagrete e arroz.', emoji:'🥩', avail:true },
+        { id:8, nome:'Água mineral', cat:'Bebidas', preco:8.00, desc:'Água mineral natural ou com gás 500ml.', emoji:'💧', avail:true },
+        { id:9, nome:'Suco de laranja', cat:'Bebidas', preco:18.00, desc:'Suco natural de laranja espremido na hora, sem adição de açúcar.', emoji:'🍊', avail:true },
+        { id:10, nome:'Refrigerante lata', cat:'Bebidas', preco:12.00, desc:'Cola, guaraná, limão ou laranja — lata 350ml gelada.', emoji:'🥤', avail:true },
+        { id:11, nome:'Vinho da casa (taça)', cat:'Bebidas', preco:32.00, desc:'Vinho tinto ou branco selecionado, taça 180ml.', emoji:'🍷', avail:true },
+        { id:12, nome:'Petit gâteau', cat:'Sobremesas', preco:34.00, desc:'Bolinho de chocolate quente com sorvete de creme e calda de frutas.', emoji:'🍫', avail:true },
+        { id:13, nome:'Pudim de leite', cat:'Sobremesas', preco:22.00, desc:'Pudim cremoso de leite condensado com calda de caramelo artesanal.', emoji:'🍮', avail:true },
+        { id:14, nome:'Torta de limão', cat:'Sobremesas', preco:26.00, desc:'Torta gelada de limão siciliano com merengue italiano.', emoji:'🍋', avail:false },
+    ];
+    function loadMenu(){ try{ let raw=localStorage.getItem(MENU_KEY); return raw?JSON.parse(raw):defaultMenu; }catch(e){ return defaultMenu; } }
+    function saveMenu(menu){ localStorage.setItem(MENU_KEY,JSON.stringify(menu)); }
+    let pratoMenu = loadMenu(), pratoNextId = pratoMenu.reduce((m,p)=>Math.max(m,p.id),0)+1, menuFilterCat='todos', pratoPendingDelId=null, pratoEditingId=null, pratoAvailState=true, toggleDispPendingId=null;
+    function getFilteredMenu(){ let q=(document.getElementById('menu-search')?.value||'').toLowerCase(); return pratoMenu.filter(p=>(menuFilterCat==='todos'||p.cat===menuFilterCat)&&(p.nome.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q))); }
+    function setMenuFilter(cat,el){ menuFilterCat=cat; document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderMenu(); }
+    function renderMenuStats(){ let total=pratoMenu.length, avail=pratoMenu.filter(p=>p.avail).length, unavail=total-avail, cats=[...new Set(pratoMenu.map(p=>p.cat))].length; document.getElementById('menu-stats-strip').innerHTML=`<div class="menu-stat"><div class="menu-stat-dot" style="background:var(--accent)"></div><span class="menu-stat-label">Total</span><span class="menu-stat-val">${total}</span></div><div class="menu-stat"><div class="menu-stat-dot" style="background:var(--status-available)"></div><span class="menu-stat-label">Disponíveis</span><span class="menu-stat-val">${avail}</span></div><div class="menu-stat"><div class="menu-stat-dot" style="background:var(--status-unavailable)"></div><span class="menu-stat-label">Indisponíveis</span><span class="menu-stat-val">${unavail}</span></div><div class="menu-stat"><div class="menu-stat-dot" style="background:var(--status-warning)"></div><span class="menu-stat-label">Categorias</span><span class="menu-stat-val">${cats}</span></div>`; }
+    function renderMenu(){ renderMenuStats(); let grid=document.getElementById('menu-grid'), list=getFilteredMenu(); if(!list.length){ grid.innerHTML=`<div class="menu-empty" style="grid-column:1/-1"><div class="menu-empty-icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/></svg></div><div class="menu-empty-title">Nenhum prato encontrado</div><div class="menu-empty-desc">Tente outro filtro ou adicione um novo prato ao cardápio.</div></div>`; return; }
+        grid.innerHTML=list.map(p=>`<div class="prato-card ${p.avail?'':'unavailable'}"><div class="prato-card-top"><div class="prato-card-row1"><span class="prato-emoji">${escHtml(p.emoji||'🍽️')}</span><span class="prato-status-badge ${p.avail?'available':'unavailable'}">${p.avail?'Disponível':'Indisponível'}</span></div><div class="prato-name">${escHtml(p.nome)}</div><div class="prato-cat-badge">${escHtml(p.cat)}</div><div class="prato-desc">${escHtml(p.desc)}</div><div class="prato-price">R$ ${p.preco.toFixed(2).replace('.',',')}</div></div><div class="prato-card-footer"><button class="prato-btn ${p.avail?'toggle-unavail':'toggle-avail'}" onclick="togglePratoDisp(${p.id})"><svg viewBox="0 0 24 24">${p.avail?'<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>':'<polyline points="20 6 9 17 4 12"/>'}</svg>${p.avail?'Desativar':'Ativar'}</button><button class="prato-btn edit" onclick="openEditPratoModal(${p.id})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar</button><button class="prato-btn del" onclick="openDelPratoModal(${p.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`).join(''); }
+    function togglePratoDisp(id){ let p=pratoMenu.find(x=>x.id===id); if(!p)return; toggleDispPendingId=id; let activating=!p.avail; let wrap=document.getElementById('tmodal-icon-wrap'), svg=document.getElementById('tmodal-icon-svg'); wrap.className='tmodal-icon-wrap '+(activating?'activate':'deactivate'); svg.innerHTML=activating?'<polyline points="20 6 9 17 4 12"/>':'<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>'; document.getElementById('tmodal-title').textContent=activating?'Ativar prato':'Desativar prato'; document.getElementById('tmodal-prato-name').textContent=p.nome; document.getElementById('tmodal-motivo').value=''; document.getElementById('tmodal-motivo').placeholder=activating?'Ex: Ingredientes disponíveis novamente.':'Ex: Ingrediente em falta, prato temporariamente retirado.'; document.getElementById('tmodal-motivo-error').classList.remove('visible'); document.getElementById('tmodal-motivo').classList.remove('error'); let btn=document.getElementById('tmodal-confirm-btn'); btn.className='pmodal-btn '+(activating?'activate':'deactivate'); btn.textContent=activating?'Ativar':'Desativar'; document.getElementById('modal-toggle-disp').classList.add('open'); setTimeout(()=>document.getElementById('tmodal-motivo').focus(),80); }
+    function confirmToggleDisp(){ let motivo=document.getElementById('tmodal-motivo').value.trim(); if(!motivo){ document.getElementById('tmodal-motivo-error').classList.add('visible'); document.getElementById('tmodal-motivo').classList.add('error'); return; } let p=pratoMenu.find(x=>x.id===toggleDispPendingId); if(!p)return; let acao=p.avail?'desativar':'ativar'; p.avail=!p.avail; saveMenu(pratoMenu); writeAuditCardapio({prato:p.nome,pratoId:p.id,acao,motivo,usuario:'Admin',origem:'Admin'}); closeToggleDispModal(); renderMenu(); showToast(p.avail?`✓ ${p.nome} — disponível`:`${p.nome} — indisponível`); }
+    function closeToggleDispModal(){ document.getElementById('modal-toggle-disp').classList.remove('open'); toggleDispPendingId=null; }
+    function openAddPratoModal(){ pratoEditingId=null; pratoAvailState=true; document.getElementById('prato-edit-id').value=''; document.getElementById('prato-nome').value=''; document.getElementById('prato-categoria').value='Entradas'; document.getElementById('prato-preco').value=''; document.getElementById('prato-desc').value=''; document.getElementById('prato-emoji').value=''; document.getElementById('prato-avail-switch').classList.add('on'); clearPratoErrors(); document.getElementById('pmodal-title').textContent='Adicionar prato'; document.getElementById('pmodal-subtitle').textContent='Preencha as informações do novo prato'; document.getElementById('pmodal-confirm-btn').textContent='Adicionar'; document.getElementById('pmodal-icon').textContent='🍽️'; document.getElementById('modal-prato').classList.add('open'); setTimeout(()=>document.getElementById('prato-nome').focus(),80); }
+    function openEditPratoModal(id){ let p=pratoMenu.find(x=>x.id===id); if(!p)return; pratoEditingId=id; pratoAvailState=p.avail; document.getElementById('prato-edit-id').value=id; document.getElementById('prato-nome').value=p.nome; document.getElementById('prato-categoria').value=p.cat; document.getElementById('prato-preco').value=p.preco; document.getElementById('prato-desc').value=p.desc; document.getElementById('prato-emoji').value=p.emoji||''; let sw=document.getElementById('prato-avail-switch'); sw.classList.toggle('on',p.avail); clearPratoErrors(); document.getElementById('pmodal-title').textContent='Editar prato'; document.getElementById('pmodal-subtitle').textContent='Altere as informações do prato'; document.getElementById('pmodal-confirm-btn').textContent='Salvar alterações'; document.getElementById('pmodal-icon').textContent=p.emoji||'🍽️'; document.getElementById('modal-prato').classList.add('open'); setTimeout(()=>document.getElementById('prato-nome').focus(),80); }
+    function togglePratoAvail(){ pratoAvailState=!pratoAvailState; document.getElementById('prato-avail-switch').classList.toggle('on',pratoAvailState); }
+    function confirmPrato(){ let nome=document.getElementById('prato-nome').value.trim(), cat=document.getElementById('prato-categoria').value, preco=parseFloat(document.getElementById('prato-preco').value), desc=document.getElementById('prato-desc').value.trim(), emoji=document.getElementById('prato-emoji').value.trim()||'🍽️', valid=true; clearPratoErrors(); if(!nome){ document.getElementById('prato-error-nome').classList.add('visible'); document.getElementById('prato-nome').classList.add('error'); valid=false; } if(isNaN(preco)||preco<0){ document.getElementById('prato-error-preco').classList.add('visible'); document.getElementById('prato-preco').classList.add('error'); valid=false; } if(!valid)return; if(pratoEditingId){ let p=pratoMenu.find(x=>x.id===pratoEditingId); if(p){ let diff=[]; let fmtPrice=v=>`R$ ${Number(v).toFixed(2).replace('.',',')}`; if(p.nome!==nome) diff.push({campo:'Nome',de:p.nome,para:nome}); if(p.cat!==cat) diff.push({campo:'Categoria',de:p.cat,para:cat}); if(p.preco!==preco) diff.push({campo:'Preço',de:fmtPrice(p.preco),para:fmtPrice(preco)}); if(p.desc!==desc) diff.push({campo:'Descrição',de:p.desc,para:desc}); if(p.emoji!==emoji) diff.push({campo:'Emoji',de:p.emoji,para:emoji}); if(p.avail!==pratoAvailState) diff.push({campo:'Disponível',de:p.avail?'Sim':'Não',para:pratoAvailState?'Sim':'Não'}); p.nome=nome; p.cat=cat; p.preco=preco; p.desc=desc; p.emoji=emoji; p.avail=pratoAvailState; writeAuditCardapio({prato:nome,pratoId:p.id,acao:'editar',diff,usuario:'Admin'}); } showToast(`✓ ${nome} atualizado`); }else{ let newId=pratoNextId++; pratoMenu.push({id:newId,nome,cat,preco,desc,emoji,avail:pratoAvailState}); writeAuditCardapio({prato:nome,pratoId:newId,acao:'adicionar',usuario:'Admin'}); showToast(`✓ ${nome} adicionado ao cardápio`); } saveMenu(pratoMenu); closePratoModal(); renderMenu(); }
+    function clearPratoErrors(){ ['prato-error-nome','prato-error-preco'].forEach(id=>document.getElementById(id).classList.remove('visible')); ['prato-nome','prato-preco'].forEach(id=>document.getElementById(id).classList.remove('error')); }
+    function closePratoModal(){ document.getElementById('modal-prato').classList.remove('open'); }
+    function closePratoModalOnBg(e){ if(e.target===document.getElementById('modal-prato')) closePratoModal(); }
+    function openDelPratoModal(id){ let p=pratoMenu.find(x=>x.id===id); if(!p)return; pratoPendingDelId=id; document.getElementById('del-prato-subtitle').textContent=p.nome; document.getElementById('del-prato-text').innerHTML=`Tem certeza que deseja remover <strong>${escHtml(p.nome)}</strong> do cardápio? Esta ação não pode ser desfeita.`; document.getElementById('del-prato-motivo').value=''; document.getElementById('del-prato-motivo-error').classList.remove('visible'); document.getElementById('del-prato-motivo').classList.remove('error'); document.getElementById('modal-del-prato').classList.add('open'); }
+    function confirmDelPrato(){ let p=pratoMenu.find(x=>x.id===pratoPendingDelId); if(!p)return; let motivo=document.getElementById('del-prato-motivo').value.trim(); if(!motivo){ document.getElementById('del-prato-motivo-error').classList.add('visible'); document.getElementById('del-prato-motivo').classList.add('error'); return; } let nome=p.nome,pratoId=p.id; pratoMenu=pratoMenu.filter(x=>x.id!==pratoPendingDelId); pratoPendingDelId=null; writeAuditCardapio({prato:nome,pratoId,acao:'remover',motivo,usuario:'Admin'}); saveMenu(pratoMenu); closeDelPratoModal(); renderMenu(); showToast(`${nome} removido do cardápio`); }
+    function closeDelPratoModal(){ document.getElementById('modal-del-prato').classList.remove('open'); pratoPendingDelId=null; }
+
+    // ── AUDIT LOG (lógica original) ──
+    const AUDIT_KEY_CARDAPIO='t4u-audit-cardapio', AUDIT_KEY_FUNC='t4u-audit-func', AUDIT_KEY_PEDIDOS='t4u-audit-pedidos', AUDIT_KEY_MESAS='t4u-audit-mesas';
+    function loadAuditLog(key){ try{ return JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){ return []; } }
+    function saveAuditLog(key,log){ localStorage.setItem(key,JSON.stringify(log)); }
+    function writeAuditCardapio(entry){ let log=loadAuditLog(AUDIT_KEY_CARDAPIO); log.unshift({id:Date.now(),timestamp:new Date().toISOString(),...entry}); saveAuditLog(AUDIT_KEY_CARDAPIO,log); updateAuditTabCounts(); }
+    function writeAuditFunc(entry){ let log=loadAuditLog(AUDIT_KEY_FUNC); log.unshift({id:Date.now(),timestamp:new Date().toISOString(),...entry}); saveAuditLog(AUDIT_KEY_FUNC,log); updateAuditTabCounts(); }
+    let auditCurrentTab='cardapio', auditFilterCardapio='todos', auditFilterFunc='todos', auditFilterPedidos='todos', auditFilterMesas='todos';
+    function setAuditTab(tab,el){ auditCurrentTab=tab; document.querySelectorAll('.audit-tab').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.audit-tab-panel').forEach(p=>p.classList.remove('active')); el.classList.add('active'); document.getElementById('audit-panel-'+tab).classList.add('active'); if(tab==='cardapio') renderAuditCardapio(); else if(tab==='funcionarios') renderAuditFunc(); else if(tab==='pedidos') renderAuditPedidos(); else if(tab==='mesas') renderAuditMesas(); }
+    function updateAuditTabCounts(){ let counts={cardapio:loadAuditLog(AUDIT_KEY_CARDAPIO).length,funcionarios:loadAuditLog(AUDIT_KEY_FUNC).length,pedidos:loadAuditLog(AUDIT_KEY_PEDIDOS).length,mesas:loadAuditLog(AUDIT_KEY_MESAS).length}; Object.entries(counts).forEach(([key,val])=>{ let el=document.getElementById(`tab-count-${key}`); if(el) el.textContent=val>0?val:''; }); }
+    function formatAuditTime(iso){ let d=new Date(iso), hoje=new Date(), ontem=new Date(); ontem.setDate(hoje.getDate()-1); let pad=n=>String(n).padStart(2,'0'); let hora=`${pad(d.getHours())}:${pad(d.getMinutes())}`; if(d.toDateString()===hoje.toDateString()) return `Hoje, ${hora}`; if(d.toDateString()===ontem.toDateString()) return `Ontem, ${hora}`; return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}, ${hora}`; }
+    function filterByDate(log,dateVal){ if(!dateVal) return log; return log.filter(e=>{ let d=new Date(e.timestamp), pad=n=>String(n).padStart(2,'0'); let iso=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; return iso===dateVal; }); }
+    function setAuditFilterCardapio(val,el){ auditFilterCardapio=val; document.querySelectorAll('#audit-filter-pills-cardapio .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditCardapio(); }
+    const CARDAPIO_ACTION_LABELS={ adicionar:{label:'Adicionado',icon:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>'}, editar:{label:'Editado',icon:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>'}, remover:{label:'Removido',icon:'<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>'}, desativar:{label:'Desativado',icon:'<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>'}, ativar:{label:'Ativado',icon:'<polyline points="20 6 9 17 4 12"/>'} };
+    function renderAuditCardapio(){ let log=loadAuditLog(AUDIT_KEY_CARDAPIO), dateVal=document.getElementById('audit-date-cardapio')?.value||'', q=(document.getElementById('audit-search-cardapio')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal); filtered=filtered.filter(e=>{ let matchAcao=auditFilterCardapio==='todos'||e.acao===auditFilterCardapio; let matchQ=!q||(e.prato||'').toLowerCase().includes(q)||(e.usuario||'').toLowerCase().includes(q)||(e.motivo||'').toLowerCase().includes(q); return matchAcao&&matchQ; }); let total=log.length, adds=log.filter(e=>e.acao==='adicionar').length, edits=log.filter(e=>e.acao==='editar').length, dels=log.filter(e=>e.acao==='remover').length; document.getElementById('audit-stats-cardapio').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-occupied)"></div><span class="audit-stat-label">Adições</span><span class="audit-stat-val">${adds}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-warning)"></div><span class="audit-stat-label">Edições</span><span class="audit-stat-val">${edits}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-unavailable)"></div><span class="audit-stat-label">Remoções</span><span class="audit-stat-val">${dels}</span></div>`; let wrap=document.getElementById('audit-log-cardapio'); if(filtered.length===0){ wrap.innerHTML=renderAuditEmpty(total,'prato ou usuário'); return; } wrap.innerHTML=filtered.map(e=>{ let def=CARDAPIO_ACTION_LABELS[e.acao]||{label:e.acao,icon:''}; let motivoHtml=e.motivo?`<div class="audit-entry-motivo">${escHtml(e.motivo)}</div>`:''; let diffHtml=''; if(e.diff&&e.diff.length>0){ let rows=e.diff.map(d=>`<div class="audit-diff-row"><span class="audit-diff-field">${escHtml(d.campo)}</span><span class="audit-diff-old">${escHtml(String(d.de))}</span><svg style="width:11px;height:11px;flex-shrink:0;fill:none;stroke:var(--text-muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg><span class="audit-diff-new">${escHtml(String(d.para))}</span></div>`).join(''); diffHtml=`<div class="audit-entry-diff">${rows}</div>`; } return `<div class="audit-entry"><div class="audit-entry-icon ${e.acao}"><svg viewBox="0 0 24 24">${def.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">${escHtml(e.prato||'')}</span><span class="audit-entry-action ${e.acao}">${def.label}</span></div>${motivoHtml}${diffHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.usuario||'Admin')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`; }).join(''); }
+    function setAuditFilterFunc(val,el){ auditFilterFunc=val; document.querySelectorAll('#audit-filter-pills-func .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditFunc(); }
+    const FUNC_ACTION_LABELS={ adicionar:{label:'Adicionado',icon:'<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>'}, editar:{label:'Editado',icon:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>'}, remover:{label:'Removido',icon:'<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>'} };
+    function renderAuditFunc(){ let log=loadAuditLog(AUDIT_KEY_FUNC), dateVal=document.getElementById('audit-date-func')?.value||'', q=(document.getElementById('audit-search-func')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal); filtered=filtered.filter(e=>{ let matchAcao=auditFilterFunc==='todos'||e.acao===auditFilterFunc; let matchQ=!q||(e.funcionario||'').toLowerCase().includes(q)||(e.email||'').toLowerCase().includes(q)||(e.motivo||'').toLowerCase().includes(q); return matchAcao&&matchQ; }); let total=log.length, adds=log.filter(e=>e.acao==='adicionar').length, edits=log.filter(e=>e.acao==='editar').length, dels=log.filter(e=>e.acao==='remover').length; document.getElementById('audit-stats-func').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-available)"></div><span class="audit-stat-label">Adições</span><span class="audit-stat-val">${adds}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-warning)"></div><span class="audit-stat-label">Edições</span><span class="audit-stat-val">${edits}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-unavailable)"></div><span class="audit-stat-label">Remoções</span><span class="audit-stat-val">${dels}</span></div>`; let wrap=document.getElementById('audit-log-func'); if(filtered.length===0){ wrap.innerHTML=renderAuditEmpty(total,'funcionário'); return; } wrap.innerHTML=filtered.map(e=>{ let def=FUNC_ACTION_LABELS[e.acao]||{label:e.acao,icon:''}; let cargoLabel=e.cargo?(cargoLabels[e.cargo]?.label||e.cargo):''; let motivoHtml=e.motivo?`<div class="audit-entry-motivo">${escHtml(e.motivo)}</div>`:''; let diffHtml=''; if(e.diff&&e.diff.length>0){ let rows=e.diff.map(d=>`<div class="audit-diff-row"><span class="audit-diff-field">${escHtml(d.campo)}</span><span class="audit-diff-old">${escHtml(String(d.de))}</span><svg style="width:11px;height:11px;flex-shrink:0;fill:none;stroke:var(--text-muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg><span class="audit-diff-new">${escHtml(String(d.para))}</span></div>`).join(''); diffHtml=`<div class="audit-entry-diff">${rows}</div>`; } return `<div class="audit-entry"><div class="audit-entry-icon ${e.acao}"><svg viewBox="0 0 24 24">${def.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">${escHtml(e.funcionario||'')}</span><span class="audit-entry-action ${e.acao}">${def.label}</span>${cargoLabel?`<span class="audit-entry-origin">${escHtml(cargoLabel)}</span>`:''}</div>${e.email?`<div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:4px">${escHtml(e.email)}</div>`:''}${motivoHtml}${diffHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.usuario||'Admin')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`; }).join(''); }
+    function renderAuditEmpty(total,tipo){ return `<div class="audit-empty"><div class="audit-empty-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div class="audit-empty-title">${total===0?'Nenhuma alteração registrada ainda':'Nenhum resultado para o filtro'}</div><div class="audit-empty-desc">${total===0?'Quando houver uma ação registrada, ela aparecerá aqui.':`Tente outro filtro, data ou busca por ${tipo}.`}</div></div>`; }
+    function setAuditFilterPedidos(val,el){ auditFilterPedidos=val; document.querySelectorAll('#audit-filter-pills-pedidos .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditPedidos(); }
+    const PEDIDO_ACTION_CONFIG={ anotado:{label:'Anotado',iconCls:'editar',icon:'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>',badgeCls:'editar'}, pronto:{label:'Pronto',iconCls:'activate',icon:'<polyline points="20 6 9 17 4 12"/>',badgeCls:'activate'} };
+    function renderAuditPedidos(){ let log=loadAuditLog(AUDIT_KEY_PEDIDOS), dateVal=document.getElementById('audit-date-pedidos')?.value||'', q=(document.getElementById('audit-search-pedidos')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal).filter(e=>{ let matchStatus=auditFilterPedidos==='todos'||e.status===auditFilterPedidos; let matchQ=!q||String(e.mesa||'').toLowerCase().includes(q)||(e.responsavel||'').toLowerCase().includes(q)||(e.itens||[]).some(i=>i.nome.toLowerCase().includes(q)); return matchStatus&&matchQ; }); let total=log.length, anotados=log.filter(e=>e.status==='anotado').length, prontos=log.filter(e=>e.status==='pronto').length; document.getElementById('audit-stats-pedidos').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-warning)"></div><span class="audit-stat-label">Anotados</span><span class="audit-stat-val">${anotados}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-available)"></div><span class="audit-stat-label">Prontos</span><span class="audit-stat-val">${prontos}</span></div>`; let wrap=document.getElementById('audit-log-pedidos'); if(filtered.length===0){ wrap.innerHTML=renderAuditEmpty(total,'mesa ou garçom'); return; } wrap.innerHTML=filtered.map(e=>{ let cfg=PEDIDO_ACTION_CONFIG[e.status]||PEDIDO_ACTION_CONFIG.anotado; let itensHtml=(e.itens||[]).length?`<div class="audit-entry-diff">${e.itens.map(i=>`<div class="audit-diff-row"><span class="audit-diff-field">${escHtml(i.nome)}</span><span style="color:var(--text-muted)">×${i.qty}${i.nota?` — <em>${escHtml(i.nota)}</em>`:''}</span></div>`).join('')}</div>`:''; let totalHtml=e.total!=null?`<span class="audit-entry-origin">R$ ${Number(e.total).toFixed(2).replace('.',',')}</span>`:''; let tempoHtml=e.tempoPreparo?`<span class="audit-entry-origin">⏱ ${e.tempoPreparo} min</span>`:''; return `<div class="audit-entry"><div class="audit-entry-icon ${cfg.iconCls}"><svg viewBox="0 0 24 24">${cfg.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">Mesa ${escHtml(String(e.mesa||'?'))}</span><span class="audit-entry-action ${cfg.badgeCls}">${cfg.label}</span>${totalHtml}${tempoHtml}</div>${itensHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.responsavel||'—')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`; }).join(''); }
+    function setAuditFilterMesas(val,el){ auditFilterMesas=val; document.querySelectorAll('#audit-filter-pills-mesas .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditMesas(); }
+    const MESA_EVENT_CONFIG={ checkin:{label:'Check-in',iconCls:'activate',icon:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>',badgeCls:'activate'}, checkout:{label:'Check-out',iconCls:'adicionar',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',badgeCls:'adicionar'}, disponivel:{label:'Disponível',iconCls:'activate',icon:'<polyline points="20 6 9 17 4 12"/>',badgeCls:'activate'}, indisponivel:{label:'Indisponível',iconCls:'deactivate',icon:'<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>',badgeCls:'deactivate'} };
+    function renderAuditMesas(){ let log=loadAuditLog(AUDIT_KEY_MESAS), dateVal=document.getElementById('audit-date-mesas')?.value||'', q=(document.getElementById('audit-search-mesas')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal).filter(e=>{ let matchEvento=auditFilterMesas==='todos'||e.evento===auditFilterMesas; let matchQ=!q||String(e.mesa||'').toLowerCase().includes(q)||(e.responsavel||'').toLowerCase().includes(q)||(e.obs||'').toLowerCase().includes(q); return matchEvento&&matchQ; }); let total=log.length, checkins=log.filter(e=>e.evento==='checkin').length, checkouts=log.filter(e=>e.evento==='checkout').length, indisp=log.filter(e=>e.evento==='indisponivel').length; document.getElementById('audit-stats-mesas').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-available)"></div><span class="audit-stat-label">Check-ins</span><span class="audit-stat-val">${checkins}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-occupied)"></div><span class="audit-stat-label">Check-outs</span><span class="audit-stat-val">${checkouts}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-unavailable)"></div><span class="audit-stat-label">Indisponíveis</span><span class="audit-stat-val">${indisp}</span></div>`; let wrap=document.getElementById('audit-log-mesas'); if(filtered.length===0){ wrap.innerHTML=renderAuditEmpty(total,'mesa ou responsável'); return; } wrap.innerHTML=filtered.map(e=>{ let cfg=MESA_EVENT_CONFIG[e.evento]||MESA_EVENT_CONFIG.disponivel; let detalhesHtml=[]; if(e.pessoas) detalhesHtml.push(`<span class="audit-entry-origin">👥 ${e.pessoas} pessoa${e.pessoas>1?'s':''}</span>`); if(e.total!=null) detalhesHtml.push(`<span class="audit-entry-origin">R$ ${Number(e.total).toFixed(2).replace('.',',')}</span>`); let obsHtml=e.obs?`<div class="audit-entry-motivo">${escHtml(e.obs)}</div>`:''; return `<div class="audit-entry"><div class="audit-entry-icon ${cfg.iconCls}"><svg viewBox="0 0 24 24">${cfg.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">Mesa ${escHtml(String(e.mesa||'?'))}</span><span class="audit-entry-action ${cfg.badgeCls}">${cfg.label}</span>${detalhesHtml.join('')}</div>${obsHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.responsavel||'—')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`; }).join(''); }
+    function renderAuditLog(){ if(auditCurrentTab==='cardapio') renderAuditCardapio(); else if(auditCurrentTab==='funcionarios') renderAuditFunc(); else if(auditCurrentTab==='pedidos') renderAuditPedidos(); else if(auditCurrentTab==='mesas') renderAuditMesas(); }
+    (function seedSampleData(){ if(loadAuditLog(AUDIT_KEY_PEDIDOS).length===0){ let now=Date.now(), min=m=>now-m*60000; let log=[{id:now+1,timestamp:new Date(min(8)).toISOString(),mesa:4,status:'pronto',responsavel:'Cozinha — Rafael',itens:[{nome:'Risoto de camarão',qty:2,nota:''},{nome:'Suco natural',qty:2,nota:''}],total:188.00,tempoPreparo:22},{id:now+2,timestamp:new Date(min(30)).toISOString(),mesa:4,status:'anotado',responsavel:'Carlos Mendes',itens:[{nome:'Risoto de camarão',qty:2,nota:''},{nome:'Suco natural',qty:2,nota:'sem gelo'}],total:188.00},{id:now+3,timestamp:new Date(min(55)).toISOString(),mesa:7,status:'pronto',responsavel:'Cozinha — Rafael',itens:[{nome:'Frango grelhado',qty:1,nota:''},{nome:'Água mineral',qty:2,nota:''}],total:66.00,tempoPreparo:18},{id:now+4,timestamp:new Date(min(73)).toISOString(),mesa:7,status:'anotado',responsavel:'Fernanda Lima',itens:[{nome:'Frango grelhado',qty:1,nota:'sem molho'},{nome:'Água mineral',qty:2,nota:''}],total:66.00}]; saveAuditLog(AUDIT_KEY_PEDIDOS,log); } if(loadAuditLog(AUDIT_KEY_MESAS).length===0){ let now=Date.now(), min=m=>now-m*60000; let log=[{id:now+10,timestamp:new Date(min(5)).toISOString(),mesa:3,evento:'checkin',responsavel:'Fernanda Lima',pessoas:2},{id:now+11,timestamp:new Date(min(40)).toISOString(),mesa:1,evento:'checkout',responsavel:'Carlos Mendes',total:212.00},{id:now+12,timestamp:new Date(min(42)).toISOString(),mesa:1,evento:'disponivel',responsavel:'Carlos Mendes'},{id:now+13,timestamp:new Date(min(60)).toISOString(),mesa:5,evento:'indisponivel',responsavel:'Fernanda Lima',obs:'Cadeira quebrada, aguardando manutenção.'},{id:now+14,timestamp:new Date(min(90)).toISOString(),mesa:3,evento:'checkin',responsavel:'Carlos Mendes',pessoas:4}]; saveAuditLog(AUDIT_KEY_MESAS,log); } updateAuditTabCounts(); })();
+
+    // ESC key to close modals
+    document.addEventListener('keydown', e => { if(e.key==='Escape'){ closePratoModal(); closeDelPratoModal(); closeToggleDispModal(); closeModal('modal-add'); closeModal('modal-remove'); } });
+
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+        renderFuncionarios();
+        renderMenu();
+        updateAuditTabCounts();
+    });
+</script>
 </body>
 </html>

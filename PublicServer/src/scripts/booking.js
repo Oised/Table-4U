@@ -1,10 +1,10 @@
-window.onload = function() {
+window.onload = function () {
     const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 
     if (!usuario || !usuario.email) {
         showToast("Você precisa estar logado!");
         setTimeout(() => {
-            window.location.href = "/src/pages/login.html";
+            window.location.href = "/pages/login.html";
         }, 1500);
         return;
     }
@@ -63,7 +63,7 @@ function selecionarHorario(btn) {
 function confirmarReserva() {
     const inputData = document.getElementById('reserva-data');
     const dataValor = inputData.value;
-    
+
     // 1. Validação: Campo de data vazio
     if (!dataValor) {
         showToast("Selecione uma data para a reserva! ✨");
@@ -78,7 +78,7 @@ function confirmarReserva() {
 
     const dataReserva = new Date(dataValor + 'T00:00:00');
     const agora = new Date(); // Domingo, 26 de Abril de 2026, 13:42
-    
+
     const hojeApenasData = new Date();
     hojeApenasData.setHours(0, 0, 0, 0);
 

@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
     carregarReservas();
 });
 
@@ -6,7 +6,7 @@ async function carregarReservas() {
     const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 
     if (!usuario) {
-        window.location.href = "/src/pages/login.html";
+        window.location.href = "/pages/login.html";
         return;
     }
 
@@ -58,7 +58,7 @@ async function carregarReservas() {
         </button>
     </div>
 `;
-                
+
 
                 listaContainer.appendChild(card);
             });
