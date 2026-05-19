@@ -5,105 +5,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Table4U — Cozinha</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/shared.css">
+
+    <!-- Tema aplicado antes do paint para evitar flash -->
     <script>
         (function () {
-            var saved = localStorage.getItem('t4u-private-theme');
-            document.documentElement.setAttribute('data-theme', saved || 'light');
+            var t = localStorage.getItem('t4u-private-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', t);
         })();
     </script>
+
     <style>
-        :root, [data-theme="light"] {
-            --bg-page: #f0f2f5; --bg-card: #ffffff; --bg-input: #f7f8fa;
-            --bg-sidebar: #1c2333; --bg-sidebar-hover: #232e45; --bg-topbar: #ffffff;
-            --text-primary: #111827; --text-secondary: #6b7280; --text-muted: #9ca3af;
-            --text-on-dark: #f9fafb; --text-sidebar: #cbd5e1; --text-sidebar-muted: #64748b;
-            --border: #e5e7eb; --border-focus: #2c3e50;
-            --accent: #2c3e50; --accent-hover: #1a252f; --accent-subtle: rgba(44,62,80,0.07);
-            --status-available: #16a34a; --status-available-bg: #f0fdf4; --status-available-border: #bbf7d0;
-            --status-occupied: #2563eb; --status-occupied-bg: #eff6ff; --status-occupied-border: #bfdbfe;
-            --status-unavailable: #dc2626; --status-unavailable-bg: #fff5f5; --status-unavailable-border: #fecaca;
-            --status-warning: #d97706; --status-warning-bg: #fffbeb; --status-warning-border: #fde68a;
-            --shadow-card: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
-            --shadow-modal: 0 8px 40px rgba(0,0,0,0.18);
-            --toggle-bg: #e5e7eb; --toggle-knob: #ffffff; --overlay: rgba(0,0,0,0.35);
-        }
-        [data-theme="dark"] {
-            --bg-page: #111827; --bg-card: #1f2937; --bg-input: #111827;
-            --bg-sidebar: #0d1117; --bg-sidebar-hover: #161d2d; --bg-topbar: #1f2937;
-            --text-primary: #f9fafb; --text-secondary: #9ca3af; --text-muted: #6b7280;
-            --text-on-dark: #f9fafb; --text-sidebar: #cbd5e1; --text-sidebar-muted: #475569;
-            --border: #374151; --border-focus: #6b8cae;
-            --accent: #3a6ea5; --accent-hover: #4a80be; --accent-subtle: rgba(58,110,165,0.12);
-            --status-available: #4ade80; --status-available-bg: rgba(22,163,74,0.1); --status-available-border: rgba(74,222,128,0.3);
-            --status-occupied: #60a5fa; --status-occupied-bg: rgba(37,99,235,0.1); --status-occupied-border: rgba(96,165,250,0.3);
-            --status-unavailable: #f87171; --status-unavailable-bg: rgba(220,38,38,0.1); --status-unavailable-border: rgba(248,113,113,0.3);
-            --status-warning: #fbbf24; --status-warning-bg: rgba(217,119,6,0.1); --status-warning-border: rgba(251,191,36,0.3);
-            --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
-            --shadow-modal: 0 8px 40px rgba(0,0,0,0.5);
-            --toggle-bg: #374151; --toggle-knob: #9ca3af; --overlay: rgba(0,0,0,0.55);
-        }
-
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg-page); color: var(--text-primary); display: flex; transition: background 0.25s, color 0.25s; overflow: hidden; }
-
-        /* ── SIDEBAR ── */
-        #sidebar { width: 220px; min-width: 220px; background: var(--bg-sidebar); display: flex; flex-direction: column; height: 100vh; transition: width 0.25s cubic-bezier(0.4,0,0.2,1), min-width 0.25s cubic-bezier(0.4,0,0.2,1); overflow: hidden; flex-shrink: 0; z-index: 50; }
-        #sidebar.collapsed { width: 56px; min-width: 56px; }
-        .sidebar-header { border-bottom: 1px solid rgba(255,255,255,0.06); min-height: 60px; }
-        .sidebar-toggle { background: none; border: none; cursor: pointer; color: var(--text-sidebar-muted); padding: 18px 14px; display: flex; align-items: center; gap: 10px; width: 100%; transition: color 0.2s, background 0.2s; white-space: nowrap; overflow: hidden; }
-        .sidebar-toggle:hover { color: var(--text-sidebar); background: var(--bg-sidebar-hover); }
-        .sidebar-toggle svg { width: 18px; height: 18px; flex-shrink: 0; }
-        .sidebar-brand { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; font-weight: 500; color: var(--text-on-dark); transition: opacity 0.2s; }
-        #sidebar.collapsed .sidebar-brand { opacity: 0; width: 0; }
-        .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; overflow-x: hidden; }
-        .nav-section-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-sidebar-muted); padding: 8px 16px 4px; white-space: nowrap; overflow: hidden; transition: opacity 0.2s; }
-        #sidebar.collapsed .nav-section-label { opacity: 0; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; color: var(--text-sidebar); text-decoration: none; font-size: 0.875rem; border-radius: 0; cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap; border: none; background: none; width: 100%; text-align: left; position: relative; }
-        .nav-item:hover { background: var(--bg-sidebar-hover); color: #fff; }
-        .nav-item.active { background: var(--bg-sidebar-hover); color: #fff; }
-        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); border-radius: 0 2px 2px 0; }
-        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-        .nav-label { transition: opacity 0.2s; white-space: nowrap; overflow: hidden; }
-        #sidebar.collapsed .nav-label { opacity: 0; width: 0; overflow: hidden; }
-        #sidebar.collapsed .nav-item[data-tooltip]:hover::after { content: attr(data-tooltip); position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); background: #1c2333; color: #fff; font-size: 0.78rem; padding: 5px 10px; border-radius: 6px; white-space: nowrap; pointer-events: none; z-index: 200; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-        .sidebar-footer { padding: 0; border-top: 1px solid rgba(255,255,255,0.06); }
-        .nav-item.logout { color: #f87171; }
-        .nav-item.logout:hover { background: rgba(248,113,113,0.1); color: #fca5a5; }
-        .nav-badge-count { font-size: 0.65rem; font-weight: 700; background: #ef4444; color: #fff; padding: 1px 6px; border-radius: 20px; margin-left: auto; flex-shrink: 0; min-width: 18px; text-align: center; }
-        #sidebar.collapsed .nav-badge-count { display: none; }
-
-        /* ── MAIN ── */
-        #main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-
-        /* ── TOPBAR ── */
-        #topbar { height: 56px; background: var(--bg-topbar); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 12px; flex-shrink: 0; transition: background 0.25s, border-color 0.25s; }
-        .topbar-page-info { display: flex; align-items: center; gap: 8px; flex: 1; }
-        .topbar-page-icon { width: 28px; height: 28px; background: var(--accent-subtle); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
-        .topbar-page-icon svg { width: 14px; height: 14px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .topbar-page-name { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); }
-        .topbar-separator { width: 1px; height: 14px; background: var(--border); }
-        .topbar-page-title { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
-        .topbar-controls { display: flex; align-items: center; gap: 10px; }
-        #toggle-theme-btn { width: 44px; height: 24px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--toggle-bg); cursor: pointer; display: flex; align-items: center; padding: 2px; transition: background 0.25s, border-color 0.25s; }
-        .toggle-knob { width: 18px; height: 18px; border-radius: 50%; background: var(--toggle-knob); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
-        [data-theme="dark"] .toggle-knob { transform: translateX(20px); }
-        #profile-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); border: 2px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500; color: #fff; transition: border-color 0.2s, transform 0.15s; flex-shrink: 0; }
-        #profile-btn:hover { border-color: var(--accent); transform: scale(1.05); }
-        #profile-dropdown { display: none; position: absolute; top: 52px; right: 16px; width: 240px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-modal); z-index: 200; overflow: hidden; animation: dropdown-in 0.18s ease both; }
-        #profile-dropdown.open { display: block; }
-        @keyframes dropdown-in { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
-        .dropdown-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-        .dropdown-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: #fff; flex-shrink: 0; }
-        .dropdown-name { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
-        .dropdown-role { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
-        .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: 0.83rem; color: var(--text-secondary); cursor: pointer; transition: background 0.15s, color 0.15s; border: none; background: none; width: 100%; text-align: left; }
-        .dropdown-item:hover { background: var(--accent-subtle); color: var(--text-primary); }
-        .dropdown-item svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .dropdown-item.danger { color: #ef4444; }
-        .dropdown-item.danger:hover { background: rgba(239,68,68,0.07); }
-        .dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
-
         /* ── CONTENT & SECTIONS ── */
         #content { flex: 1; overflow-y: auto; }
         .content-inner { padding: 24px 24px 40px; }
@@ -119,14 +31,10 @@
 
         /* ── PEDIDO CARD ── */
         .pedidos-list { display: flex; flex-direction: column; gap: 14px; }
-
         .pedido-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); overflow: hidden; transition: box-shadow 0.2s; }
         .pedido-card.all-done { border-color: var(--status-available-border); }
-
-        /* card entry animation */
         @keyframes card-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
         .pedido-card { animation: card-in 0.3s ease both; }
-
         .pedido-card-header { display: flex; align-items: center; gap: 12px; padding: 14px 18px; border-bottom: 1px solid var(--border); }
         .pedido-mesa-badge { font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; font-weight: 500; background: var(--accent); color: #fff; padding: 4px 10px; border-radius: 7px; flex-shrink: 0; }
         .pedido-hora { font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; color: var(--text-muted); }
@@ -136,8 +44,6 @@
         .pedido-progress-fill { height: 100%; background: var(--status-available); border-radius: 2px; transition: width 0.3s ease; }
         .pedido-progress-fill.partial { background: var(--status-warning); }
         .pedido-progress-fill.done { background: var(--status-available); }
-
-        /* itens */
         .pedido-itens { padding: 4px 0; }
         .pedido-item { display: flex; align-items: center; gap: 12px; padding: 11px 18px; border-bottom: 1px solid var(--border); transition: background 0.15s; }
         .pedido-item:last-child { border-bottom: none; }
@@ -147,14 +53,10 @@
         .pedido-item.item-done .pedido-item-nome { color: var(--text-muted); text-decoration: line-through; }
         .pedido-item-obs { font-size: 0.72rem; color: var(--status-warning); margin-top: 2px; display: flex; align-items: center; gap: 4px; }
         .pedido-item-obs svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
-
-        /* custom checkbox */
         .item-check { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--border); background: var(--bg-input); cursor: pointer; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: border-color 0.15s, background 0.15s; appearance: none; -webkit-appearance: none; }
         .item-check:hover { border-color: var(--status-available); }
         .item-check:checked { background: var(--status-available); border-color: var(--status-available); }
         .item-check:checked::after { content: ''; display: block; width: 5px; height: 9px; border: 2px solid #fff; border-top: none; border-left: none; transform: rotate(42deg) translate(-1px, -1px); }
-
-        /* footer do card */
         .pedido-card-footer { display: flex; align-items: center; justify-content: flex-end; gap: 8px; padding: 12px 18px; border-top: 1px solid var(--border); background: var(--bg-input); }
         .btn-report { display: inline-flex; align-items: center; gap: 7px; background: var(--status-warning-bg); color: var(--status-warning); border: 1px solid var(--status-warning-border); border-radius: 9px; padding: 8px 14px; font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: background 0.15s; }
         .btn-report:hover { background: rgba(217,119,6,0.15); }
@@ -221,18 +123,12 @@
         .kpill { display: inline-flex; align-items: center; padding: 5px 12px; border-radius: 20px; border: 1.5px solid var(--border); background: var(--bg-card); font-size: 0.75rem; font-weight: 600; color: var(--text-secondary); cursor: pointer; transition: all 0.15s; white-space: nowrap; }
         .kpill:hover { border-color: var(--accent); color: var(--accent); }
         .kpill.active { background: var(--accent); border-color: var(--accent); color: #fff; }
-
-        /* stats strip */
         .kmenu-stats { display: flex; gap: 8px; margin-bottom: 16px; flex-wrap: wrap; }
         .kmenu-stat { display: flex; align-items: center; gap: 7px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 9px; padding: 6px 12px; font-size: 0.78rem; box-shadow: var(--shadow-card); }
         .kmenu-stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         .kmenu-stat-label { color: var(--text-secondary); }
         .kmenu-stat-val { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--text-primary); margin-left: 2px; }
-
-        /* grid — mais denso, 3 colunas */
         .kmenu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 10px; }
-
-        /* kitchen prato card */
         .kprato-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; overflow: hidden; transition: transform 0.12s, box-shadow 0.12s; }
         .kprato-card:hover { transform: translateY(-1px); box-shadow: 0 4px 16px rgba(0,0,0,0.08); }
         .kprato-card.unavailable { opacity: 0.6; }
@@ -253,8 +149,6 @@
         .kprato-toggle-knob { width: 16px; height: 16px; border-radius: 50%; background: var(--toggle-knob); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); flex-shrink: 0; }
         .kprato-toggle.on .kprato-toggle-knob { transform: translateX(16px); }
         .kprato-toggle-label { font-size: 0.6rem; font-weight: 700; text-transform: uppercase; color: var(--text-muted); letter-spacing: 0.04em; }
-
-        /* empty */
         .kmenu-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; grid-column: 1/-1; }
         .kmenu-empty-icon { width: 56px; height: 56px; border-radius: 14px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; margin-bottom: 14px; }
         .kmenu-empty-icon svg { width: 24px; height: 24px; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
@@ -275,16 +169,14 @@
         .tmodal-motivo-input.error { border-color: var(--status-unavailable); }
         .tmodal-motivo-error { font-size: 0.72rem; color: var(--status-unavailable); display: none; margin-top: 4px; }
         .tmodal-motivo-error.visible { display: block; }
-        .modal-btn.activate   { background: var(--status-available);   color: #fff; }
+        .modal-btn.activate   { background: var(--status-available); color: #fff; }
         .modal-btn.activate:hover   { background: #15803d; }
         .modal-btn.deactivate { background: var(--status-unavailable); color: #fff; }
         .modal-btn.deactivate:hover { background: #b91c1c; }
         .modal-field { display: flex; flex-direction: column; gap: 6px; }
         .modal-field-label { font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); }
 
-        /* ── KPRATO HISTORY ── */
-        .kprato-card { flex-direction: column; }
-        .kprato-main { display: flex; align-items: stretch; }
+        /* kprato history panel */
         .kprato-hist-panel { border-top: 1px solid var(--border); padding: 10px 14px; display: none; }
         .kprato-hist-panel.open { display: block; }
         .kprato-hist-title { font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); margin-bottom: 8px; display: flex; align-items: center; justify-content: space-between; }
@@ -301,12 +193,6 @@
         .kprato-hist-btn:hover { color: var(--text-primary); }
         .kprato-hist-btn svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* ── TOAST ── */
-        #toast-container { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 300; pointer-events: none; }
-        .toast { background: var(--accent); color: #fff; font-size: 0.83rem; font-weight: 500; padding: 10px 18px; border-radius: 8px; white-space: nowrap; animation: toast-in 0.3s ease both; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
-        @keyframes toast-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes toast-out { from { opacity:1; } to { opacity:0; transform:translateY(8px); } }
-
         /* finalização do pedido */
         @keyframes card-out { from { opacity:1; transform:scale(1); max-height:600px; } to { opacity:0; transform:scale(0.97); max-height:0; margin:0; padding:0; } }
         .pedido-card.removing { animation: card-out 0.35s cubic-bezier(0.4,0,1,1) both; pointer-events: none; }
@@ -319,7 +205,7 @@
 </head>
 <body>
 
-<!-- ══════════════════════ SIDEBAR ══════════════════════ -->
+<!-- SIDEBAR -->
 <nav id="sidebar" aria-label="Navegação lateral">
     <div class="sidebar-header">
         <button class="sidebar-toggle" id="sidebar-toggle-btn" aria-label="Recolher/expandir menu">
@@ -344,14 +230,13 @@
         </button>
     </div>
     <div class="sidebar-footer">
-        <button class="nav-item logout" data-tooltip="Sair" onclick="logout()">
+        <button class="nav-item logout" id="logout-sidebar" data-tooltip="Sair">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span class="nav-label">Sair</span>
         </button>
     </div>
 </nav>
 
-<!-- ══════════════════════ MAIN ══════════════════════ -->
 <div id="main">
     <header id="topbar">
         <div class="topbar-page-info">
@@ -379,7 +264,7 @@
             </div>
         </div>
         <div class="dropdown-divider"></div>
-        <button class="dropdown-item danger" onclick="logout()">
+        <button class="dropdown-item danger" id="logout-dropdown">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Sair
         </button>
@@ -387,7 +272,7 @@
 
     <main id="content">
 
-        <!-- ─── PEDIDOS ─── -->
+        <!-- PEDIDOS -->
         <div class="section-view active" id="section-pedidos">
             <div class="content-inner">
                 <div class="sec-header">
@@ -401,7 +286,7 @@
             </div>
         </div>
 
-        <!-- ─── HISTÓRICO ─── -->
+        <!-- HISTÓRICO -->
         <div class="section-view" id="section-historico">
             <div class="content-inner">
                 <div class="sec-header">
@@ -415,11 +300,9 @@
             </div>
         </div>
 
-        <!-- ─── MENU ─── -->
+        <!-- MENU -->
         <div class="section-view" id="section-menu">
             <div class="content-inner">
-
-                <!-- Toolbar -->
                 <div class="kmenu-toolbar">
                     <div class="kmenu-search-wrap">
                         <svg viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
@@ -433,20 +316,15 @@
                         <button class="kpill" data-cat="Sobremesas" onclick="setKMenuFilter('Sobremesas', this)">Sobremesas</button>
                     </div>
                 </div>
-
-                <!-- Stats -->
                 <div class="kmenu-stats" id="kmenu-stats"></div>
-
-                <!-- Grid -->
                 <div class="kmenu-grid" id="kmenu-grid"></div>
-
             </div>
         </div>
 
     </main>
 </div>
 
-<!-- ── MODAL: CONFIRMAR TOGGLE DISPONIBILIDADE ── -->
+<!-- MODAL: CONFIRMAR TOGGLE DISPONIBILIDADE -->
 <div class="modal-overlay" id="modal-toggle-k" onclick="if(event.target===this)closeToggleKModal()">
     <div class="modal">
         <div class="modal-header">
@@ -475,7 +353,7 @@
     </div>
 </div>
 
-<!-- ── MODAL: REPORTAR ── -->
+<!-- MODAL: REPORTAR -->
 <div class="modal-overlay" id="modal-report" onclick="closeModalBg(event)">
     <div class="modal">
         <div class="modal-header">
@@ -504,31 +382,13 @@
 
 <div id="toast-container" aria-live="polite"></div>
 
+<script src="../scripts/shared.js" defer></script>
+
 <script>
-    // ── THEME ──
-    const html = document.documentElement;
-    const themeBtn = document.getElementById('toggle-theme-btn');
-    const themeIcon = document.getElementById('toggle-icon');
-    function applyTheme(t) {
-        html.setAttribute('data-theme', t);
-        localStorage.setItem('t4u-private-theme', t);
-        themeIcon.textContent = t === 'dark' ? '🌙' : '☀️';
-    }
-    applyTheme(localStorage.getItem('t4u-private-theme') || 'light');
-    themeBtn.addEventListener('click', () => applyTheme(html.getAttribute('data-theme') === 'dark' ? 'light' : 'dark'));
+    // Helper escHtml
+    function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
 
-    // ── SIDEBAR ──
-    document.getElementById('sidebar-toggle-btn').addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('collapsed');
-    });
-
-    // ── PROFILE DROPDOWN ──
-    const profileBtn = document.getElementById('profile-btn');
-    const dropdown = document.getElementById('profile-dropdown');
-    profileBtn.addEventListener('click', e => { e.stopPropagation(); dropdown.classList.toggle('open'); });
-    document.addEventListener('click', e => { if (!dropdown.contains(e.target)) dropdown.classList.remove('open'); });
-
-    // ── SECTION NAV ──
+    // ── NAVEGAÇÃO ──
     const topbarTitles = { pedidos: 'Pedidos', historico: 'Histórico', menu: 'Menu' };
     const topbarIcons = {
         pedidos: `<svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="1" ry="1"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>`,
@@ -544,89 +404,44 @@
         document.getElementById('topbar-icon').innerHTML = topbarIcons[id] || '';
     }
 
-    // ── TOAST ──
-    function showToast(msg, duration = 3000) {
-        const c = document.getElementById('toast-container');
-        const t = document.createElement('div');
-        t.className = 'toast'; t.textContent = msg; c.appendChild(t);
-        setTimeout(() => { t.style.animation = 'toast-out 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, duration);
-    }
+    // ── TOAST (usa shared, mas exposto globalmente) ──
+    window.showToast = function(msg, duration) { T4U.showToast(msg, duration); };
 
-    // ── LOGOUT ──
-    function logout() { showToast('Saindo...'); setTimeout(() => window.location.href = 'login.html', 1000); }
+    // ── LOGOUT (usa shared) ──
+    function handleLogout() { T4U.logout(); }
+    document.getElementById('logout-sidebar')?.addEventListener('click', handleLogout);
+    document.getElementById('logout-dropdown')?.addEventListener('click', handleLogout);
 
-    // ══════════════════════════════════════════════
-    // ── DADOS ──
-    // ══════════════════════════════════════════════
-
+    // ── DADOS DE PEDIDOS ──
     let nextId = 10;
     let reportTargetId = null;
     let historico = [];
 
-    // pedidos iniciais de exemplo
     let pedidos = [
-        {
-            id: 1, mesa: 3, hora: '18:32',
-            itens: [
-                { nome: 'Picanha grelhada', obs: 'Mal passada', done: false },
-                { nome: 'Batata frita',     obs: '',            done: false },
-                { nome: 'Coca-Cola 600ml',  obs: '',            done: false },
-            ]
-        },
-        {
-            id: 2, mesa: 7, hora: '18:39',
-            itens: [
-                { nome: 'Risoto de funghi',   obs: 'Sem cebola', done: false },
-                { nome: 'Água com gás 500ml', obs: '',           done: false },
-            ]
-        },
-        {
-            id: 3, mesa: 1, hora: '18:44',
-            itens: [
-                { nome: 'Camarão na manteiga', obs: '',                    done: false },
-                { nome: 'Massa ao sugo',        obs: 'Sem glúten se possível', done: false },
-                { nome: 'Vinho tinto da casa',  obs: '',                    done: false },
-                { nome: 'Petit gateau',         obs: '',                    done: false },
-            ]
-        },
+        { id: 1, mesa: 3, hora: '18:32', itens: [{ nome: 'Picanha grelhada', obs: 'Mal passada', done: false }, { nome: 'Batata frita', obs: '', done: false }, { nome: 'Coca-Cola 600ml', obs: '', done: false }] },
+        { id: 2, mesa: 7, hora: '18:39', itens: [{ nome: 'Risoto de funghi', obs: 'Sem cebola', done: false }, { nome: 'Água com gás 500ml', obs: '', done: false }] },
+        { id: 3, mesa: 1, hora: '18:44', itens: [{ nome: 'Camarão na manteiga', obs: '', done: false }, { nome: 'Massa ao sugo', obs: 'Sem glúten se possível', done: false }, { nome: 'Vinho tinto da casa', obs: '', done: false }, { nome: 'Petit gateau', obs: '', done: false }] },
     ];
 
-    // ── RENDER PEDIDOS ──
     function allDone(pedido) { return pedido.itens.every(i => i.done); }
-
-    function progressPct(pedido) {
-        const total = pedido.itens.length;
-        const done  = pedido.itens.filter(i => i.done).length;
-        return total === 0 ? 0 : Math.round((done / total) * 100);
-    }
+    function progressPct(pedido) { let total = pedido.itens.length, done = pedido.itens.filter(i => i.done).length; return total === 0 ? 0 : Math.round((done / total) * 100); }
 
     function renderPedidos() {
         const list = document.getElementById('pedidos-list');
         const badge = document.getElementById('pedidos-count-badge');
         const sbadge = document.getElementById('sidebar-badge');
-
         badge.textContent = `${pedidos.length} pedido${pedidos.length !== 1 ? 's' : ''}`;
         sbadge.textContent = pedidos.length;
         sbadge.style.display = pedidos.length === 0 ? 'none' : '';
-
         if (pedidos.length === 0) {
-            list.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
-                    </div>
-                    <div class="empty-title">Tudo em dia!</div>
-                    <div class="empty-desc">Não há pedidos em andamento no momento. Novos pedidos aparecerão aqui automaticamente.</div>
-                </div>`;
+            list.innerHTML = `<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg></div><div class="empty-title">Tudo em dia!</div><div class="empty-desc">Não há pedidos em andamento no momento. Novos pedidos aparecerão aqui automaticamente.</div></div>`;
             return;
         }
-
         list.innerHTML = pedidos.map(p => {
             const pct = progressPct(p);
             const done = allDone(p);
             const fillClass = pct === 100 ? 'done' : pct > 0 ? 'partial' : '';
-            return `
-            <div class="pedido-card${done ? ' all-done' : ''}" id="pedido-${p.id}">
+            return `<div class="pedido-card${done ? ' all-done' : ''}" id="pedido-${p.id}">
                 <div class="pedido-card-header">
                     <span class="pedido-mesa-badge">Mesa ${p.mesa}</span>
                     <span class="pedido-hora">🕐 ${p.hora}</span>
@@ -638,11 +453,8 @@
                     </div>
                 </div>
                 <div class="pedido-itens">
-                    ${p.itens.map((item, idx) => `
-                    <div class="pedido-item${item.done ? ' item-done' : ''}" id="item-${p.id}-${idx}">
-                        <input type="checkbox" class="item-check" ${item.done ? 'checked' : ''}
-                            onchange="toggleItem(${p.id}, ${idx}, this.checked)"
-                            aria-label="Marcar ${escHtml(item.nome)} como pronto">
+                    ${p.itens.map((item, idx) => `<div class="pedido-item${item.done ? ' item-done' : ''}" id="item-${p.id}-${idx}">
+                        <input type="checkbox" class="item-check" ${item.done ? 'checked' : ''} onchange="toggleItem(${p.id}, ${idx}, this.checked)" aria-label="Marcar ${escHtml(item.nome)} como pronto">
                         <div class="pedido-item-info">
                             <div class="pedido-item-nome">${escHtml(item.nome)}</div>
                             ${item.obs ? `<div class="pedido-item-obs"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> ${escHtml(item.obs)}</div>` : ''}
@@ -650,14 +462,8 @@
                     </div>`).join('')}
                 </div>
                 <div class="pedido-card-footer">
-                    <button class="btn-report" onclick="openReport(${p.id})">
-                        <svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-                        Reportar
-                    </button>
-                    <button class="btn-pronto" onclick="finalizarPedido(${p.id})" ${done ? '' : 'disabled'} id="btn-pronto-${p.id}">
-                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                        Pedido pronto
-                    </button>
+                    <button class="btn-report" onclick="openReport(${p.id})"><svg viewBox="0 0 24 24"><path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg> Reportar</button>
+                    <button class="btn-pronto" onclick="finalizarPedido(${p.id})" ${done ? '' : 'disabled'} id="btn-pronto-${p.id}"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Pedido pronto</button>
                 </div>
             </div>`;
         }).join('');
@@ -667,23 +473,16 @@
         const p = pedidos.find(x => x.id === pedidoId);
         if (!p) return;
         p.itens[idx].done = checked;
-
-        // atualiza a row do item
         const itemEl = document.getElementById(`item-${pedidoId}-${idx}`);
         if (itemEl) itemEl.classList.toggle('item-done', checked);
-
-        // atualiza progress bar
         const pct = progressPct(p);
         const done = allDone(p);
         const card = document.getElementById(`pedido-${pedidoId}`);
         if (card) {
             card.classList.toggle('all-done', done);
             const fill = card.querySelector('.pedido-progress-fill');
-            const txt  = card.querySelector('.pedido-progress-text');
-            if (fill) {
-                fill.style.width = pct + '%';
-                fill.className = 'pedido-progress-fill' + (pct === 100 ? ' done' : pct > 0 ? ' partial' : '');
-            }
+            const txt = card.querySelector('.pedido-progress-text');
+            if (fill) { fill.style.width = pct + '%'; fill.className = 'pedido-progress-fill' + (pct === 100 ? ' done' : pct > 0 ? ' partial' : ''); }
             if (txt) txt.textContent = `${p.itens.filter(i=>i.done).length}/${p.itens.length}`;
             const btnPronto = document.getElementById(`btn-pronto-${pedidoId}`);
             if (btnPronto) btnPronto.disabled = !done;
@@ -693,13 +492,11 @@
     function finalizarPedido(id) {
         const p = pedidos.find(x => x.id === id);
         if (!p || !allDone(p)) return;
-
         const card = document.getElementById(`pedido-${id}`);
         if (card) {
             card.classList.add('removing');
             card.addEventListener('animationend', () => {
                 pedidos = pedidos.filter(x => x.id !== id);
-                // adiciona ao histórico
                 const now = new Date();
                 const hora = now.toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
                 historico.unshift({ ...p, horaFinalizado: hora });
@@ -707,46 +504,21 @@
                 renderPedidos();
             }, { once: true });
         }
-
         showToast(`✓ Pedido da Mesa ${p.mesa} finalizado`);
     }
 
-    // ── RENDER HISTÓRICO ──
     function renderHistorico() {
         const wrap = document.getElementById('historico-wrap');
         const badge = document.getElementById('hist-count-badge');
         badge.textContent = `${historico.length} finalizado${historico.length !== 1 ? 's' : ''}`;
-
         if (historico.length === 0) {
-            wrap.innerHTML = `
-                <div class="empty-state">
-                    <div class="empty-icon">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                    </div>
-                    <div class="empty-title">Histórico vazio</div>
-                    <div class="empty-desc">Os pedidos finalizados aparecerão aqui ao longo do dia.</div>
-                </div>`;
+            wrap.innerHTML = `<div class="empty-state"><div class="empty-icon"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="empty-title">Histórico vazio</div><div class="empty-desc">Os pedidos finalizados aparecerão aqui ao longo do dia.</div></div>`;
             return;
         }
-
-        wrap.innerHTML = `
-            <div class="hist-card">
-                ${historico.map(p => `
-                <div class="hist-row">
-                    <span class="hist-mesa">Mesa ${p.mesa}</span>
-                    <div class="hist-info">
-                        <div class="hist-itens">${p.itens.map(i => escHtml(i.nome)).join(', ')}</div>
-                        <div class="hist-time">Pedido feito às ${p.hora} · Finalizado às ${p.horaFinalizado}</div>
-                    </div>
-                    <div class="hist-done-badge">
-                        <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
-                        Pronto
-                    </div>
-                </div>`).join('')}
-            </div>`;
+        wrap.innerHTML = `<div class="hist-card">${historico.map(p => `<div class="hist-row"><span class="hist-mesa">Mesa ${p.mesa}</span><div class="hist-info"><div class="hist-itens">${p.itens.map(i => escHtml(i.nome)).join(', ')}</div><div class="hist-time">Pedido feito às ${p.hora} · Finalizado às ${p.horaFinalizado}</div></div><div class="hist-done-badge"><svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg> Pronto</div></div>`).join('')}</div>`;
     }
 
-    // ── MODAL REPORT ──
+    // MODAL REPORT
     function openReport(id) {
         reportTargetId = id;
         const p = pedidos.find(x => x.id === id);
@@ -756,14 +528,9 @@
         document.getElementById('modal-report').classList.add('open');
         setTimeout(() => document.getElementById('report-text').focus(), 80);
     }
-
     function closeModal() { document.getElementById('modal-report').classList.remove('open'); }
     function closeModalBg(e) { if (e.target === document.getElementById('modal-report')) closeModal(); }
-
-    function updateChar() {
-        document.getElementById('char-count').textContent = document.getElementById('report-text').value.length;
-    }
-
+    function updateChar() { document.getElementById('char-count').textContent = document.getElementById('report-text').value.length; }
     function sendReport() {
         const msg = document.getElementById('report-text').value.trim();
         if (!msg) { document.getElementById('report-text').style.borderColor = 'var(--status-unavailable)'; return; }
@@ -773,268 +540,103 @@
         showToast(`📢 Aviso enviado para a sala — Mesa ${p ? p.mesa : '—'}`);
     }
 
-    // ── UTILS ──
-    function escHtml(str) {
-        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-    }
-
-    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeToggleKModal(); } });
-
-    // ══════════════════════════════════════════════
     // ── MENU (Cozinha) ──
-    // ══════════════════════════════════════════════
-
     const MENU_KEY = 't4u-menu';
-
     const defaultMenuK = [
-        { id: 1,  nome: 'Bruschetta ao tomate',       cat: 'Entradas',        desc: 'Pão italiano grelhado com tomate fresco, manjericão e azeite extravirgem.', emoji: '🍞', avail: true },
-        { id: 2,  nome: 'Carpaccio de carne',         cat: 'Entradas',        desc: 'Finas lâminas de filé mignon com alcaparras, parmesão e molho mostarda.', emoji: '🥩', avail: true },
-        { id: 3,  nome: 'Sopa de cebola',             cat: 'Entradas',        desc: 'Cebolas caramelizadas, caldo de carne, croutons e queijo gruyère gratinado.', emoji: '🍲', avail: false },
-        { id: 4,  nome: 'Risoto de cogumelos',        cat: 'Pratos principais', desc: 'Arroz arbóreo com mix de cogumelos frescos, parmesão e manteiga trufa.', emoji: '🍚', avail: true },
-        { id: 5,  nome: 'Salmão grelhado',            cat: 'Pratos principais', desc: 'Filé de salmão grelhado com crosta de ervas, aspargos salteados e purê.', emoji: '🐟', avail: true },
-        { id: 6,  nome: 'Frango à parmegiana',        cat: 'Pratos principais', desc: 'Filé de frango empanado, molho de tomate artesanal, mozzarella e presunto.', emoji: '🍗', avail: true },
-        { id: 7,  nome: 'Picanha na brasa',           cat: 'Pratos principais', desc: 'Picanha premium grelhada na brasa, acompanha farofa, vinagrete e arroz.', emoji: '🥩', avail: true },
-        { id: 8,  nome: 'Água mineral',               cat: 'Bebidas',         desc: 'Água mineral natural ou com gás 500ml.', emoji: '💧', avail: true },
-        { id: 9,  nome: 'Suco de laranja',            cat: 'Bebidas',         desc: 'Suco natural de laranja espremido na hora, sem adição de açúcar.', emoji: '🍊', avail: true },
-        { id: 10, nome: 'Refrigerante lata',          cat: 'Bebidas',         desc: 'Cola, guaraná, limão ou laranja — lata 350ml gelada.', emoji: '🥤', avail: true },
-        { id: 11, nome: 'Vinho da casa (taça)',       cat: 'Bebidas',         desc: 'Vinho tinto ou branco selecionado, taça 180ml.', emoji: '🍷', avail: true },
-        { id: 12, nome: 'Petit gâteau',               cat: 'Sobremesas',      desc: 'Bolinho de chocolate quente com sorvete de creme e calda de frutas.', emoji: '🍫', avail: true },
-        { id: 13, nome: 'Pudim de leite',             cat: 'Sobremesas',      desc: 'Pudim cremoso de leite condensado com calda de caramelo artesanal.', emoji: '🍮', avail: true },
-        { id: 14, nome: 'Torta de limão',             cat: 'Sobremesas',      desc: 'Torta gelada de limão siciliano com merengue italiano.', emoji: '🍋', avail: false },
+        { id:1, nome:'Bruschetta ao tomate', cat:'Entradas', desc:'Pão italiano grelhado com tomate fresco, manjericão e azeite extravirgem.', emoji:'🍞', avail:true },
+        { id:2, nome:'Carpaccio de carne', cat:'Entradas', desc:'Finas lâminas de filé mignon com alcaparras, parmesão e molho mostarda.', emoji:'🥩', avail:true },
+        { id:3, nome:'Sopa de cebola', cat:'Entradas', desc:'Cebolas caramelizadas, caldo de carne, croutons e queijo gruyère gratinado.', emoji:'🍲', avail:false },
+        { id:4, nome:'Risoto de cogumelos', cat:'Pratos principais', desc:'Arroz arbóreo com mix de cogumelos frescos, parmesão e manteiga trufa.', emoji:'🍚', avail:true },
+        { id:5, nome:'Salmão grelhado', cat:'Pratos principais', desc:'Filé de salmão grelhado com crosta de ervas, aspargos salteados e purê.', emoji:'🐟', avail:true },
+        { id:6, nome:'Frango à parmegiana', cat:'Pratos principais', desc:'Filé de frango empanado, molho de tomate artesanal, mozzarella e presunto.', emoji:'🍗', avail:true },
+        { id:7, nome:'Picanha na brasa', cat:'Pratos principais', desc:'Picanha premium grelhada na brasa, acompanha farofa, vinagrete e arroz.', emoji:'🥩', avail:true },
+        { id:8, nome:'Água mineral', cat:'Bebidas', desc:'Água mineral natural ou com gás 500ml.', emoji:'💧', avail:true },
+        { id:9, nome:'Suco de laranja', cat:'Bebidas', desc:'Suco natural de laranja espremido na hora, sem adição de açúcar.', emoji:'🍊', avail:true },
+        { id:10, nome:'Refrigerante lata', cat:'Bebidas', desc:'Cola, guaraná, limão ou laranja — lata 350ml gelada.', emoji:'🥤', avail:true },
+        { id:11, nome:'Vinho da casa (taça)', cat:'Bebidas', desc:'Vinho tinto ou branco selecionado, taça 180ml.', emoji:'🍷', avail:true },
+        { id:12, nome:'Petit gâteau', cat:'Sobremesas', desc:'Bolinho de chocolate quente com sorvete de creme e calda de frutas.', emoji:'🍫', avail:true },
+        { id:13, nome:'Pudim de leite', cat:'Sobremesas', desc:'Pudim cremoso de leite condensado com calda de caramelo artesanal.', emoji:'🍮', avail:true },
+        { id:14, nome:'Torta de limão', cat:'Sobremesas', desc:'Torta gelada de limão siciliano com merengue italiano.', emoji:'🍋', avail:false },
     ];
-
     function loadKMenu() {
         try {
             const raw = localStorage.getItem(MENU_KEY);
-            if (raw) {
-                // Strip price fields for privacy — cozinha doesn't need them
-                return JSON.parse(raw).map(({ id, nome, cat, desc, emoji, avail }) => ({ id, nome, cat, desc: desc || '', emoji: emoji || '🍽️', avail }));
-            }
+            if (raw) return JSON.parse(raw).map(({ id, nome, cat, desc, emoji, avail }) => ({ id, nome, cat, desc: desc || '', emoji: emoji || '🍽️', avail }));
             return defaultMenuK;
         } catch { return defaultMenuK; }
     }
-
     function saveKMenu(menu) {
-        // Merge availability back into the shared store (preserve price + other fields)
         try {
             const raw = localStorage.getItem(MENU_KEY);
             if (raw) {
                 const full = JSON.parse(raw);
-                menu.forEach(km => {
-                    const fp = full.find(x => x.id === km.id);
-                    if (fp) fp.avail = km.avail;
-                });
+                menu.forEach(km => { const fp = full.find(x => x.id === km.id); if (fp) fp.avail = km.avail; });
                 localStorage.setItem(MENU_KEY, JSON.stringify(full));
                 return;
             }
         } catch {}
-        // Fallback: save as-is
         localStorage.setItem(MENU_KEY, JSON.stringify(menu));
     }
-
     let kMenu = loadKMenu();
     let kMenuFilterCat = 'todos';
-
-    function setKMenuFilter(cat, el) {
-        kMenuFilterCat = cat;
-        document.querySelectorAll('.kpill').forEach(p => p.classList.remove('active'));
-        el.classList.add('active');
-        renderKMenu();
-    }
-
-    function getKFiltered() {
-        const q = (document.getElementById('kmenu-search')?.value || '').toLowerCase();
-        return kMenu.filter(p =>
-            (kMenuFilterCat === 'todos' || p.cat === kMenuFilterCat) &&
-            (p.nome.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q))
-        );
-    }
-
-    function renderKMenuStats() {
-        const total = kMenu.length;
-        const avail = kMenu.filter(p => p.avail).length;
-        const unavail = total - avail;
-        document.getElementById('kmenu-stats').innerHTML = `
-            <div class="kmenu-stat"><div class="kmenu-stat-dot" style="background:var(--accent)"></div><span class="kmenu-stat-label">Total</span><span class="kmenu-stat-val">${total}</span></div>
-            <div class="kmenu-stat"><div class="kmenu-stat-dot" style="background:var(--status-available)"></div><span class="kmenu-stat-label">Disponíveis</span><span class="kmenu-stat-val">${avail}</span></div>
-            <div class="kmenu-stat"><div class="kmenu-stat-dot" style="background:var(--status-unavailable)"></div><span class="kmenu-stat-label">Indisponíveis</span><span class="kmenu-stat-val">${unavail}</span></div>`;
-    }
-
+    function setKMenuFilter(cat, el) { kMenuFilterCat = cat; document.querySelectorAll('.kpill').forEach(p => p.classList.remove('active')); el.classList.add('active'); renderKMenu(); }
+    function getKFiltered() { let q = (document.getElementById('kmenu-search')?.value || '').toLowerCase(); return kMenu.filter(p => (kMenuFilterCat === 'todos' || p.cat === kMenuFilterCat) && (p.nome.toLowerCase().includes(q) || p.desc.toLowerCase().includes(q))); }
+    function renderKMenuStats() { let total = kMenu.length, avail = kMenu.filter(p => p.avail).length, unavail = total - avail; document.getElementById('kmenu-stats').innerHTML = `<div class="kmenu-stat"><div class="kmenu-stat-dot" style="background:var(--accent)"></div><span class="kmenu-stat-label">Total</span><span class="kmenu-stat-val">${total}</span></div><div class="kmenu-stat"><div class="kmenu-stat-dot" style="background:var(--status-available)"></div><span class="kmenu-stat-label">Disponíveis</span><span class="kmenu-stat-val">${avail}</span></div><div class="kmenu-stat"><div class="kmenu-stat-dot" style="background:var(--status-unavailable)"></div><span class="kmenu-stat-label">Indisponíveis</span><span class="kmenu-stat-val">${unavail}</span></div>`; }
+    function formatKAuditTime(iso) { let d = new Date(iso), pad = n => String(n).padStart(2, '0'); return `${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`; }
     function renderKMenu() {
         renderKMenuStats();
         const grid = document.getElementById('kmenu-grid');
         const list = getKFiltered();
-
-        if (list.length === 0) {
-            grid.innerHTML = `
-                <div class="kmenu-empty">
-                    <div class="kmenu-empty-icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg></div>
-                    <div class="kmenu-empty-title">Nenhum prato encontrado</div>
-                    <div class="kmenu-empty-desc">Tente outro filtro ou busca.</div>
-                </div>`;
-            return;
-        }
-
+        if (list.length === 0) { grid.innerHTML = `<div class="kmenu-empty"><div class="kmenu-empty-icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg></div><div class="kmenu-empty-title">Nenhum prato encontrado</div><div class="kmenu-empty-desc">Tente outro filtro ou busca.</div></div>`; return; }
         const auditLog = loadAuditLog();
-
         grid.innerHTML = list.map(p => {
             const pratoLog = auditLog.filter(e => e.pratoId === p.id).slice(0, 5);
             const hasLog = pratoLog.length > 0;
-            const histItems = pratoLog.map(e => {
-                const dot = e.acao === 'desativar' ? 'desativar' : 'ativar';
-                const label = e.acao === 'desativar' ? 'Desativado' : 'Ativado';
-                const origem = e.origem === 'Admin' ? '(Admin)' : '(Cozinha)';
-                return `<div class="kprato-hist-item">
-                    <div class="kprato-hist-dot ${dot}"></div>
-                    <div class="kprato-hist-content">
-                        <div class="kprato-hist-motivo">${escHtml(e.motivo)}</div>
-                        <div class="kprato-hist-meta">${label} por ${escHtml(e.usuario)} ${origem} · ${formatKAuditTime(e.timestamp)}</div>
-                    </div>
-                </div>`;
-            }).join('');
-
-            return `
-            <div class="kprato-card ${p.avail ? 'available' : 'unavailable'}" id="kprato-${p.id}">
-                <div class="kprato-main">
-                    <div class="kprato-stripe"></div>
-                    <div class="kprato-body">
-                        <div class="kprato-top">
-                            <span class="kprato-emoji">${escHtml(p.emoji)}</span>
-                            <span class="kprato-name">${escHtml(p.nome)}</span>
-                        </div>
-                        <div class="kprato-cat">${escHtml(p.cat)}</div>
-                        <div class="kprato-desc">${escHtml(p.desc)}</div>
-                    </div>
-                    <div class="kprato-side">
-                        <button class="kprato-toggle ${p.avail ? 'on' : ''}" onclick="toggleKPrato(${p.id})" aria-label="Alternar disponibilidade">
-                            <div class="kprato-toggle-knob"></div>
-                        </button>
-                        <span class="kprato-toggle-label">${p.avail ? 'On' : 'Off'}</span>
-                    </div>
-                </div>
-                <div class="kprato-hist-panel" id="khist-${p.id}">
-                    <div class="kprato-hist-title">
-                        Histórico
-                        ${hasLog ? `<span style="font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--text-muted)">${pratoLog.length} evento${pratoLog.length!==1?'s':''}</span>` : ''}
-                    </div>
-                    ${hasLog ? histItems : '<div class="kprato-hist-empty">Nenhuma alteração registrada para este prato.</div>'}
-                </div>
-                ${hasLog ? `<div style="border-top:1px solid var(--border);display:flex;justify-content:center">
-                    <button class="kprato-hist-btn" onclick="toggleKHist(${p.id})" id="khistbtn-${p.id}">
-                        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-                        Ver histórico
-                    </button>
-                </div>` : ''}
-            </div>`;
+            const histItems = pratoLog.map(e => { const dot = e.acao === 'desativar' ? 'desativar' : 'ativar'; const label = e.acao === 'desativar' ? 'Desativado' : 'Ativado'; const origem = e.origem === 'Admin' ? '(Admin)' : '(Cozinha)'; return `<div class="kprato-hist-item"><div class="kprato-hist-dot ${dot}"></div><div class="kprato-hist-content"><div class="kprato-hist-motivo">${escHtml(e.motivo)}</div><div class="kprato-hist-meta">${label} por ${escHtml(e.usuario)} ${origem} · ${formatKAuditTime(e.timestamp)}</div></div></div>`; }).join('');
+            return `<div class="kprato-card ${p.avail ? 'available' : 'unavailable'}" id="kprato-${p.id}"><div class="kprato-main"><div class="kprato-stripe"></div><div class="kprato-body"><div class="kprato-top"><span class="kprato-emoji">${escHtml(p.emoji)}</span><span class="kprato-name">${escHtml(p.nome)}</span></div><div class="kprato-cat">${escHtml(p.cat)}</div><div class="kprato-desc">${escHtml(p.desc)}</div></div><div class="kprato-side"><button class="kprato-toggle ${p.avail ? 'on' : ''}" onclick="toggleKPrato(${p.id})" aria-label="Alternar disponibilidade"><div class="kprato-toggle-knob"></div></button><span class="kprato-toggle-label">${p.avail ? 'On' : 'Off'}</span></div></div><div class="kprato-hist-panel" id="khist-${p.id}"><div class="kprato-hist-title">Histórico${hasLog ? `<span style="font-family:'IBM Plex Mono',monospace;font-size:0.62rem;color:var(--text-muted)">${pratoLog.length} evento${pratoLog.length!==1?'s':''}</span>` : ''}</div>${hasLog ? histItems : '<div class="kprato-hist-empty">Nenhuma alteração registrada para este prato.</div>'}</div>${hasLog ? `<div style="border-top:1px solid var(--border);display:flex;justify-content:center"><button class="kprato-hist-btn" onclick="toggleKHist(${p.id})" id="khistbtn-${p.id}"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Ver histórico</button></div>` : ''}</div>`;
         }).join('');
     }
-
-    function toggleKHist(id) {
-        const panel = document.getElementById('khist-' + id);
-        const btn = document.getElementById('khistbtn-' + id);
-        if (!panel) return;
-        const open = panel.classList.toggle('open');
-        if (btn) btn.innerHTML = open
-            ? `<svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg> Ocultar histórico`
-            : `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Ver histórico`;
-    }
-
-    function formatKAuditTime(iso) {
-        const d = new Date(iso);
-        const pad = n => String(n).padStart(2, '0');
-        return `${pad(d.getDate())}/${pad(d.getMonth()+1)} ${pad(d.getHours())}:${pad(d.getMinutes())}`;
-    }
-
+    function toggleKHist(id) { const panel = document.getElementById('khist-' + id); const btn = document.getElementById('khistbtn-' + id); if (!panel) return; const open = panel.classList.toggle('open'); if (btn) btn.innerHTML = open ? `<svg viewBox="0 0 24 24"><polyline points="18 15 12 9 6 15"/></svg> Ocultar histórico` : `<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg> Ver histórico`; }
     let toggleKPendingId = null;
+    function toggleKPrato(id) { let p = kMenu.find(x => x.id === id); if (!p) return; toggleKPendingId = id; let activating = !p.avail; let wrap = document.getElementById('tmodal-k-icon-wrap'), svg = document.getElementById('tmodal-k-icon-svg'); wrap.className = 'tmodal-icon-wrap ' + (activating ? 'activate' : 'deactivate'); svg.innerHTML = activating ? '<polyline points="20 6 9 17 4 12"/>' : '<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>'; document.getElementById('tmodal-k-title').textContent = activating ? 'Ativar prato' : 'Desativar prato'; document.getElementById('tmodal-k-prato-name').textContent = p.nome; let textarea = document.getElementById('tmodal-k-motivo'); textarea.value = ''; textarea.placeholder = activating ? 'Ex: Ingredientes disponíveis novamente.' : 'Ex: Ingrediente em falta, prato temporariamente retirado.'; textarea.classList.remove('error'); document.getElementById('tmodal-k-motivo-error').classList.remove('visible'); let btn = document.getElementById('tmodal-k-confirm-btn'); btn.className = 'modal-btn ' + (activating ? 'activate' : 'deactivate'); btn.textContent = activating ? 'Ativar' : 'Desativar'; document.getElementById('modal-toggle-k').classList.add('open'); setTimeout(() => textarea.focus(), 80); }
+    function confirmToggleK() { let motivo = document.getElementById('tmodal-k-motivo').value.trim(); if (!motivo) { document.getElementById('tmodal-k-motivo-error').classList.add('visible'); document.getElementById('tmodal-k-motivo').classList.add('error'); return; } let p = kMenu.find(x => x.id === toggleKPendingId); if (!p) return; let acao = p.avail ? 'desativar' : 'ativar'; p.avail = !p.avail; saveKMenu(kMenu); writeAuditLog({ prato: p.nome, pratoId: p.id, acao, motivo, usuario: 'Cozinha', origem: 'Cozinha' }); closeToggleKModal(); renderKMenu(); showToast(p.avail ? `✓ ${p.nome} — disponível` : `${p.nome} — indisponível`); }
+    function closeToggleKModal() { document.getElementById('modal-toggle-k').classList.remove('open'); toggleKPendingId = null; }
 
-    function toggleKPrato(id) {
-        const p = kMenu.find(x => x.id === id);
-        if (!p) return;
-        toggleKPendingId = id;
-        const activating = !p.avail;
-
-        const wrap = document.getElementById('tmodal-k-icon-wrap');
-        const svg  = document.getElementById('tmodal-k-icon-svg');
-        wrap.className = 'tmodal-icon-wrap ' + (activating ? 'activate' : 'deactivate');
-        svg.innerHTML  = activating
-            ? '<polyline points="20 6 9 17 4 12"/>'
-            : '<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>';
-
-        document.getElementById('tmodal-k-title').textContent     = activating ? 'Ativar prato' : 'Desativar prato';
-        document.getElementById('tmodal-k-prato-name').textContent = p.nome;
-
-        const textarea = document.getElementById('tmodal-k-motivo');
-        textarea.value       = '';
-        textarea.placeholder = activating
-            ? 'Ex: Ingredientes disponíveis novamente.'
-            : 'Ex: Ingrediente em falta, prato temporariamente retirado.';
-        textarea.classList.remove('error');
-        document.getElementById('tmodal-k-motivo-error').classList.remove('visible');
-
-        const btn = document.getElementById('tmodal-k-confirm-btn');
-        btn.className   = 'modal-btn ' + (activating ? 'activate' : 'deactivate');
-        btn.textContent = activating ? 'Ativar' : 'Desativar';
-
-        document.getElementById('modal-toggle-k').classList.add('open');
-        setTimeout(() => textarea.focus(), 80);
-    }
-
-    function confirmToggleK() {
-        const motivo = document.getElementById('tmodal-k-motivo').value.trim();
-        if (!motivo) {
-            document.getElementById('tmodal-k-motivo-error').classList.add('visible');
-            document.getElementById('tmodal-k-motivo').classList.add('error');
-            return;
-        }
-        const p = kMenu.find(x => x.id === toggleKPendingId);
-        if (!p) return;
-        const acao = p.avail ? 'desativar' : 'ativar';
-        p.avail = !p.avail;
-        saveKMenu(kMenu);
-        // ── Gravar no audit log ──
-        writeAuditLog({ prato: p.nome, pratoId: p.id, acao, motivo, usuario: 'Cozinha', origem: 'Cozinha' });
-        closeToggleKModal();
-        renderKMenu();
-        showToast(p.avail ? `✓ ${p.nome} — disponível` : `${p.nome} — indisponível`);
-    }
-
-    function closeToggleKModal() {
-        document.getElementById('modal-toggle-k').classList.remove('open');
-        toggleKPendingId = null;
-    }
-
-    // ══════════════════════════════════════════════
     // ── AUDIT LOG (Cozinha) ──
-    // ══════════════════════════════════════════════
     const AUDIT_KEY = 't4u-audit-log';
+    function loadAuditLog() { try { return JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]'); } catch { return []; } }
+    function saveAuditLog(log) { localStorage.setItem(AUDIT_KEY, JSON.stringify(log)); }
+    function writeAuditLog(entry) { let log = loadAuditLog(); log.unshift({ id: Date.now(), timestamp: new Date().toISOString(), prato: entry.prato, pratoId: entry.pratoId, acao: entry.acao, motivo: entry.motivo, usuario: entry.usuario || 'Cozinha', origem: entry.origem || 'Cozinha' }); saveAuditLog(log); }
 
-    function loadAuditLog() {
-        try { return JSON.parse(localStorage.getItem(AUDIT_KEY) || '[]'); } catch { return []; }
+    // ── PERFIL (usa shared) ──
+    function initKitchenProfile() {
+        const user = T4U.getUser();
+        if (user && user.label) {
+            const initials = user.label.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+            const profileBtn = document.getElementById('profile-btn');
+            if (profileBtn) profileBtn.textContent = initials;
+            const dropdownAvatar = document.getElementById('dropdown-avatar');
+            if (dropdownAvatar) dropdownAvatar.textContent = initials;
+            const dropdownName = document.getElementById('dropdown-name');
+            if (dropdownName) dropdownName.textContent = user.label;
+            const dropdownRole = document.getElementById('dropdown-role');
+            if (dropdownRole) dropdownRole.textContent = user.email;
+        }
     }
 
-    function saveAuditLog(log) {
-        localStorage.setItem(AUDIT_KEY, JSON.stringify(log));
-    }
+    document.addEventListener('keydown', e => { if (e.key === 'Escape') { closeModal(); closeToggleKModal(); } });
 
-    function writeAuditLog(entry) {
-        const log = loadAuditLog();
-        log.unshift({
-            id: Date.now(),
-            timestamp: new Date().toISOString(),
-            prato: entry.prato,
-            pratoId: entry.pratoId,
-            acao: entry.acao,
-            motivo: entry.motivo,
-            usuario: entry.usuario || 'Cozinha',
-            origem: entry.origem || 'Cozinha'
-        });
-        saveAuditLog(log);
-    }
-
-    // ── INIT ──
-    renderPedidos();
-    renderHistorico();
-    renderKMenu();
+    // Inicialização
+    document.addEventListener('DOMContentLoaded', () => {
+        initKitchenProfile();
+        renderPedidos();
+        renderHistorico();
+        renderKMenu();
+        // Sincroniza ícone do toggle de tema com o tema atual
+        const savedTheme = localStorage.getItem('t4u-private-theme') || 'light';
+        const toggleIcon = document.getElementById('toggle-icon');
+        if (toggleIcon) toggleIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+    });
 </script>
 </body>
 </html>

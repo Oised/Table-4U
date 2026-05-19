@@ -1,0 +1,1097 @@
+/* ============================================================
+   t4u-shared.css — Table4U · Design System Compartilhado
+   Versão: 1.0.0
+
+   Índice
+   ──────
+   1.  Tokens (CSS custom properties — light/dark)
+   2.  Reset
+   3.  Layout raiz (body flex)
+   4.  Sidebar
+   5.  Topbar
+   6.  Profile dropdown
+   7.  Toast
+   8.  Status utilities (cores de disponibilidade)
+   9.  Modal base (overlay + sheet bottom-sheet)
+  10.  Utilitários gerais
+  11.  Media queries
+
+   Como usar
+   ──────────
+   Adicione no <head> de cada página interna (não na login):
+
+     <link rel="stylesheet" href="t4u-shared.css">
+
+   Depois inclua apenas os estilos específicos daquela tela
+   em um <style> abaixo — eles naturalmente sobreescrevem /
+   complementam os tokens sem conflito.
+   ============================================================ */
+
+
+/* ─────────────────────────────────────────────────────────────
+   1. TOKENS
+   ───────────────────────────────────────────────────────────── */
+
+:root,
+[data-theme="light"] {
+    /* Superfícies */
+    --bg-page:          #f0f2f5;
+    --bg-card:          #ffffff;
+    --bg-input:         #f7f8fa;
+    --bg-input-focus:   #ffffff;
+    --bg-sidebar:       #1c2333;
+    --bg-sidebar-hover: #232e45;
+    --bg-topbar:        #ffffff;
+
+    /* Textos */
+    --text-primary:       #111827;
+    --text-secondary:     #6b7280;
+    --text-muted:         #9ca3af;
+    --text-on-dark:       #f9fafb;
+    --text-sidebar:       #cbd5e1;
+    --text-sidebar-muted: #64748b;
+
+    /* Bordas */
+    --border:       #e5e7eb;
+    --border-focus: #2c3e50;
+
+    /* Acento principal */
+    --accent:        #2c3e50;
+    --accent-hover:  #1a252f;
+    --accent-subtle: rgba(44, 62, 80, 0.07);
+
+    /* Perigo */
+    --danger:        #dc2626;
+    --danger-subtle: rgba(220, 38, 38, 0.07);
+    --danger-border: rgba(220, 38, 38, 0.20);
+
+    /* Sucesso */
+    --success:        #16a34a;
+    --success-bg:     #f0fdf4;
+    --success-border: #bbf7d0;
+
+    /* Status de mesa */
+    --status-available:        #16a34a;
+    --status-available-bg:     #f0fdf4;
+    --status-available-border: #bbf7d0;
+
+    --status-occupied:         #2563eb;
+    --status-occupied-bg:      #eff6ff;
+    --status-occupied-border:  #bfdbfe;
+
+    --status-unavailable:        #dc2626;
+    --status-unavailable-bg:     #fff5f5;
+    --status-unavailable-border: #fecaca;
+
+    --status-warning:        #d97706;
+    --status-warning-bg:     #fffbeb;
+    --status-warning-border: #fde68a;
+
+    /* Sombras */
+    --shadow-card:  0 1px 3px rgba(0, 0, 0, 0.07), 0 4px 16px rgba(0, 0, 0, 0.05);
+    --shadow-modal: 0 8px 40px rgba(0, 0, 0, 0.18);
+    --shadow-btn:   0 2px 8px rgba(44, 62, 80, 0.25);
+    --shadow-fab:   0 4px 16px rgba(44, 62, 80, 0.35);
+
+    /* Toggle de tema */
+    --toggle-bg:   #e5e7eb;
+    --toggle-knob: #ffffff;
+
+    /* Overlay de modal */
+    --overlay: rgba(0, 0, 0, 0.35);
+
+    /* Notas / anotações */
+    --note-bg:     #fffbeb;
+    --note-border: #fde68a;
+
+    /* Gráficos (Admin) */
+    --chart-bar:        rgba(44, 62, 80, 0.15);
+    --chart-bar-active: #2c3e50;
+    --chart-line:       #2c3e50;
+    --chart-grid:       #e5e7eb;
+}
+
+[data-theme="dark"] {
+    /* Superfícies */
+    --bg-page:          #111827;
+    --bg-card:          #1f2937;
+    --bg-input:         #111827;
+    --bg-input-focus:   #111827;
+    --bg-sidebar:       #0d1117;
+    --bg-sidebar-hover: #161d2d;
+    --bg-topbar:        #1f2937;
+
+    /* Textos */
+    --text-primary:       #f9fafb;
+    --text-secondary:     #9ca3af;
+    --text-muted:         #6b7280;
+    --text-on-dark:       #f9fafb;
+    --text-sidebar:       #cbd5e1;
+    --text-sidebar-muted: #475569;
+
+    /* Bordas */
+    --border:       #374151;
+    --border-focus: #6b8cae;
+
+    /* Acento principal */
+    --accent:        #3a6ea5;
+    --accent-hover:  #4a80be;
+    --accent-subtle: rgba(58, 110, 165, 0.12);
+
+    /* Perigo */
+    --danger:        #f87171;
+    --danger-subtle: rgba(248, 113, 113, 0.08);
+    --danger-border: rgba(248, 113, 113, 0.20);
+
+    /* Sucesso */
+    --success:        #4ade80;
+    --success-bg:     rgba(22, 163, 74, 0.10);
+    --success-border: rgba(74, 222, 128, 0.30);
+
+    /* Status de mesa */
+    --status-available:        #4ade80;
+    --status-available-bg:     rgba(22, 163, 74, 0.10);
+    --status-available-border: rgba(74, 222, 128, 0.30);
+
+    --status-occupied:         #60a5fa;
+    --status-occupied-bg:      rgba(37, 99, 235, 0.10);
+    --status-occupied-border:  rgba(96, 165, 250, 0.30);
+
+    --status-unavailable:        #f87171;
+    --status-unavailable-bg:     rgba(220, 38, 38, 0.10);
+    --status-unavailable-border: rgba(248, 113, 113, 0.30);
+
+    --status-warning:        #fbbf24;
+    --status-warning-bg:     rgba(217, 119, 6, 0.10);
+    --status-warning-border: rgba(251, 191, 36, 0.30);
+
+    /* Sombras */
+    --shadow-card:  0 1px 3px rgba(0, 0, 0, 0.40), 0 4px 16px rgba(0, 0, 0, 0.30);
+    --shadow-modal: 0 8px 40px rgba(0, 0, 0, 0.50);
+    --shadow-btn:   0 2px 8px rgba(0, 0, 0, 0.40);
+    --shadow-fab:   0 4px 20px rgba(0, 0, 0, 0.50);
+
+    /* Toggle de tema */
+    --toggle-bg:   #374151;
+    --toggle-knob: #9ca3af;
+
+    /* Overlay de modal */
+    --overlay: rgba(0, 0, 0, 0.55);
+
+    /* Notas / anotações */
+    --note-bg:     rgba(251, 191, 36, 0.08);
+    --note-border: rgba(251, 191, 36, 0.25);
+
+    /* Gráficos (Admin) */
+    --chart-bar:        rgba(58, 110, 165, 0.20);
+    --chart-bar-active: #3a6ea5;
+    --chart-line:       #3a6ea5;
+    --chart-grid:       #374151;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   2. RESET
+   ───────────────────────────────────────────────────────────── */
+
+*,
+*::before,
+*::after {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   3. LAYOUT RAIZ
+   Todas as páginas internas são: sidebar | main(topbar + content)
+   ───────────────────────────────────────────────────────────── */
+
+body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg-page);
+    color: var(--text-primary);
+    display: flex;
+    overflow: hidden;
+    transition: background 0.25s, color 0.25s;
+}
+
+#main {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+}
+
+#content {
+    flex: 1;
+    overflow-y: auto;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   4. SIDEBAR
+   ───────────────────────────────────────────────────────────── */
+
+#sidebar {
+    width: 220px;
+    min-width: 220px;
+    background: var(--bg-sidebar);
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    flex-shrink: 0;
+    z-index: 50;
+    transition:
+        width     0.25s cubic-bezier(0.4, 0, 0.2, 1),
+        min-width 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+#sidebar.collapsed {
+    width: 56px;
+    min-width: 56px;
+}
+
+/* ── Cabeçalho / toggle ── */
+.sidebar-header {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+    min-height: 60px;
+}
+
+.sidebar-toggle {
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-sidebar-muted);
+    padding: 18px 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: color 0.2s, background 0.2s;
+}
+
+.sidebar-toggle:hover {
+    color: var(--text-sidebar);
+    background: var(--bg-sidebar-hover);
+}
+
+.sidebar-toggle svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.sidebar-brand {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--text-on-dark);
+    transition: opacity 0.2s;
+}
+
+#sidebar.collapsed .sidebar-brand {
+    opacity: 0;
+    width: 0;
+}
+
+/* ── Navegação ── */
+.sidebar-nav {
+    flex: 1;
+    padding: 12px 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.nav-section-label {
+    font-size: 0.62rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-sidebar-muted);
+    padding: 8px 16px 4px;
+    white-space: nowrap;
+    overflow: hidden;
+    transition: opacity 0.2s;
+}
+
+#sidebar.collapsed .nav-section-label {
+    opacity: 0;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 10px 14px;
+    color: var(--text-sidebar);
+    text-decoration: none;
+    font-size: 0.875rem;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    cursor: pointer;
+    white-space: nowrap;
+    position: relative;
+    transition: background 0.15s, color 0.15s;
+}
+
+.nav-item:hover {
+    background: var(--bg-sidebar-hover);
+    color: #fff;
+}
+
+.nav-item.active {
+    background: var(--bg-sidebar-hover);
+    color: #fff;
+}
+
+/* Barra lateral indicadora de item ativo */
+.nav-item.active::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 3px;
+    background: var(--accent);
+    border-radius: 0 2px 2px 0;
+}
+
+.nav-item svg {
+    width: 18px;
+    height: 18px;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.8;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.nav-label {
+    transition: opacity 0.2s;
+    white-space: nowrap;
+    overflow: hidden;
+}
+
+#sidebar.collapsed .nav-label {
+    opacity: 0;
+    width: 0;
+}
+
+/* Tooltip ao colapsar */
+#sidebar.collapsed .nav-item[data-tooltip]:hover::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    left: calc(100% + 8px);
+    top: 50%;
+    transform: translateY(-50%);
+    background: #1c2333;
+    color: #fff;
+    font-size: 0.78rem;
+    padding: 5px 10px;
+    border-radius: 6px;
+    white-space: nowrap;
+    pointer-events: none;
+    z-index: 200;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.30);
+}
+
+/* Badge numérico (ex: cozinha — pedidos pendentes) */
+.nav-badge-count {
+    font-size: 0.65rem;
+    font-weight: 700;
+    background: #ef4444;
+    color: #fff;
+    padding: 1px 6px;
+    border-radius: 20px;
+    margin-left: auto;
+    flex-shrink: 0;
+    min-width: 18px;
+    text-align: center;
+}
+
+#sidebar.collapsed .nav-badge-count {
+    display: none;
+}
+
+/* Badge de texto (ex: recepção — "BETA") */
+.nav-badge {
+    font-size: 0.6rem;
+    font-weight: 700;
+    background: rgba(255, 255, 255, 0.10);
+    color: var(--text-sidebar-muted);
+    padding: 2px 6px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin-left: auto;
+    flex-shrink: 0;
+}
+
+#sidebar.collapsed .nav-badge {
+    display: none;
+}
+
+/* Subcategorias (ex: order.html — categorias do menu na sidebar) */
+.nav-item.category {
+    padding-left: 24px;
+    font-size: 0.82rem;
+}
+
+.nav-item.category .cat-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--text-sidebar-muted);
+    flex-shrink: 0;
+    transition: background 0.15s;
+}
+
+.nav-item.category:hover .cat-dot {
+    background: #fff;
+}
+
+#sidebar.collapsed .nav-item.category {
+    display: none;
+}
+
+/* ── Rodapé / logout ── */
+.sidebar-footer {
+    padding: 0;
+    border-top: 1px solid rgba(255, 255, 255, 0.06);
+}
+
+.nav-item.logout {
+    color: #f87171;
+}
+
+.nav-item.logout:hover {
+    background: rgba(248, 113, 113, 0.10);
+    color: #fca5a5;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   5. TOPBAR
+   ───────────────────────────────────────────────────────────── */
+
+#topbar {
+    height: 56px;
+    background: var(--bg-topbar);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 12px;
+    flex-shrink: 0;
+    position: relative;
+    transition: background 0.25s, border-color 0.25s;
+}
+
+.topbar-page-info {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex: 1;
+    min-width: 0;
+}
+
+.topbar-page-icon {
+    width: 28px;
+    height: 28px;
+    background: var(--accent-subtle);
+    border-radius: 7px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.topbar-page-icon svg {
+    width: 14px;
+    height: 14px;
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+.topbar-page-name {
+    font-size: 0.85rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    white-space: nowrap;
+}
+
+.topbar-separator {
+    width: 1px;
+    height: 14px;
+    background: var(--border);
+    flex-shrink: 0;
+}
+
+.topbar-page-title {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.topbar-controls {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-shrink: 0;
+}
+
+/* ── Toggle de tema ── */
+#toggle-theme-btn {
+    width: 44px;
+    height: 24px;
+    border-radius: 12px;
+    border: 1.5px solid var(--border);
+    background: var(--toggle-bg);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    padding: 2px;
+    transition: background 0.25s, border-color 0.25s;
+}
+
+#toggle-theme-btn:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+}
+
+.toggle-knob {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    background: var(--toggle-knob);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    flex-shrink: 0;
+    transition: transform 0.25s cubic-bezier(0.4, 0, 0.2, 1), background 0.25s;
+}
+
+[data-theme="dark"] .toggle-knob {
+    transform: translateX(20px);
+}
+
+/* ── Botão de perfil ── */
+#profile-btn {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    background: var(--accent);
+    border: 2px solid var(--border);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 500;
+    color: #fff;
+    flex-shrink: 0;
+    transition: border-color 0.2s, transform 0.15s;
+}
+
+#profile-btn:hover {
+    border-color: var(--accent);
+    transform: scale(1.05);
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   6. PROFILE DROPDOWN
+   ───────────────────────────────────────────────────────────── */
+
+#profile-dropdown {
+    display: none;
+    position: absolute;
+    top: 52px;
+    right: 16px;
+    width: 240px;
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: var(--shadow-modal);
+    z-index: 200;
+    overflow: hidden;
+    animation: t4u-dropdown-in 0.18s ease both;
+}
+
+#profile-dropdown.open {
+    display: block;
+}
+
+@keyframes t4u-dropdown-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.dropdown-header {
+    padding: 16px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.dropdown-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--accent);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    color: #fff;
+    flex-shrink: 0;
+}
+
+.dropdown-name {
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.dropdown-role {
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 1px;
+}
+
+.dropdown-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    font-size: 0.83rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    border: none;
+    background: none;
+    width: 100%;
+    text-align: left;
+    text-decoration: none;
+    transition: background 0.15s, color 0.15s;
+}
+
+.dropdown-item:hover {
+    background: var(--accent-subtle);
+    color: var(--text-primary);
+}
+
+.dropdown-item svg {
+    width: 15px;
+    height: 15px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+.dropdown-item.danger {
+    color: #ef4444;
+}
+
+.dropdown-item.danger:hover {
+    background: rgba(239, 68, 68, 0.07);
+    color: #ef4444;
+}
+
+.dropdown-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 4px 0;
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   7. TOAST
+   ───────────────────────────────────────────────────────────── */
+
+#toast-container {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    z-index: 300;
+    pointer-events: none;
+}
+
+.toast {
+    background: var(--accent);
+    color: #fff;
+    font-size: 0.83rem;
+    font-weight: 500;
+    padding: 10px 18px;
+    border-radius: 8px;
+    white-space: nowrap;
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.20);
+    animation: t4u-toast-in 0.3s ease both;
+}
+
+@keyframes t4u-toast-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes t4u-toast-out {
+    from { opacity: 1; }
+    to   { opacity: 0; transform: translateY(8px); }
+}
+
+/*
+  Nota: order.html posiciona o toast mais alto (bottom: 100px)
+  para não colidir com os FABs. Sobrescreva localmente com:
+
+    #toast-container { bottom: 100px; }
+*/
+
+
+/* ─────────────────────────────────────────────────────────────
+   8. STATUS UTILITIES
+   Classes de cor reutilizáveis por qualquer componente de mesa.
+   ───────────────────────────────────────────────────────────── */
+
+/* Badges de status */
+.status-badge {
+    display: inline-flex;
+    align-items: center;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: 20px;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    border: 1px solid transparent;
+}
+
+.status-badge.available {
+    background: var(--status-available-bg);
+    color: var(--status-available);
+    border-color: var(--status-available-border);
+}
+
+.status-badge.occupied {
+    background: var(--status-occupied-bg);
+    color: var(--status-occupied);
+    border-color: var(--status-occupied-border);
+}
+
+.status-badge.unavailable {
+    background: var(--status-unavailable-bg);
+    color: var(--status-unavailable);
+    border-color: var(--status-unavailable-border);
+}
+
+.status-badge.warning {
+    background: var(--status-warning-bg);
+    color: var(--status-warning);
+    border-color: var(--status-warning-border);
+}
+
+/* Dots de legenda */
+.legend-dot {
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    flex-shrink: 0;
+}
+
+.legend-item {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   9. MODAL BASE
+   Overlay + bottom-sheet (padrão das páginas internas).
+   Páginas que precisam de modais centrados sobrescrevem
+   o alinhamento localmente.
+   ───────────────────────────────────────────────────────────── */
+
+.t4u-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: var(--overlay);
+    z-index: 100;
+    align-items: flex-end;
+    justify-content: center;
+}
+
+.t4u-overlay.open {
+    display: flex;
+}
+
+/* Bottom-sheet */
+.t4u-sheet {
+    background: var(--bg-card);
+    border-radius: 20px 20px 0 0;
+    width: 100%;
+    max-width: 540px;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: var(--shadow-modal);
+    animation: t4u-sheet-up 0.3s cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+@keyframes t4u-sheet-up {
+    from { transform: translateY(100%); }
+    to   { transform: translateY(0); }
+}
+
+/* Handle do sheet */
+.modal-handle {
+    width: 36px;
+    height: 4px;
+    background: var(--border);
+    border-radius: 2px;
+    margin: 12px auto 0;
+}
+
+/* Cabeçalho */
+.modal-header {
+    padding: 16px 24px 14px;
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.modal-title {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text-primary);
+}
+
+.modal-subtitle {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    margin-top: 2px;
+}
+
+.modal-close {
+    margin-left: auto;
+    background: none;
+    border: none;
+    cursor: pointer;
+    color: var(--text-muted);
+    padding: 4px;
+    border-radius: 6px;
+    display: flex;
+    align-items: center;
+    transition: color 0.15s, background 0.15s;
+}
+
+.modal-close:hover {
+    color: var(--text-primary);
+    background: var(--accent-subtle);
+}
+
+.modal-close svg {
+    width: 18px;
+    height: 18px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* Corpo */
+.modal-body {
+    padding: 16px 24px 24px;
+}
+
+/* Botões de ação dentro do modal */
+.modal-actions {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.modal-btn {
+    width: 100%;
+    padding: 13px 18px;
+    border-radius: 10px;
+    border: none;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 0.875rem;
+    font-weight: 600;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.15s, transform 0.1s;
+    text-decoration: none;
+}
+
+.modal-btn:active {
+    transform: scale(0.98);
+}
+
+.modal-btn svg {
+    width: 17px;
+    height: 17px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    flex-shrink: 0;
+}
+
+.btn-primary-action {
+    background: var(--accent);
+    color: #fff;
+}
+
+.btn-primary-action:hover {
+    background: var(--accent-hover);
+}
+
+.btn-secondary-action {
+    background: var(--accent-subtle);
+    color: var(--accent);
+    border: 1px solid var(--border);
+}
+
+.btn-secondary-action:hover {
+    background: var(--border);
+    color: var(--text-primary);
+}
+
+.btn-danger-action {
+    background: rgba(220, 38, 38, 0.08);
+    color: #dc2626;
+    border: 1px solid rgba(220, 38, 38, 0.20);
+}
+
+.btn-danger-action:hover {
+    background: rgba(220, 38, 38, 0.14);
+}
+
+/* "warning" aqui significa azul (ocupar / disponibilizar) — nomenclatura original mantida */
+.btn-warning-action {
+    background: rgba(37, 99, 235, 0.08);
+    color: #2563eb;
+    border: 1px solid rgba(37, 99, 235, 0.20);
+}
+
+.btn-warning-action:hover {
+    background: rgba(37, 99, 235, 0.14);
+}
+
+/* Animação fade-in para modais centrados */
+@keyframes t4u-fade-in {
+    from { opacity: 0; transform: scale(0.95); }
+    to   { opacity: 1; transform: scale(1); }
+}
+
+
+/* ─────────────────────────────────────────────────────────────
+   10. UTILITÁRIOS GERAIS
+   ───────────────────────────────────────────────────────────── */
+
+/* Contador de hóspedes (waiter, reception) */
+.guest-counter {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.counter-btn {
+    width: 38px;
+    height: 38px;
+    border-radius: 10px;
+    border: 1.5px solid var(--border);
+    background: var(--bg-input);
+    color: var(--text-primary);
+    font-size: 1.2rem;
+    font-weight: 300;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s, border-color 0.15s;
+}
+
+.counter-btn:hover {
+    border-color: var(--border-focus);
+    background: var(--accent-subtle);
+}
+
+.counter-value {
+    font-size: 1.4rem;
+    font-weight: 600;
+    color: var(--text-primary);
+    min-width: 32px;
+    text-align: center;
+}
+
+/* Label de seção dentro de modal */
+.checkin-label {
+    font-size: 0.8rem;
+    font-weight: 500;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+    display: block;
+}
+
+/* Utilitário de escape de HTML — não é CSS, está em t4u-shared.js */
+
+
+/* ─────────────────────────────────────────────────────────────
+   11. MEDIA QUERIES
+   ───────────────────────────────────────────────────────────── */
+
+@media (max-width: 600px) {
+    #sidebar {
+        display: none;
+    }
+
+    #content {
+        padding: 16px 12px;
+    }
+}

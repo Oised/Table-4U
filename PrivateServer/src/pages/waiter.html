@@ -5,102 +5,18 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Table4U — Garçom</title>
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="../styles/shared.css">
+
+    <!-- Tema aplicado antes do paint para evitar flash -->
     <script>
         (function () {
-            var saved = localStorage.getItem('t4u-private-theme');
-            document.documentElement.setAttribute('data-theme', saved || 'light');
+            var t = localStorage.getItem('t4u-private-theme') || 'light';
+            document.documentElement.setAttribute('data-theme', t);
         })();
     </script>
+
     <style>
-        :root, [data-theme="light"] {
-            --bg-page: #f0f2f5; --bg-card: #ffffff; --bg-input: #f7f8fa;
-            --bg-sidebar: #1c2333; --bg-sidebar-hover: #232e45; --bg-topbar: #ffffff;
-            --text-primary: #111827; --text-secondary: #6b7280; --text-muted: #9ca3af;
-            --text-on-dark: #f9fafb; --text-sidebar: #cbd5e1; --text-sidebar-muted: #64748b;
-            --border: #e5e7eb; --border-focus: #2c3e50;
-            --accent: #2c3e50; --accent-hover: #1a252f; --accent-subtle: rgba(44,62,80,0.07);
-            --status-available: #16a34a; --status-available-bg: #f0fdf4; --status-available-border: #bbf7d0;
-            --status-occupied: #2563eb; --status-occupied-bg: #eff6ff; --status-occupied-border: #bfdbfe;
-            --status-unavailable: #dc2626; --status-unavailable-bg: #fff5f5; --status-unavailable-border: #fecaca;
-            --shadow-card: 0 1px 3px rgba(0,0,0,0.07), 0 4px 16px rgba(0,0,0,0.05);
-            --shadow-modal: 0 8px 40px rgba(0,0,0,0.18);
-            --toggle-bg: #e5e7eb; --toggle-knob: #ffffff; --overlay: rgba(0,0,0,0.35);
-        }
-        [data-theme="dark"] {
-            --bg-page: #111827; --bg-card: #1f2937; --bg-input: #111827;
-            --bg-sidebar: #0d1117; --bg-sidebar-hover: #161d2d; --bg-topbar: #1f2937;
-            --text-primary: #f9fafb; --text-secondary: #9ca3af; --text-muted: #6b7280;
-            --text-on-dark: #f9fafb; --text-sidebar: #cbd5e1; --text-sidebar-muted: #475569;
-            --border: #374151; --border-focus: #6b8cae;
-            --accent: #3a6ea5; --accent-hover: #4a80be; --accent-subtle: rgba(58,110,165,0.12);
-            --status-available: #4ade80; --status-available-bg: rgba(22,163,74,0.1); --status-available-border: rgba(74,222,128,0.3);
-            --status-occupied: #60a5fa; --status-occupied-bg: rgba(37,99,235,0.1); --status-occupied-border: rgba(96,165,250,0.3);
-            --status-unavailable: #f87171; --status-unavailable-bg: rgba(220,38,38,0.1); --status-unavailable-border: rgba(248,113,113,0.3);
-            --shadow-card: 0 1px 3px rgba(0,0,0,0.4), 0 4px 16px rgba(0,0,0,0.3);
-            --shadow-modal: 0 8px 40px rgba(0,0,0,0.5);
-            --toggle-bg: #374151; --toggle-knob: #9ca3af; --overlay: rgba(0,0,0,0.55);
-        }
-
-        *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
-        html, body { height: 100%; }
-        body { font-family: 'DM Sans', sans-serif; background: var(--bg-page); color: var(--text-primary); display: flex; transition: background 0.25s, color 0.25s; overflow: hidden; }
-
-        /* SIDEBAR */
-        #sidebar { width: 220px; min-width: 220px; background: var(--bg-sidebar); display: flex; flex-direction: column; height: 100vh; transition: width 0.25s cubic-bezier(0.4,0,0.2,1), min-width 0.25s cubic-bezier(0.4,0,0.2,1); overflow: hidden; flex-shrink: 0; z-index: 50; }
-        #sidebar.collapsed { width: 56px; min-width: 56px; }
-        .sidebar-header { border-bottom: 1px solid rgba(255,255,255,0.06); min-height: 60px; }
-        .sidebar-toggle { background: none; border: none; cursor: pointer; color: var(--text-sidebar-muted); padding: 18px 14px; display: flex; align-items: center; gap: 10px; width: 100%; transition: color 0.2s, background 0.2s; white-space: nowrap; overflow: hidden; }
-        .sidebar-toggle:hover { color: var(--text-sidebar); background: var(--bg-sidebar-hover); }
-        .sidebar-toggle svg { width: 18px; height: 18px; flex-shrink: 0; }
-        .sidebar-brand { font-family: 'IBM Plex Mono', monospace; font-size: 0.9rem; font-weight: 500; color: var(--text-on-dark); transition: opacity 0.2s; }
-        #sidebar.collapsed .sidebar-brand { opacity: 0; width: 0; }
-        .sidebar-nav { flex: 1; padding: 12px 0; overflow-y: auto; overflow-x: hidden; }
-        .nav-section-label { font-size: 0.62rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-sidebar-muted); padding: 8px 16px 4px; white-space: nowrap; overflow: hidden; transition: opacity 0.2s; }
-        #sidebar.collapsed .nav-section-label { opacity: 0; }
-        .nav-item { display: flex; align-items: center; gap: 12px; padding: 10px 14px; color: var(--text-sidebar); text-decoration: none; font-size: 0.875rem; border-radius: 0; cursor: pointer; transition: background 0.15s, color 0.15s; white-space: nowrap; border: none; background: none; width: 100%; text-align: left; position: relative; }
-        .nav-item:hover { background: var(--bg-sidebar-hover); color: #fff; }
-        .nav-item.active { background: var(--bg-sidebar-hover); color: #fff; }
-        .nav-item.active::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 3px; background: var(--accent); border-radius: 0 2px 2px 0; }
-        .nav-item svg { width: 18px; height: 18px; flex-shrink: 0; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
-        .nav-label { transition: opacity 0.2s; white-space: nowrap; overflow: hidden; }
-        #sidebar.collapsed .nav-label { opacity: 0; width: 0; overflow: hidden; }
-        #sidebar.collapsed .nav-item[data-tooltip]:hover::after { content: attr(data-tooltip); position: absolute; left: calc(100% + 8px); top: 50%; transform: translateY(-50%); background: #1c2333; color: #fff; font-size: 0.78rem; padding: 5px 10px; border-radius: 6px; white-space: nowrap; pointer-events: none; z-index: 200; box-shadow: 0 2px 8px rgba(0,0,0,0.3); }
-        .sidebar-footer { padding: 0; border-top: 1px solid rgba(255,255,255,0.06); }
-        .nav-item.logout { color: #f87171; }
-        .nav-item.logout:hover { background: rgba(248,113,113,0.1); color: #fca5a5; }
-
-        /* MAIN */
-        #main { flex: 1; display: flex; flex-direction: column; height: 100vh; overflow: hidden; }
-
-        /* TOPBAR */
-        #topbar { height: 56px; background: var(--bg-topbar); border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 20px; gap: 12px; flex-shrink: 0; transition: background 0.25s, border-color 0.25s; }
-        .topbar-page-info { display: flex; align-items: center; gap: 8px; flex: 1; }
-        .topbar-page-icon { width: 28px; height: 28px; background: var(--accent-subtle); border-radius: 7px; display: flex; align-items: center; justify-content: center; }
-        .topbar-page-icon svg { width: 14px; height: 14px; fill: none; stroke: var(--accent); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .topbar-page-name { font-size: 0.85rem; font-weight: 500; color: var(--text-secondary); }
-        .topbar-separator { width: 1px; height: 14px; background: var(--border); }
-        .topbar-page-title { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
-        .topbar-controls { display: flex; align-items: center; gap: 10px; }
-        #toggle-theme-btn { width: 44px; height: 24px; border-radius: 12px; border: 1.5px solid var(--border); background: var(--toggle-bg); cursor: pointer; display: flex; align-items: center; padding: 2px; transition: background 0.25s, border-color 0.25s; }
-        .toggle-knob { width: 18px; height: 18px; border-radius: 50%; background: var(--toggle-knob); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); display: flex; align-items: center; justify-content: center; font-size: 10px; flex-shrink: 0; }
-        [data-theme="dark"] .toggle-knob { transform: translateX(20px); }
-        #profile-btn { width: 34px; height: 34px; border-radius: 50%; background: var(--accent); border: 2px solid var(--border); cursor: pointer; display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.72rem; font-weight: 500; color: #fff; transition: border-color 0.2s, transform 0.15s; flex-shrink: 0; }
-        #profile-btn:hover { border-color: var(--accent); transform: scale(1.05); }
-        #profile-dropdown { display: none; position: absolute; top: 52px; right: 16px; width: 240px; background: var(--bg-card); border: 1px solid var(--border); border-radius: 12px; box-shadow: var(--shadow-modal); z-index: 200; overflow: hidden; animation: dropdown-in 0.18s ease both; }
-        #profile-dropdown.open { display: block; }
-        @keyframes dropdown-in { from { opacity:0; transform:translateY(-6px); } to { opacity:1; transform:translateY(0); } }
-        .dropdown-header { padding: 16px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-        .dropdown-avatar { width: 36px; height: 36px; border-radius: 50%; background: var(--accent); display: flex; align-items: center; justify-content: center; font-family: 'IBM Plex Mono', monospace; font-size: 0.78rem; color: #fff; flex-shrink: 0; }
-        .dropdown-name { font-size: 0.85rem; font-weight: 600; color: var(--text-primary); }
-        .dropdown-role { font-size: 0.72rem; color: var(--text-muted); margin-top: 1px; }
-        .dropdown-item { display: flex; align-items: center; gap: 10px; padding: 11px 16px; font-size: 0.83rem; color: var(--text-secondary); cursor: pointer; transition: background 0.15s, color 0.15s; border: none; background: none; width: 100%; text-align: left; text-decoration: none; }
-        .dropdown-item:hover { background: var(--accent-subtle); color: var(--text-primary); }
-        .dropdown-item svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
-        .dropdown-item.danger { color: #ef4444; }
-        .dropdown-item.danger:hover { background: rgba(239,68,68,0.07); }
-        .dropdown-divider { height: 1px; background: var(--border); margin: 4px 0; }
-
-        /* CONTENT */
+        /* ── CONTENT ── */
         #content { flex: 1; overflow-y: auto; padding: 24px 20px; }
         .section-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
         .section-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
@@ -110,7 +26,7 @@
         .legend-dot { width: 10px; height: 10px; border-radius: 50%; }
         .tables-grid { display: flex; flex-direction: column; gap: 12px; }
 
-        /* TABLE CARD */
+        /* ── TABLE CARD ── */
         .table-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px 24px; display: flex; align-items: center; gap: 20px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, border-color 0.15s; box-shadow: var(--shadow-card); position: relative; overflow: hidden; }
         .table-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.1); }
         .table-card:active { transform: translateY(0); }
@@ -135,7 +51,7 @@
         .table-chevron { color: var(--text-muted); flex-shrink: 0; }
         .table-chevron svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
-        /* MODAL */
+        /* ── MODAL (sheet) ── */
         #modal-overlay { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 100; align-items: flex-end; justify-content: center; }
         #modal-overlay.open { display: flex; }
         #modal { background: var(--bg-card); border-radius: 20px 20px 0 0; width: 100%; max-width: 540px; box-shadow: var(--shadow-modal); animation: sheet-up 0.3s cubic-bezier(0.16,1,0.3,1) both; max-height: 90vh; overflow-y: auto; }
@@ -167,7 +83,7 @@
         .btn-warning-action { background: rgba(37,99,235,0.08); color: #2563eb; border: 1px solid rgba(37,99,235,0.2); }
         .btn-warning-action:hover { background: rgba(37,99,235,0.14); }
 
-        /* ORDERS INSIDE MODAL */
+        /* ── ORDERS INSIDE MODAL ── */
         .orders-section { margin-bottom: 14px; }
         .orders-toggle-btn { display: flex; align-items: center; gap: 8px; font-size: 0.78rem; font-weight: 600; color: var(--text-secondary); background: none; border: none; cursor: pointer; padding: 0 0 8px; text-transform: uppercase; letter-spacing: 0.06em; }
         .orders-toggle-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: transform 0.2s; }
@@ -181,12 +97,6 @@
         .order-item-name { color: var(--text-primary); font-weight: 500; }
         .order-item-qty { color: var(--text-muted); font-size: 0.72rem; font-family: 'IBM Plex Mono', monospace; }
         .orders-empty { font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 8px 0; }
-
-        /* TOAST */
-        #toast-container { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; flex-direction: column; gap: 8px; z-index: 300; pointer-events: none; }
-        .toast { background: var(--accent); color: #fff; font-size: 0.83rem; font-weight: 500; padding: 10px 18px; border-radius: 8px; white-space: nowrap; animation: toast-in 0.3s ease both; box-shadow: 0 4px 16px rgba(0,0,0,0.2); }
-        @keyframes toast-in { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
-        @keyframes toast-out { from { opacity:1; } to { opacity:0; transform:translateY(8px); } }
 
         @media (max-width: 600px) { #sidebar { display: none; } #content { padding: 16px 12px; } .table-card { padding: 16px; } }
     </style>
@@ -202,7 +112,7 @@
     </div>
     <div class="sidebar-nav">
         <div class="nav-section-label">Garçom</div>
-        <button class="nav-item active" data-tooltip="Mesas">
+        <button class="nav-item active" data-tooltip="Mesas" id="nav-mesas">
             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
             <span class="nav-label">Mesas</span>
         </button>
@@ -216,7 +126,7 @@
         </button>
     </div>
     <div class="sidebar-footer">
-        <button class="nav-item logout" data-tooltip="Sair" onclick="logout()">
+        <button class="nav-item logout" id="logout-sidebar" data-tooltip="Sair">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span class="nav-label">Sair</span>
         </button>
@@ -251,12 +161,8 @@
                 <div class="dropdown-role" id="dropdown-role">garcom@rest.com</div>
             </div>
         </div>
-        <button class="dropdown-item" onclick="showToast('Em desenvolvimento')">
-            <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-            Meu perfil
-        </button>
         <div class="dropdown-divider"></div>
-        <button class="dropdown-item danger" onclick="logout()">
+        <button class="dropdown-item danger" id="logout-dropdown">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Sair
         </button>
@@ -295,8 +201,33 @@
 
 <div id="toast-container" aria-live="polite"></div>
 
+<script src="../scripts/shared.js" defer></script>
+
 <script>
-    // ── TABLES STATE (in a real app this would come from an API) ──
+    // Helper escHtml
+    function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+
+    // ── TOAST (usa shared) ──
+    window.showToast = function(msg, duration) { T4U.showToast(msg, duration); };
+
+    // ── LOGOUT (usa shared) ──
+    function handleLogout() { T4U.logout(); }
+    document.getElementById('logout-sidebar')?.addEventListener('click', handleLogout);
+    document.getElementById('logout-dropdown')?.addEventListener('click', handleLogout);
+
+    // ── PERFIL (usa shared) ──
+    function initWaiterProfile() {
+        const user = T4U.getUser();
+        if (user && user.label) {
+            const initials = user.label.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+            document.getElementById('profile-initials').textContent = initials;
+            document.getElementById('dropdown-avatar').textContent = initials;
+            document.getElementById('dropdown-name').textContent = user.label;
+            document.getElementById('dropdown-role').textContent = user.email;
+        }
+    }
+
+    // ── TABLES STATE ──
     const tables = [
         { id: 1, capacity: 4, status: 'available',   guests: 0 },
         { id: 2, capacity: 6, status: 'occupied',    guests: 4 },
@@ -308,12 +239,25 @@
         { id: 8, capacity: 6, status: 'available',   guests: 0 },
     ];
 
-    // Seed some mock orders in sessionStorage for occupied tables (demo only)
+    const STATUS_CONFIG = {
+        available:   { icon: '🟢', label: 'Disponível',   meta: 'Pronta para receber clientes' },
+        occupied:    { icon: '🔵', label: 'Ocupada',      meta: null },
+        unavailable: { icon: '🔴', label: 'Indisponível', meta: 'Requer atenção antes de liberar' },
+    };
+
+    let activeTableId = null;
+
+    function getOrders(tableId) {
+        try { return JSON.parse(sessionStorage.getItem(`t4u-orders-table-${tableId}`)) || []; }
+        catch { return []; }
+    }
+
+    function fmtTime(ts) { return new Date(ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); }
+
+    // Seed demo orders
     function seedDemoOrders() {
         if (!sessionStorage.getItem('t4u-orders-table-2')) {
-            const demo2 = [
-                { timestamp: Date.now() - 3600000, items: [{ name: 'Risoto de camarão', price: 78, qty: 2 }, { name: 'Suco natural', price: 16, qty: 4 }], total: 220 }
-            ];
+            const demo2 = [{ timestamp: Date.now() - 3600000, items: [{ name: 'Risoto de camarão', price: 78, qty: 2 }, { name: 'Suco natural', price: 16, qty: 4 }], total: 220 }];
             sessionStorage.setItem('t4u-orders-table-2', JSON.stringify(demo2));
         }
         if (!sessionStorage.getItem('t4u-orders-table-5')) {
@@ -325,76 +269,15 @@
         }
     }
 
-    const STATUS_CONFIG = {
-        available:   { icon: '🟢', label: 'Disponível',   meta: 'Pronta para receber clientes' },
-        occupied:    { icon: '🔵', label: 'Ocupada',      meta: null },
-        unavailable: { icon: '🔴', label: 'Indisponível', meta: 'Requer atenção antes de liberar' },
-    };
-
-    let activeTableId = null;
-
-    // ── HELPERS ──
-    function getOrders(tableId) {
-        try { return JSON.parse(sessionStorage.getItem(`t4u-orders-table-${tableId}`)) || []; }
-        catch { return []; }
-    }
-
-    function fmtTime(ts) {
-        return new Date(ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
-    }
-
-    // ── USER / SESSION ──
-    function getUser() {
-        try { return JSON.parse(sessionStorage.getItem('t4u-user')) || { label: 'Garçom', email: 'garcom@rest.com' }; }
-        catch { return { label: 'Garçom', email: 'garcom@rest.com' }; }
-    }
-
-    function initProfileUI() {
-        const user = getUser();
-        const initials = user.label.split(' ').map(w => w[0]).join('').slice(0,2).toUpperCase();
-        document.getElementById('profile-initials').textContent = initials;
-        document.getElementById('dropdown-avatar').textContent  = initials;
-        document.getElementById('dropdown-name').textContent    = user.label;
-        document.getElementById('dropdown-role').textContent    = user.email;
-    }
-
-    function logout() { sessionStorage.removeItem('t4u-user'); window.location.href = 'login.html'; }
-
-    // ── THEME ──
-    function applyTheme(t) {
-        document.documentElement.setAttribute('data-theme', t);
-        localStorage.setItem('t4u-private-theme', t);
-        document.getElementById('toggle-icon').textContent = t === 'dark' ? '🌙' : '☀️';
-    }
-    applyTheme(localStorage.getItem('t4u-private-theme') || 'light');
-    document.getElementById('toggle-theme-btn').addEventListener('click', () => {
-        applyTheme(document.documentElement.getAttribute('data-theme') === 'light' ? 'dark' : 'light');
-    });
-
-    // ── SIDEBAR ──
-    document.getElementById('sidebar-toggle-btn').addEventListener('click', () => {
-        document.getElementById('sidebar').classList.toggle('collapsed');
-    });
-
-    // ── PROFILE DROPDOWN ──
-    const profileBtn = document.getElementById('profile-btn');
-    const profileDropdown = document.getElementById('profile-dropdown');
-    profileBtn.addEventListener('click', e => { e.stopPropagation(); profileDropdown.classList.toggle('open'); });
-    document.addEventListener('click', () => profileDropdown.classList.remove('open'));
-    profileDropdown.addEventListener('click', e => e.stopPropagation());
-
-    // ── RENDER TABLES ──
     function renderTables() {
         const grid = document.getElementById('tables-grid');
         grid.innerHTML = '';
         document.getElementById('table-count').textContent = `${tables.length} mesas`;
-
         tables.forEach(table => {
             const cfg = STATUS_CONFIG[table.status];
             const orders = getOrders(table.id);
             const totalRounds = orders.length;
             const totalItems = orders.reduce((s, r) => s + r.items.reduce((ss, i) => ss + i.qty, 0), 0);
-
             let meta = '';
             if (table.status === 'occupied') {
                 meta = `${table.guests} pessoas`;
@@ -402,7 +285,6 @@
             } else {
                 meta = cfg.meta || `Capacidade: ${table.capacity} pessoas`;
             }
-
             const card = document.createElement('div');
             card.className = `table-card ${table.status}`;
             card.setAttribute('role', 'button');
@@ -422,16 +304,13 @@
         });
     }
 
-    // ── MODAL ──
     function openModal(tableId) {
         const table = tables.find(t => t.id === tableId);
         if (!table) return;
         activeTableId = tableId;
-
         const cfg = STATUS_CONFIG[table.status];
         const orders = getOrders(tableId);
         const totalRounds = orders.length;
-
         document.getElementById('modal-icon').textContent = cfg.icon;
         document.getElementById('modal-icon').style.background =
             table.status === 'available'   ? 'var(--status-available-bg)'   :
@@ -442,7 +321,6 @@
             table.status === 'occupied'
                 ? `${table.guests} pessoas · ${totalRounds} rodada${totalRounds !== 1 ? 's' : ''} · Cap. ${table.capacity}`
                 : `Capacidade: ${table.capacity} pessoas`;
-
         renderModalBody(table, orders);
         document.getElementById('modal-overlay').classList.add('open');
         document.body.style.overflow = 'hidden';
@@ -450,7 +328,6 @@
 
     function renderModalBody(table, orders) {
         const body = document.getElementById('modal-body');
-
         if (table.status === 'available') {
             body.innerHTML = `
                 <label class="checkin-label">Quantas pessoas?</label>
@@ -470,7 +347,6 @@
                     </button>
                 </div>`;
             document.getElementById('guest-count')._value = 1;
-
         } else if (table.status === 'unavailable') {
             body.innerHTML = `
                 <div class="modal-actions">
@@ -479,25 +355,18 @@
                         Marcar como disponível
                     </button>
                 </div>`;
-
         } else if (table.status === 'occupied') {
-            // Build order history HTML
             let ordersHTML = '';
             if (orders.length > 0) {
                 orders.forEach((round, idx) => {
                     ordersHTML += `<div class="order-group">
                         <div class="order-group-label">Rodada ${idx + 1} · ${fmtTime(round.timestamp)}</div>
-                        ${round.items.map(i => `
-                            <div class="order-item">
-                                <span class="order-item-name">${i.name}</span>
-                                <span class="order-item-qty">×${i.qty}</span>
-                            </div>`).join('')}
+                        ${round.items.map(i => `<div class="order-item"><span class="order-item-name">${escHtml(i.name)}</span><span class="order-item-qty">×${i.qty}</span></div>`).join('')}
                     </div>`;
                 });
             } else {
                 ordersHTML = `<div class="orders-empty">Nenhum pedido ainda.</div>`;
             }
-
             body.innerHTML = `
                 <div class="orders-section">
                     <button class="orders-toggle-btn" id="orders-toggle-btn" onclick="toggleOrders()">
@@ -529,7 +398,6 @@
         if (e.target === this) closeModal();
     });
 
-    // ── ACTIONS ──
     function changeGuests(delta) {
         const el = document.getElementById('guest-count');
         const table = tables.find(t => t.id === activeTableId);
@@ -544,7 +412,6 @@
         const guests = document.getElementById('guest-count')._value || 1;
         table.status = 'occupied';
         table.guests = guests;
-        // Clear any previous orders for this table
         sessionStorage.removeItem(`t4u-orders-table-${table.id}`);
         closeModal();
         renderTables();
@@ -572,30 +439,26 @@
     function goToOrder() { window.location.href = `order.html?table=${activeTableId}`; }
     function goToCheckout() { window.location.href = `checkout.html?table=${activeTableId}&origin=waiter`; }
 
-    // ── TOAST ──
-    function showToast(msg, duration = 3200) {
-        const c = document.getElementById('toast-container');
-        const t = document.createElement('div');
-        t.className = 'toast'; t.textContent = msg; c.appendChild(t);
-        setTimeout(() => { t.style.animation = 'toast-out 0.3s ease forwards'; setTimeout(() => t.remove(), 300); }, duration);
-    }
-
     // ── INIT ──
-    initProfileUI();
-    seedDemoOrders();
-
-    // Check if a table was released from checkout
-    tables.forEach(table => {
-        const flag = `t4u-release-table-${table.id}`;
-        if (sessionStorage.getItem(flag)) {
-            table.status = 'available';
-            table.guests = 0;
-            sessionStorage.removeItem(flag);
-            setTimeout(() => showToast(`✓ Mesa ${table.id} liberada com sucesso`), 300);
-        }
+    document.addEventListener('DOMContentLoaded', () => {
+        initWaiterProfile();
+        seedDemoOrders();
+        // Verifica se alguma mesa foi liberada pelo checkout
+        tables.forEach(table => {
+            const flag = `t4u-release-table-${table.id}`;
+            if (sessionStorage.getItem(flag)) {
+                table.status = 'available';
+                table.guests = 0;
+                sessionStorage.removeItem(flag);
+                setTimeout(() => showToast(`✓ Mesa ${table.id} liberada com sucesso`), 300);
+            }
+        });
+        renderTables();
+        // Sincroniza ícone do toggle de tema
+        const savedTheme = localStorage.getItem('t4u-private-theme') || 'light';
+        const toggleIcon = document.getElementById('toggle-icon');
+        if (toggleIcon) toggleIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
     });
-
-    renderTables();
 </script>
 </body>
 </html>
