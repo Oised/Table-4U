@@ -146,7 +146,7 @@
         </div>
     </div>
     <div class="sidebar-footer">
-        <button class="nav-item logout" id="logout-sidebar" data-tooltip="Sair">
+        <button class="nav-item logout" onclick="logout()" data-tooltip="Sair">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span class="nav-label">Sair</span>
         </button>
@@ -182,7 +182,7 @@
             </div>
         </div>
         <div class="dropdown-divider"></div>
-        <button class="dropdown-item danger" id="logout-dropdown">
+        <button class="dropdown-item danger" onclick="logout()">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Sair
         </button>
@@ -241,31 +241,8 @@
 
 <script src="../scripts/shared.js" defer></script>
 
-<script>
-    // Helper escHtml (se não existir no shared)
-    function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-    // ── TOAST (usa shared) ──
-    window.showToast = function(msg, duration) { T4U.showToast(msg, duration); };
-
-    // ── LOGOUT (usa shared) ──
-    function handleLogout() { T4U.logout(); }
-    document.getElementById('logout-sidebar')?.addEventListener('click', handleLogout);
-    document.getElementById('logout-dropdown')?.addEventListener('click', handleLogout);
-
-    // ── PERFIL (usa shared) ──
-    function initOrderProfile() {
-        const user = T4U.getUser();
-        if (user && user.label) {
-            const initials = user.label.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-            document.getElementById('profile-initials').textContent = initials;
-            document.getElementById('dropdown-avatar').textContent = initials;
-            document.getElementById('dropdown-name').textContent = user.label;
-            document.getElementById('dropdown-role').textContent = user.email;
-        }
-    }
-
-    // ── CARDÁPIO (hardcoded para esta página, mas poderia vir do T4U.getMenuForOrder() futuramente) ──
+<script>     
+    // ── CARDÁPIO ──
     const MENU = [
         { id: 'entradas', label: 'Entradas', icon: '🥗', items: [
             { id: 1, name: 'Bruschetta ao tomate',  price: 22.90, description: 'Fatias de pão italiano grelhado com tomate fresco, manjericão e azeite extra virgem.' },
@@ -296,10 +273,6 @@
     const selection = {};
     const params = new URLSearchParams(window.location.search);
     const tableId = params.get('table') || '?';
-
-    document.getElementById('topbar-title').textContent = `Pedido — Mesa ${tableId}`;
-    renderMenu();
-    renderSidebarCategories();
 
     function renderMenu() {
         const content = document.getElementById('content');
@@ -452,14 +425,15 @@
 
     document.getElementById('modal-overlay').addEventListener('click', function(e) { if (e.target === this) closeReviewModal(); });
     document.getElementById('cancel-overlay').addEventListener('click', function(e) { if (e.target === this) closeCancelModal(); });
+    
+    // Garantir que o DOM e o shared.js estejam prontos
+    document.addEventListener('DOMContentLoaded', function() {
+        const params = new URLSearchParams(window.location.search);
+        const tableId = params.get('table') || '?';
+        document.getElementById('topbar-title').textContent = `Pedido — Mesa ${tableId}`;
 
-    // Inicialização
-    document.addEventListener('DOMContentLoaded', () => {
-        initOrderProfile();
-        // Sincroniza ícone do toggle de tema
-        const savedTheme = localStorage.getItem('t4u-private-theme') || 'light';
-        const toggleIcon = document.getElementById('toggle-icon');
-        if (toggleIcon) toggleIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
+        renderMenu();
+        renderSidebarCategories();
     });
 </script>
 </body>

@@ -468,7 +468,7 @@
         </button>
     </div>
     <div class="sidebar-footer">
-        <button class="nav-item logout" id="logout-sidebar" data-tooltip="Sair">
+        <button class="nav-item logout" onclick="logout()" data-tooltip="Sair">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span class="nav-label">Sair</span>
         </button>
@@ -504,7 +504,7 @@
             </div>
         </div>
         <div class="dropdown-divider"></div>
-        <button class="dropdown-item danger" id="logout-dropdown">
+        <button class="dropdown-item danger" onclick="logout()">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Sair
         </button>
@@ -746,21 +746,6 @@
 <script src="../scripts/shared.js" defer></script>
 
 <script>
-    // Helper escHtml (caso não exista no shared)
-    function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-    // ── SESSÃO / PERFIL (usa shared.js) ──
-    function initAdminProfile() {
-        const user = T4U.getUser();
-        if (user && user.label) {
-            const initials = user.label.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-            document.getElementById('profile-initials').textContent = initials;
-            document.getElementById('dropdown-avatar').textContent = initials;
-            document.getElementById('dropdown-name').textContent = user.label;
-            document.getElementById('dropdown-role').textContent = user.email;
-        }
-    }
-
     // ── NAVEGAÇÃO ──
     const sectionTitles = {
         dashboard: 'Dashboard', restaurante: 'Restaurante', faturamento: 'Faturamento',
@@ -783,14 +768,6 @@
         document.getElementById('topbar-icon').innerHTML = sectionIcons[id] || '';
         if (id === 'auditlog') { updateAuditTabCounts(); renderAuditLog(); }
     }
-
-    // ── TOAST (usa shared, mas exposto globalmente) ──
-    window.showToast = function(msg, duration) { T4U.showToast(msg, duration); };
-
-    // ── LOGOUT (usa shared) ──
-    function handleLogout() { T4U.logout(); }
-    document.getElementById('logout-sidebar')?.addEventListener('click', handleLogout);
-    document.getElementById('logout-dropdown')?.addEventListener('click', handleLogout);
 
     // ── FUNCIONÁRIOS (lógica original) ──
     const cargoLabels = { admin: { label: 'Administrador', cls: 'admin' }, garcom: { label: 'Garçom', cls: 'garcom' }, cozinha: { label: 'Cozinha', cls: 'cozinha' }, recepcao: { label: 'Recepção', cls: 'recepcao' } };
@@ -895,14 +872,9 @@
 
     // Inicialização
     document.addEventListener('DOMContentLoaded', () => {
-        initAdminProfile();
         renderFuncionarios();
         renderMenu();
         updateAuditTabCounts();
-        // Garante que o shared.js já carregou o tema, mas precisamos sincronizar o ícone do toggle
-        const savedTheme = localStorage.getItem('t4u-private-theme') || 'light';
-        const toggleIcon = document.getElementById('toggle-icon');
-        if (toggleIcon) toggleIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
     });
 </script>
 </body>

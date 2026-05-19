@@ -693,4 +693,10 @@ if (typeof window.showToast === 'undefined') {
     window.showToast = function (msg, duration) { T4U.showToast(msg, duration); };
 }
 
+if (typeof window.escHtml === 'undefined') {
+    window.escHtml = function(str) {
+        return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+    };
+}
+
 } // fim do guard de redeclaração

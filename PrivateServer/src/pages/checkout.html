@@ -322,7 +322,7 @@
         <!-- renderizado por JS baseado no parâmetro origin -->
     </div>
     <div class="sidebar-footer">
-        <button class="nav-item logout" id="logout-sidebar" data-tooltip="Sair">
+        <button class="nav-item logout" onclick="logout()" data-tooltip="Sair">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span class="nav-label">Sair</span>
         </button>
@@ -358,7 +358,7 @@
             </div>
         </div>
         <div class="dropdown-divider"></div>
-        <button class="dropdown-item danger" id="logout-dropdown">
+        <button class="dropdown-item danger" onclick="logout()">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             Sair
         </button>
@@ -397,30 +397,7 @@
 
 <script src="../scripts/shared.js" defer></script>
 
-<script>
-    // ── HELPER ──
-    function escHtml(str) { return String(str).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
-
-    // ── TOAST (usa shared) ──
-    window.showToast = function(msg, duration) { T4U.showToast(msg, duration); };
-
-    // ── LOGOUT (usa shared) ──
-    function handleLogout() { T4U.logout(); }
-    document.getElementById('logout-sidebar')?.addEventListener('click', handleLogout);
-    document.getElementById('logout-dropdown')?.addEventListener('click', handleLogout);
-
-    // ── PERFIL (usa shared) ──
-    function initCheckoutProfile() {
-        const user = T4U.getUser();
-        if (user && user.label) {
-            const initials = user.label.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-            document.getElementById('profile-initials').textContent = initials;
-            document.getElementById('dropdown-avatar').textContent = initials;
-            document.getElementById('dropdown-name').textContent = user.label;
-            document.getElementById('dropdown-role').textContent = user.email;
-        }
-    }
-
+<script>     
     // ── ORIGEM (waiter ou reception) ──
     const params = new URLSearchParams(window.location.search);
     const tableId = params.get('table') || '?';
@@ -613,12 +590,7 @@
     // ── INICIALIZAÇÃO ──
     document.addEventListener('DOMContentLoaded', () => {
         renderSidebar();
-        initCheckoutProfile();
         render();
-        // Sincroniza ícone do toggle de tema
-        const savedTheme = localStorage.getItem('t4u-private-theme') || 'light';
-        const toggleIcon = document.getElementById('toggle-icon');
-        if (toggleIcon) toggleIcon.textContent = savedTheme === 'dark' ? '🌙' : '☀️';
     });
 </script>
 </body>
