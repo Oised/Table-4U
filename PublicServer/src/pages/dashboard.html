@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard - Fila e Reservas</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+    
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #3b82f6;
+      --accent-hover: #2563eb;
+      --success: #10b981;
+      --warning: #f59e0b;
+    }
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      margin: 0;
+      padding: 2rem;
+    }
+    h1 {
+      text-align: center;
+      margin-bottom: 2rem;
+      color: var(--accent);
+      font-weight: 600;
+    }
+    .container {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 2rem;
+      max-width: 1200px;
+      margin: 0 auto;
+    }
+    .card {
+      background: var(--card-bg);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      transition: transform 0.2s ease-in-out;
+    }
+    .card:hover {
+      transform: translateY(-2px);
+    }
+    .card h2 {
+      margin-top: 0;
+      border-bottom: 2px solid rgba(59, 130, 246, 0.5);
+      padding-bottom: 0.75rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 1.25rem;
+      font-weight: 500;
+    }
+    .badge {
+      background: var(--accent);
+      color: white;
+      padding: 0.2rem 0.6rem;
+      border-radius: 999px;
+      font-size: 0.875rem;
+      font-weight: 600;
+    }
+    .badge-private {
+      background: #8b5cf6;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 1rem;
+    }
+    th, td {
+      padding: 1rem 0.75rem;
+      text-align: left;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    th {
+      color: var(--text-muted);
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+      letter-spacing: 0.05em;
+    }
+    tr {
+      transition: background-color 0.15s ease;
+    }
+    tr:hover {
+      background-color: rgba(255, 255, 255, 0.02);
+    }
+    .status-esperando { color: var(--warning); font-weight: 500; }
+    .status-pendente { color: var(--warning); font-weight: 500; }
+    .status-concluido { color: var(--success); font-weight: 500; }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+      .card[style*="grid-column"] {
+        grid-column: span 1 !important;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Painel de Controle - Table 4U</h1>
+
+  <div class="container">
+    <div class="card">
+      <h2>Fila Atual <span class="badge" id="fila-count">0</span></h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Pessoas</th>
+            <th>Entrada</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="fila-body">
+          <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card">
+      <h2>Reservas <span class="badge" id="reservas-count">0</span></h2>
+      <table>
+        <thead>
+          <tr>
+            <th>Cliente</th>
+            <th>Pessoas</th>
+            <th>Data/Hora</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="reservas-body">
+          <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="card" style="grid-column: span 2;">
+      <h2>Atendimentos (Banco Privado) <span class="badge badge-private" id="atend-count">0</span></h2>
+      <table>
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Pessoas</th>
+            <th>Check-in</th>
+            <th>Funcionário</th>
+          </tr>
+        </thead>
+        <tbody id="atend-body">
+          <tr><td colspan="4" style="text-align:center; color: var(--text-muted);">Carregando...</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <script>
+    async function fetchData() {
+      try {
+        const [resFila, resReservas, resAtend] = await Promise.all([
+          fetch('/api/todas-filas'),
+          fetch('/api/todas-reservas'),
+          fetch('/api/atendimentos-privados')
+        ]);
+
+        const filas = await resFila.json();
+        const reservas = await resReservas.json();
+        const atendimentos = await resAtend.json();
+
+        // Render Fila
+        document.getElementById('fila-count').textContent = filas.length;
+        const filaBody = document.getElementById('fila-body');
+        filaBody.innerHTML = filas.length > 0 ? filas.map(f => `
+          <tr>
+            <td>${f.Cliente ? f.Cliente.nome : 'Desconhecido'}</td>
+            <td>${f.numero_pessoas}</td>
+            <td>${new Date(f.data_entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})}</td>
+            <td class="status-${f.status}">${f.status}</td>
+          </tr>
+        `).join('') : '<tr><td colspan="4" style="text-align:center; color: #94a3b8;">Ninguém na fila</td></tr>';
+
+        // Render Reservas
+        document.getElementById('reservas-count').textContent = reservas.length;
+        const reservasBody = document.getElementById('reservas-body');
+        reservasBody.innerHTML = reservas.length > 0 ? reservas.map(r => `
+          <tr>
+            <td>${r.Cliente ? r.Cliente.nome : 'Desconhecido'}</td>
+            <td>${r.numero_pessoas}</td>
+            <td>${new Date(r.data_reserva).toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit'})}</td>
+            <td class="status-${r.status}">${r.status}</td>
+          </tr>
+        `).join('') : '<tr><td colspan="4" style="text-align:center; color: #94a3b8;">Nenhuma reserva</td></tr>';
+
+        // Render Atendimentos Privados
+        document.getElementById('atend-count').textContent = atendimentos.length;
+        const atendBody = document.getElementById('atend-body');
+        atendBody.innerHTML = atendimentos.length > 0 ? atendimentos.map(a => `
+          <tr>
+            <td>#${a.atendimento_id}</td>
+            <td>${a.n_pessoas}</td>
+            <td>${new Date(a.checkin).toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit'})}</td>
+            <td>${a.funcionario ? a.funcionario.nome : 'N/A'}</td>
+          </tr>
+        `).join('') : '<tr><td colspan="4" style="text-align:center; color: #94a3b8;">Nenhum atendimento</td></tr>';
+
+      } catch (err) {
+        console.error('Erro ao buscar dados do dashboard:', err);
+      }
+    }
+
+    fetchData();
+    // Atualiza a cada 30 segundos
+    setInterval(fetchData, 30000);
+  </script>
+</body>
+</html>
