@@ -4,6 +4,9 @@ const bcrypt = require("bcrypt");
 const { PrismaClient } = require('@prisma/client');
 const prisma = new PrismaClient();
 
+const { PrismaClient: PrismaClientPrivate } = require('./generated/private');
+const prismaPrivate = new PrismaClientPrivate();
+
 // banco fake (temporário)
 const usuarios = [];
 const reservas = [];
@@ -268,5 +271,46 @@ app.get("/tempo-espera", async (req, res) => {
   } catch (err) {
     console.error("Erro ao calcular tempo de espera:", err.message);
     res.status(500).json({ mensagem: "Não foi possível calcular o tempo de espera no momento." });
+  }
+});
+
+// Endpoints for Dashboard (Public + Private DB)
+app.get("/api/todas-filas", async (req, res) => {
+  try {
+    const filas = await prisma.fila.findMany({
+      include: { Cliente: true },
+      orderBy: { data_entrada: 'asc' }
+    });
+    res.json(filas);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensagem: "Erro ao buscar filas" });
+  }
+});
+
+app.get("/api/todas-reservas", async (req, res) => {
+  try {
+    const reservas = await prisma.reserva.findMany({
+      include: { Cliente: true },
+      orderBy: { data_reserva: 'asc' }
+    });
+    res.json(reservas);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensagem: "Erro ao buscar reservas" });
+  }
+});
+
+app.get("/api/atendimentos-privados", async (req, res) => {
+  try {
+    const atendimentos = await prismaPrivate.atendimento.findMany({
+      include: { funcionario: true },
+      orderBy: { checkin: 'desc' },
+      take: 20
+    });
+    res.json(atendimentos);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ mensagem: "Erro ao buscar atendimentos da base privada" });
   }
 });

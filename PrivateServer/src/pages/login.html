@@ -469,6 +469,12 @@
             document.getElementById('login-error').classList.remove('visible');
         }
 
+        // Auto-redirect se já logado
+        const currentUser = window.T4U ? window.T4U.getUser() : null;
+        if (currentUser && ROLE_DESTINATIONS[currentUser.role]) {
+            window.location.href = ROLE_DESTINATIONS[currentUser.role];
+        }
+
         // Eventos
         document.getElementById('username-input').addEventListener('input', hideError);
         document.getElementById('password-input').addEventListener('input', hideError);

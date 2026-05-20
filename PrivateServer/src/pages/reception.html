@@ -219,26 +219,46 @@
             </div>
         </div>
 
-        <!-- FILA (placeholder) -->
+        <!-- FILA & RESERVAS (Integrado ao Banco Público) -->
         <div class="section-view" id="section-fila">
             <div class="content-inner">
-                <div class="placeholder-page">
-                    <div class="placeholder-icon"><svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></div>
-                    <div class="placeholder-title">Fila de espera</div>
-                    <div class="placeholder-desc">Esta seção gerenciará a fila de clientes aguardando uma mesa — nome do grupo, número de pessoas, tempo de espera estimado e notificação quando uma mesa for liberada.</div>
-                    <div class="placeholder-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Em implementação</div>
+                <div class="mesas-header">
+                    <div class="mesas-header-left">
+                        <div class="section-title">Fila de Espera & Reservas</div>
+                        <div class="section-sub">Acompanhe os clientes aguardando e as reservas agendadas</div>
+                    </div>
+                </div>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
+                    <!-- Card Fila -->
+                    <div class="list-card" style="background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card);">
+                        <div class="list-title" style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+                            👥 Fila Atual
+                            <span style="background: var(--accent); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem;" id="fila-count-dash">0</span>
+                        </div>
+                        <div id="fila-container" style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="color: var(--text-muted); text-align: center; padding: 20px;">Carregando...</div>
+                        </div>
+                    </div>
+                    <!-- Card Reservas -->
+                    <div class="list-card" style="background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card);">
+                        <div class="list-title" style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+                            📅 Reservas
+                            <span style="background: var(--accent); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem;" id="reservas-count-dash">0</span>
+                        </div>
+                        <div id="reservas-container" style="display: flex; flex-direction: column; gap: 10px;">
+                            <div style="color: var(--text-muted); text-align: center; padding: 20px;">Carregando...</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
 
-        <!-- RESERVAS (placeholder) -->
         <div class="section-view" id="section-reservas">
             <div class="content-inner">
                 <div class="placeholder-page">
                     <div class="placeholder-icon"><svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg></div>
                     <div class="placeholder-title">Reservas</div>
-                    <div class="placeholder-desc">Esta seção gerenciará as reservas do restaurante — agendamentos por data e horário, dados do cliente, número de pessoas e confirmações de presença.</div>
-                    <div class="placeholder-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Em implementação</div>
+                    <div class="placeholder-desc">Os dados de reservas estão agora integrados à aba Fila, mas aqui você poderá ter acesso a calendário detalhado no futuro.</div>
                 </div>
             </div>
         </div>
@@ -438,7 +458,89 @@
             }
         });
         renderTables();
+        loadFilaReservas();
     });
+
+    // Fila e Reservas Logic
+    async function chamarFila(id) {
+        try {
+            await fetch('/api/chamar-fila/' + id, { method: 'POST' });
+            loadFilaReservas();
+            showToast('Cliente chamado!');
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function atenderFila(id) {
+        try {
+            await fetch('/api/atender-fila/' + id, { method: 'POST' });
+            loadFilaReservas();
+            showToast('Cliente atendido com sucesso!');
+        } catch (err) {
+            console.error(err);
+        }
+    }
+
+    async function loadFilaReservas() {
+        try {
+            const [fRes, rRes] = await Promise.all([
+                fetch('/api/todas-filas'),
+                fetch('/api/todas-reservas')
+            ]);
+            const filas = await fRes.json();
+            const reservas = await rRes.json();
+            
+            document.getElementById('fila-count-dash').textContent = filas.length;
+            const filaContainer = document.getElementById('fila-container');
+            if (filas.length === 0) {
+                filaContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum cliente na fila</div>';
+            } else {
+                filaContainer.innerHTML = filas.map(f => {
+                    const isSuaVez = f.status === 'sua vez chegou';
+                    const actionBtn = isSuaVez 
+                        ? `<button onclick="atenderFila(${f.id_fila})" style="background: var(--status-available); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.75rem;">Atender</button>`
+                        : `<button onclick="chamarFila(${f.id_fila})" style="background: var(--accent); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.75rem;">Chamar</button>`;
+                    const statusColor = isSuaVez ? 'var(--status-available)' : 'var(--status-warning)';
+                    const statusBg = isSuaVez ? 'var(--status-available-bg)' : 'var(--status-warning-bg)';
+                    const statusBorder = isSuaVez ? 'var(--status-available-border)' : 'var(--status-warning-border)';
+                    
+                    return `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border);">
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary); font-size: 0.85rem;">${f.Cliente ? f.Cliente.nome : 'Desconhecido'}</div>
+                            <div style="font-size: 0.75rem; color: var(--text-muted);">${new Date(f.data_entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})} · ${f.numero_pessoas} pessoas</div>
+                        </div>
+                        <div style="display: flex; gap: 8px; align-items: center;">
+                            <span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; text-transform: capitalize;">${f.status}</span>
+                            ${actionBtn}
+                        </div>
+                    </div>
+                `}).join('');
+            }
+
+            document.getElementById('reservas-count-dash').textContent = reservas.length;
+            const reservasContainer = document.getElementById('reservas-container');
+            if (reservas.length === 0) {
+                reservasContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Sem reservas</div>';
+            } else {
+                reservasContainer.innerHTML = reservas.map(r => `
+                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border);">
+                        <div>
+                            <div style="font-weight: 600; color: var(--text-primary); font-size: 0.95rem; margin-bottom: 4px;">${r.Cliente ? r.Cliente.nome : 'Desconhecido'}</div>
+                            <div style="font-size: 1.15rem; font-weight: bold; color: var(--accent); margin-bottom: 4px;">${new Date(r.data_reserva).toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit'})}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">${r.numero_pessoas} pessoas</div>
+                        </div>
+                        <span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; background: var(--status-warning-bg); color: var(--status-warning); border: 1px solid var(--status-warning-border);">${r.status}</span>
+                    </div>
+                `).join('');
+            }
+        } catch (err) {
+            console.error('Erro ao carregar fila/reservas:', err);
+        }
+    }
+    setInterval(loadFilaReservas, 30000);
+
 </script>
 </body>
 </html>

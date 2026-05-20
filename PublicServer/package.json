@@ -1,4 +1,11 @@
 {
+  "name": "publicserver",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "node server.js",
+    "generate": "npx prisma generate && npx prisma generate --schema=prisma/schema_private.prisma",
+    "postinstall": "npm run generate"
+  },
   "dependencies": {
     "@prisma/client": "^6.19.3",
     "bcrypt": "^6.0.0",
