@@ -1,55 +1,168 @@
-# Table-4U – PublicServer
+# PublicServer — Table4U
 
-## Descrição
-Servidor público do Table-4U, responsável por servir a interface e a lógica voltadas aos clientes do restaurante. Inclui telas de cadastro, login, reserva, fila de espera, cardápio e perfil do usuário.
+Servidor da aplicação pública do Table4U, voltada para os **clientes do restaurante**. Permite que clientes façam login, entrem na fila de espera, realizem e gerenciem reservas, consultem o cardápio e editem seu perfil.
 
-## Funcionalidades Principais
-- **Cadastro e Login**: autenticação com hash de senha (bcrypt) e integração com backend via fetch API.
-- **Reserva de Mesa**: formulário para data, horário e número de pessoas; envia requisição POST para `/reserva`.
-- **Fila de Espera**: entrada na fila quando não há mesas disponíveis; interface acessível apenas após login.
-- **Minhas Reservas**: listagem e cancelamento de reservas existentes (`/reservas/:email` e `DELETE /reserva/:id`).
-- **Cardápio**: visualização online e download em PDF (`cardapio.pdf`).
-- **Perfil do Usuário**: página de edição de dados pessoais.
+Roda em paralelo e de forma isolada do [PrivateServer](../PrivateServer/README.md), com banco de dados próprio.
 
-## Estrutura de Diretórios (resumo)
+---
+
+## Estrutura de diretórios
+
 ```
 PublicServer/
+├── server.js               # Entrada do servidor Express (porta 3000)
+├── prisma.config.ts        # Configuração do Prisma (aponta para DATABASE_URL_PUBLIC)
+├── prisma/
+│   ├── schema.prisma       # Schema do banco público (Cliente, Fila, Reserva)
+│   ├── schema_private.prisma # Schema do banco privado (somente leitura pelo Public)
+│   └── migrations/         # Histórico de migrations do banco público
 ├── src/
-│   ├── index.html           # Landing page com links para todas as funcionalidades
-│   ├── pages/
+│   ├── index.html          # Página inicial (home pública)
+│   ├── pages/              # Páginas HTML da aplicação
 │   │   ├── login.html
 │   │   ├── booking.html
+│   │   ├── mybookings.html
 │   │   ├── queue.html
 │   │   ├── menu.html
-│   │   ├── mybookings.html
-│   │   └── editprofile.html
-│   ├── scripts/
+│   │   ├── editprofile.html
+│   │   └── dashboard.html
+│   ├── scripts/            # JavaScript de cada página
+│   │   ├── theme.js        # Toggle de tema claro/escuro (compartilhado)
 │   │   ├── index.js
 │   │   ├── login.js
 │   │   ├── booking.js
-│   │   ├── queue.js
 │   │   ├── mybookings.js
+│   │   ├── queue.js
 │   │   ├── profile.js
 │   │   └── editprofile.js
-│   └── components/
-│       ├── images/
-│       └── cardapio.pdf
-├── database/                # Scripts SQL (manutenção)
-└── docs/                    # Documentação complementar
+│   ├── styles/             # CSS de cada página
+│   │   ├── global.css      # Tokens de design e componentes compartilhados
+│   │   ├── index.css
+│   │   ├── login.css
+│   │   ├── booking.css
+│   │   ├── mybookings.css
+│   │   ├── queue.css
+│   │   └── menu.css / editprofile.css
+│   ├── components/         # Assets estáticos (imagens, PDF do cardápio)
+│   ├── api/
+│   │   └── model/          # Modelo de ML para previsão de tempo de espera
+│   │       ├── model.py            # API Flask que serve o modelo XGBoost
+│   │       ├── modelo_xgboost.pkl  # Modelo treinado
+│   │       └── colunas.pkl         # Colunas esperadas pelo modelo
+│   ├── services/           # (reservado para futuras integrações)
+│   ├── config/             # (reservado para configurações futuras)
+│   └── utils/              # (reservado para utilitários futuros)
+├── database/               # (reservado para scripts de banco)
+├── docs/                   # (reservado para documentação adicional)
+├── .env.example            # Variáveis de ambiente necessárias
+├── .gitignore
+└── package.json
 ```
 
-## Endpoints Utilizados
-Os scripts do frontend se comunicam com os seguintes endpoints do backend (definidos em `server.js`):
-- `POST /register` – criar nova conta
-- `POST /login` – autenticar usuário
-- `POST /reserva` – criar reserva
-- `GET /reservas/:email` – listar reservas do cliente
-- `DELETE /reserva/:id` – cancelar reserva
-- `POST /clientes` – teste de recebimento de dados
+---
 
-## Observações
-- Todos os arquivos estáticos são servidos pelo Express a partir da pasta `PublicServer`.
-- A proteção de rotas (ex.: fila de espera acessível apenas logado) é implementada no frontend, redirecionando usuários não autenticados.
+## Pré-requisitos
 
-## Status
-Em desenvolvimento ativo. Últimos commits incluem correções no botão de check-in, resolução de conflitos de merge no logout e integração completa de login, perfil e reservas.
+- Node.js 20+
+- PostgreSQL (local ou em nuvem — recomendamos [Neon](https://neon.tech))
+- Python 3.9+ com `flask`, `joblib`, `pandas` e `xgboost` (para o modelo de ML)
+
+---
+
+## Configuração
+
+1. Crie um arquivo `.env` na raiz de `PublicServer/` com base no `.env.example`:
+
+```env
+DATABASE_URL_PUBLIC="postgresql://usuario:senha@host:5432/nomedobanco?sslmode=require"
+MODEL_API_URL="http://localhost:5000/predict"
+```
+
+> `DATABASE_URL_PUBLIC` é o banco dos clientes (fila, reservas, cadastro).
+> `MODEL_API_URL` aponta para a API Flask do modelo de ML que calcula o tempo de espera.
+
+2. Instale as dependências:
+
+```bash
+npm install
+```
+
+O `postinstall` executa `prisma generate` automaticamente, gerando o Prisma Client para o banco público e para o schema privado (somente leitura).
+
+3. Rode as migrations no banco:
+
+```bash
+npx prisma migrate deploy --config prisma.config.ts
+```
+
+---
+
+## Rodando
+
+**Servidor Node (Express):**
+```bash
+npm start
+# Disponível em http://localhost:3000
+```
+
+**API do modelo de ML (opcional, necessário para previsão de tempo de fila):**
+```bash
+cd src/api/model
+python model.py
+# Disponível em http://localhost:5000
+```
+
+---
+
+## Rotas da API
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/register` | Cadastra novo cliente |
+| `POST` | `/login` | Autentica cliente (retorna dados do usuário) |
+| `POST` | `/fila` | Insere cliente na fila de espera |
+| `DELETE` | `/fila/:email` | Remove cliente da fila |
+| `GET` | `/tempo-espera` | Retorna tamanho da fila e tempo estimado via modelo de ML |
+| `POST` | `/reserva` | Cria uma reserva |
+| `GET` | `/reservas/:email` | Lista reservas do cliente |
+| `DELETE` | `/reserva/:id` | Cancela uma reserva |
+| `GET` | `/api/todas-filas` | Lista toda a fila (uso interno / dashboard) |
+| `GET` | `/api/todas-reservas` | Lista todas as reservas (uso interno / dashboard) |
+| `GET` | `/api/atendimentos-privados` | Lê atendimentos do banco privado (somente leitura) |
+
+---
+
+## Banco de dados
+
+O banco público possui três modelos:
+
+- **Cliente** — dados de cadastro (nome, email, senha com hash bcrypt)
+- **Fila** — entradas na fila de espera, com número de pessoas e status (`esperando`)
+- **Reserva** — reservas com data/hora, número de pessoas e status (`pendente`)
+
+O schema privado (`schema_private.prisma`) é acessado em modo somente leitura pelo endpoint `/api/atendimentos-privados`, que expõe dados de atendimentos do banco interno para o dashboard público.
+
+---
+
+## Modelo de ML
+
+O módulo `src/api/model/` contém uma API Flask que serve um modelo **XGBoost** treinado para estimar o tempo de espera na fila. A rota `/tempo-espera` do servidor principal consulta essa API para cada entrada na fila, passando o número de pessoas e o horário de entrada. Se a API estiver indisponível, o servidor aplica um fallback simples (`número de pessoas × 5 minutos`).
+
+**Entradas esperadas pelo modelo:**
+```json
+{
+  "Num_Pessoas": 3,
+  "Check_in": "2026-05-20 19:30:00"
+}
+```
+
+**Resposta:**
+```json
+{ "tempo_espera_min": 22.5 }
+```
+
+---
+
+## Tema claro / escuro
+
+Todas as páginas carregam `scripts/theme.js`, que gerencia o toggle de tema. A preferência é salva no `localStorage` com a chave `table4u-theme` e persiste entre sessões.
