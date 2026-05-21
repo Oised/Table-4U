@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles/shared.css">
 
-    <!-- Tema aplicado antes do paint para evitar flash -->
     <script>
         (function () {
             var t = localStorage.getItem('t4u-private-theme') || 'light';
@@ -16,16 +15,11 @@
     </script>
 
     <style>
-        /* ── CONTENT ── */
         #content { flex: 1; overflow-y: auto; overflow-x: hidden; padding: 12px 12px 120px; scroll-behavior: smooth; }
-
-        /* ── CATEGORY ── */
         .category-section { margin-bottom: 4px; }
         .category-header { display: flex; align-items: center; gap: 8px; padding: 12px 4px 8px; position: sticky; top: 0; z-index: 10; background: var(--bg-page); }
         .category-icon { font-size: 1rem; }
         .category-title { font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); }
-
-        /* ── DISH CARD ── */
         .dish-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; margin-bottom: 10px; overflow: hidden; box-shadow: var(--shadow-card); transition: border-color 0.2s; }
         .dish-card.has-quantity { border-color: var(--accent); }
         .dish-main { display: flex; align-items: center; gap: 10px; padding: 13px 12px; }
@@ -52,8 +46,6 @@
         .note-input { width: 100%; padding: 8px 11px; background: var(--note-bg); border: 1px solid var(--note-border); border-radius: 8px; font-family: 'DM Sans', sans-serif; font-size: 0.82rem; color: var(--text-primary); outline: none; resize: none; min-height: 60px; transition: border-color 0.2s; }
         .note-input::placeholder { color: var(--text-muted); font-weight: 300; }
         .note-input:focus { border-color: var(--border-focus); }
-
-        /* ── FABs ── */
         .fab-container { position: fixed; bottom: 20px; right: 16px; display: flex; flex-direction: column; gap: 10px; z-index: 30; align-items: flex-end; }
         .fab { display: flex; align-items: center; gap: 8px; padding: 13px 18px; border-radius: 50px; border: none; cursor: pointer; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; box-shadow: var(--shadow-fab); transition: transform 0.15s, box-shadow 0.15s; white-space: nowrap; }
         .fab:hover { transform: translateY(-2px); }
@@ -64,8 +56,6 @@
         .fab-cancel { background: var(--bg-card); color: var(--danger); border: 1.5px solid var(--danger-border); box-shadow: var(--shadow-card); }
         .fab-cancel:hover { background: var(--danger-subtle); }
         .fab-badge { background: rgba(255,255,255,0.22); color: #fff; font-size: 0.7rem; font-weight: 700; padding: 1px 7px; border-radius: 20px; font-family: 'IBM Plex Mono', monospace; }
-
-        /* ── REVIEW MODAL ── */
         #modal-overlay { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 100; align-items: flex-end; justify-content: center; }
         #modal-overlay.open { display: flex; }
         #modal { background: var(--bg-card); border-radius: 20px 20px 0 0; width: 100%; max-width: 540px; max-height: 88vh; overflow-y: auto; box-shadow: var(--shadow-modal); animation: sheet-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
@@ -96,8 +86,6 @@
         .modal-btn-primary:hover { background: var(--accent-hover); }
         .modal-btn-secondary { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--border); }
         .modal-btn-secondary:hover { background: var(--border); }
-
-        /* ── CANCEL MODAL ── */
         #cancel-overlay { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 110; align-items: center; justify-content: center; padding: 20px; }
         #cancel-overlay.open { display: flex; }
         #cancel-modal { background: var(--bg-card); border-radius: 16px; padding: 24px; width: 100%; max-width: 300px; box-shadow: var(--shadow-modal); animation: fade-in 0.2s ease both; }
@@ -106,10 +94,7 @@
         .cancel-title { font-size: 0.95rem; font-weight: 700; color: var(--text-primary); text-align: center; margin-bottom: 8px; }
         .cancel-desc { font-size: 0.82rem; color: var(--text-secondary); text-align: center; line-height: 1.5; margin-bottom: 20px; }
         .cancel-actions { display: flex; gap: 10px; }
-
-        /* Toast já vem do shared.css, mas ajustamos a posição para não colidir com FABs */
         #toast-container { bottom: 100px; }
-
         @media (max-width: 600px) { #sidebar { display: none; } }
     </style>
 </head>
@@ -219,7 +204,7 @@
         <div class="modal-body" id="modal-body"></div>
         <div class="modal-actions">
             <button class="modal-btn modal-btn-secondary" onclick="closeReviewModal()">Voltar</button>
-            <button class="modal-btn modal-btn-primary" onclick="confirmOrder()">Confirmar pedido</button>
+            <button class="modal-btn modal-btn-primary" id="btn-confirm-order" onclick="confirmOrder()">Confirmar pedido</button>
         </div>
     </div>
 </div>
@@ -241,42 +226,57 @@
 
 <script src="../scripts/shared.js" defer></script>
 
-<script>     
-    // ── CARDÁPIO ──
-    const MENU = [
-        { id: 'entradas', label: 'Entradas', icon: '🥗', items: [
-            { id: 1, name: 'Bruschetta ao tomate',  price: 22.90, description: 'Fatias de pão italiano grelhado com tomate fresco, manjericão e azeite extra virgem.' },
-            { id: 2, name: 'Carpaccio de carne',    price: 38.50, description: 'Finas fatias de filé mignon com alcaparras, parmesão e molho mostarda-mel.' },
-            { id: 3, name: 'Caldo verde',            price: 18.00, description: 'Sopa tradicional portuguesa com couve, linguiça calabresa e azeite.' },
-        ]},
-        { id: 'principais', label: 'Pratos Principais', icon: '🍽️', items: [
-            { id: 4, name: 'Risoto de camarão',     price: 78.00, description: 'Arroz arbóreo cremoso com camarões frescos, limão-siciliano e raspas de limão.' },
-            { id: 5, name: 'Frango grelhado',        price: 52.00, description: 'Peito de frango temperado com ervas finas, acompanha arroz e salada.' },
-            { id: 6, name: 'Filé ao molho madeira',  price: 89.90, description: 'Filé mignon grelhado ao ponto, coberto com molho madeira e cogumelos frescos.' },
-            { id: 7, name: 'Massa ao pesto',         price: 44.00, description: 'Tagliatelle ao molho pesto de manjericão com pinoli e parmesão ralado na hora.' },
-            { id: 8, name: 'Salmão grelhado',        price: 82.00, description: 'Filé de salmão com crosta de ervas, acompanha purê de batata baroa e legumes.' },
-        ]},
-        { id: 'sobremesas', label: 'Sobremesas', icon: '🍮', items: [
-            { id: 9,  name: 'Tiramisù',     price: 28.00, description: 'Clássico italiano com camadas de biscoito champanhe, mascarpone e cacau em pó.' },
-            { id: 10, name: 'Petit gâteau', price: 32.00, description: 'Bolinho de chocolate com centro cremoso quente, servido com sorvete de baunilha.' },
-            { id: 11, name: 'Panna cotta',  price: 24.00, description: 'Sobremesa italiana suave com calda de frutas vermelhas frescas.' },
-        ]},
-        { id: 'bebidas', label: 'Bebidas', icon: '🥤', items: [
-            { id: 12, name: 'Água mineral',   price:  7.00, description: 'Água mineral sem gás ou com gás. 500ml.' },
-            { id: 13, name: 'Suco natural',   price: 16.00, description: 'Sucos: laranja, limão, maracujá, abacaxi. Natural ou com gelo.' },
-            { id: 14, name: 'Refrigerante',   price: 10.00, description: 'Coca-Cola, Guaraná, Sprite, Fanta Laranja. Lata 350ml.' },
-            { id: 15, name: 'Limonada suíça', price: 19.00, description: 'Limonada com leite condensado e creme de leite. 500ml.' },
-            { id: 16, name: 'Espresso',       price: 10.00, description: 'Café espresso curto ou longo, grão arábica torrado na casa.' },
-        ]},
-    ];
-
-    const selection = {};
-    const params = new URLSearchParams(window.location.search);
+<script>
+    const params  = new URLSearchParams(window.location.search);
     const tableId = params.get('table') || '?';
+
+    // Cardápio — buscado do banco
+    let MENU = [];
+    const selection = {};
+
+    // ── BUSCA PRATOS DO BANCO ──
+    async function fetchMenu() {
+        try {
+            const res = await fetch('/api/pratos');
+            if (!res.ok) throw new Error();
+            const pratos = await res.json();
+
+            // Agrupa por categoria (usando campo tempo como proxy — se não tiver categoria no schema,
+            // usamos um agrupamento genérico)
+            const grupos = {};
+            pratos.forEach(p => {
+                const cat = p.categoria || 'Pratos';
+                if (!grupos[cat]) grupos[cat] = [];
+                grupos[cat].push({
+                    id:          p.prato_id,
+                    name:        p.nome,
+                    price:       Number(p.preco),
+                    description: p.nome,
+                    prato_id:    p.prato_id
+                });
+            });
+
+            MENU = Object.entries(grupos).map(([label, items], i) => ({
+                id:    'cat-' + i,
+                label,
+                icon:  '🍽️',
+                items
+            }));
+        } catch (_) {
+            // fallback vazio
+            MENU = [];
+        }
+        renderMenu();
+        renderSidebarCategories();
+    }
 
     function renderMenu() {
         const content = document.getElementById('content');
         content.innerHTML = '';
+        if (MENU.length === 0) {
+            content.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">Nenhum prato cadastrado.</div>';
+            return;
+        }
         MENU.forEach(cat => {
             const section = document.createElement('section');
             section.className = 'category-section';
@@ -298,7 +298,7 @@
                     <div class="dish-price">R$ ${dish.price.toFixed(2).replace('.',',')}</div>
                 </div>
                 <div class="note-badge" title="Tem anotação"></div>
-                <button class="dish-expand-btn" onclick="togglePanel(${dish.id})" aria-label="Detalhes e anotação">
+                <button class="dish-expand-btn" onclick="togglePanel(${dish.id})" aria-label="Detalhes">
                     <svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg>
                 </button>
                 <div class="dish-qty">
@@ -372,7 +372,7 @@
         const items = getSelectedItems();
         if (!items.length) { showToast('Nenhum item selecionado.'); return; }
         const total = items.reduce((s, i) => s + i.price * i.qty, 0);
-        document.getElementById('modal-subtitle').textContent = `Mesa ${tableId} · ${items.length} item${items.length > 1 ? 's' : ''} · ${fmtPrice(total)}`;
+        document.getElementById('modal-subtitle').textContent = `Mesa ${tableId} · ${items.length} item${items.length > 1 ? 'ns' : ''} · ${fmtPrice(total)}`;
         document.getElementById('modal-body').innerHTML = items.map(i => `
             <div class="review-item">
                 <div class="review-item-left">
@@ -397,16 +397,31 @@
         document.body.style.overflow = '';
     }
 
-    function confirmOrder() {
+    // ── CONFIRMAR PEDIDO — salva no banco ──
+    async function confirmOrder() {
         const items = getSelectedItems();
-        const total = items.reduce((s, i) => s + i.price * i.qty, 0);
-        const key = `t4u-orders-table-${tableId}`;
-        const history = JSON.parse(sessionStorage.getItem(key) || '[]');
-        history.push({ timestamp: Date.now(), items, total });
-        sessionStorage.setItem(key, JSON.stringify(history));
-        closeReviewModal();
-        showToast('✓ Pedido enviado para a cozinha!');
-        setTimeout(() => { window.location.href = 'waiter.html'; }, 1200);
+        if (!items.length) return;
+
+        const btn = document.getElementById('btn-confirm-order');
+        btn.disabled = true;
+        btn.textContent = 'Enviando...';
+
+        try {
+            const itens = items.map(i => ({ prato_id: i.prato_id || i.id, quantidade: i.qty }));
+            const res = await fetch(`/api/mesas/${tableId}/pedidos`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ itens })
+            });
+            if (!res.ok) throw new Error();
+            closeReviewModal();
+            showToast('✓ Pedido enviado para a cozinha!');
+            setTimeout(() => { window.location.href = 'waiter.html'; }, 1200);
+        } catch (err) {
+            showToast('Erro ao enviar pedido. Tente novamente.');
+            btn.disabled = false;
+            btn.textContent = 'Confirmar pedido';
+        }
     }
 
     function handleCancel() {
@@ -425,17 +440,11 @@
 
     document.getElementById('modal-overlay').addEventListener('click', function(e) { if (e.target === this) closeReviewModal(); });
     document.getElementById('cancel-overlay').addEventListener('click', function(e) { if (e.target === this) closeCancelModal(); });
-    
-    // Garantir que o DOM e o shared.js estejam prontos
-    document.addEventListener('DOMContentLoaded', function() {
-        const params = new URLSearchParams(window.location.search);
-        const tableId = params.get('table') || '?';
-        document.getElementById('topbar-title').textContent = `Pedido — Mesa ${tableId}`;
 
-        renderMenu();
-        renderSidebarCategories();
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById('topbar-title').textContent = `Pedido — Mesa ${tableId}`;
+        fetchMenu();
     });
 </script>
 </body>
 </html>
-```

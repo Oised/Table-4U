@@ -23,7 +23,9 @@ model atendimento {
   checkin        DateTime    @db.Timestamp(6)
   checkout       DateTime?   @db.Timestamp(6)
   funcionario_id Int
+  mesa_id        Int?
   funcionario    funcionario @relation(fields: [funcionario_id], references: [funcionario_id], onDelete: SetNull, onUpdate: NoAction)
+  mesa           mesa?       @relation(fields: [mesa_id], references: [mesa_id], onDelete: SetNull, onUpdate: NoAction)
   pagamento      pagamento[]
   pedido         pedido[]
 }
@@ -79,4 +81,11 @@ model tempo {
   prato_id      Int   @id
   tempo_preparo Int
   prato         prato @relation(fields: [prato_id], references: [prato_id], onDelete: Cascade, onUpdate: NoAction)
+}
+
+model mesa {
+  mesa_id     Int           @id @default(autoincrement())
+  capacidade  Int
+  status      String        @default("available") // available | occupied | unavailable
+  atendimento atendimento[]
 }
