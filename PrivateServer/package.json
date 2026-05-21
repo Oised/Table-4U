@@ -5,7 +5,8 @@
   "scripts": {
     "start": "node server.js",
     "generate": "npx prisma generate && npx prisma generate --schema=prisma/schema_public.prisma",
-    "postinstall": "npm run generate"
+    "postinstall": "npm run generate",
+    "rehash-senhas": "node src/scripts/rehash-senhas.js"
   },
   "keywords": [],
   "author": "",

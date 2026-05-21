@@ -9,6 +9,9 @@ const prismaPublic = new PrismaClientPublic();
 const express = require('express');
 const app = express();
 const path = require('path');
+const bcrypt = require('bcrypt');
+
+const SALT_ROUNDS = 10;
 
 app.use(express.static(path.join(__dirname, 'src')));
 app.use(express.json());
@@ -39,7 +42,50 @@ app.get('/api/todas-reservas', async (req, res) => {
     }
 });
 
-// Funcionários do Banco Privado
+// Login de funcionário (autenticação real com bcrypt)
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ error: 'E-mail e senha são obrigatórios.' });
+        }
+
+        // Tenta primeiro na tabela funcionario
+        let user = await prisma.funcionario.findUnique({ where: { email } });
+        let role = null;
+        let label = null;
+
+        if (user) {
+            role = user.cargo ?? 'waiter'; // fallback se não houver cargo definido
+            label = user.nome;
+        } else {
+            // Tenta na tabela adm
+            const adm = await prisma.adm.findUnique({ where: { email } });
+            if (adm) {
+                user = adm;
+                role = 'admin';
+                label = adm.nome;
+            }
+        }
+
+        if (!user) {
+            return res.status(401).json({ error: 'E-mail não reconhecido.' });
+        }
+
+        const senhaValida = await bcrypt.compare(password, user.senha);
+        if (!senhaValida) {
+            return res.status(401).json({ error: 'Senha incorreta.' });
+        }
+
+        res.json({ email: user.email, role, label });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro interno ao autenticar.' });
+    }
+});
+
+
 app.get('/api/funcionarios', async (req, res) => {
     try {
         const funcionarios = await prisma.funcionario.findMany();
@@ -57,16 +103,18 @@ app.post('/api/funcionarios', async (req, res) => {
         // Garante que exista pelo menos um admin
         let admin = await prisma.adm.findFirst();
         if (!admin) {
+            const senhaAdmHash = await bcrypt.hash('123', SALT_ROUNDS);
             admin = await prisma.adm.create({
-                data: { nome: 'Admin Default', email: 'admin@table4u.com', senha: '123' }
+                data: { nome: 'Admin Default', email: 'admin@table4u.com', senha: senhaAdmHash }
             });
         }
 
+        const senhaHash = await bcrypt.hash('123', SALT_ROUNDS);
         const func = await prisma.funcionario.create({
             data: {
                 nome,
                 email,
-                senha: '123', // Senha padrão
+                senha: senhaHash, // Senha padrão hasheada
                 adm_id: admin.adm_id
             }
         });
