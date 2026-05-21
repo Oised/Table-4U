@@ -810,28 +810,19 @@
 
     // ── FUNCIONÁRIOS (lógica original) ──
     const cargoLabels = { admin: { label: 'Administrador', cls: 'admin' }, garcom: { label: 'Garçom', cls: 'garcom' }, cozinha: { label: 'Cozinha', cls: 'cozinha' }, recepcao: { label: 'Recepção', cls: 'recepcao' } };
-    let defaultFuncs = [
-        { id: 'mock_1', nome: 'Ana Ribeiro', email: 'ana@table4u.com', cargo: 'admin' },
-        { id: 'mock_2', nome: 'Carlos Mendes', email: 'carlos@table4u.com', cargo: 'garcom' },
-        { id: 'mock_3', nome: 'Fernanda Lima', email: 'fernanda@table4u.com', cargo: 'garcom' },
-        { id: 'mock_4', nome: 'Rafael Souza', email: 'rafael@table4u.com', cargo: 'cozinha' },
-        { id: 'mock_5', nome: 'Juliana Costa', email: 'juliana@table4u.com', cargo: 'recepcao' },
-    ];
-    let funcionarios = [...defaultFuncs];
-    let nextId = 1, pendingRemoveId = null, editingId = null;
+    let funcionarios = [];
+    let pendingRemoveId = null, editingId = null;
 
     async function fetchFuncionarios() {
         try {
             const res = await fetch('/api/funcionarios');
             const dbFuncs = await res.json();
-            const mapped = dbFuncs.map(f => ({
+            funcionarios = dbFuncs.map(f => ({
                 id: f.funcionario_id,
                 nome: f.nome,
                 email: f.email,
-                cargo: 'garcom'
+                cargo: f.cargo || 'garcom'   // usa o cargo real, com fallback
             }));
-            
-            funcionarios = [...defaultFuncs, ...mapped];
             renderFuncionarios();
         } catch (err) {
             console.error('Erro ao buscar funcionários do banco:', err);
@@ -905,36 +896,28 @@
     
     function openRemoveModal(id){ let f=funcionarios.find(x=>x.id===id); if(!f)return; pendingRemoveId=id; document.getElementById('remove-confirm-text').innerHTML=`Tem certeza que deseja remover <strong>${escHtml(f.nome)}</strong> (${escHtml(f.email)})? O acesso ao sistema será revogado imediatamente.`; document.getElementById('remove-func-motivo').value=''; document.getElementById('remove-func-motivo-error').classList.remove('visible'); document.getElementById('remove-func-motivo').classList.remove('error'); openModal('modal-remove'); }
     
-    async function confirmRemove(){ 
-        let f=funcionarios.find(x=>x.id===pendingRemoveId); 
-        if(!f)return; 
-        let motivo=document.getElementById('remove-func-motivo').value.trim(); 
-        if(!motivo){ document.getElementById('remove-func-motivo-error').classList.add('visible'); document.getElementById('remove-func-motivo').classList.add('error'); return; } 
-        
-        let nome=f.nome, email=f.email, cargo=f.cargo; 
-        
-        if (typeof pendingRemoveId === 'number') {
-            // It's a DB employee
-            try {
-                const req = await fetch('/api/funcionarios/' + pendingRemoveId, { method: 'DELETE' });
-                if(req.ok) {
-                    showToast(`${nome} removido do sistema (Banco atualizado)`);
-                    writeAuditFunc({funcionario:nome,email,cargo,acao:'remover',motivo,usuario:'Admin'}); 
-                    closeModal('modal-remove'); 
-                    fetchFuncionarios();
-                } else {
-                    showToast(`❌ Erro ao remover do banco`);
-                }
-            } catch(e) { console.error(e); }
-        } else {
-            // It's a mock employee
-            funcionarios = funcionarios.filter(x=>x.id!==pendingRemoveId); 
-            writeAuditFunc({funcionario:nome,email,cargo,acao:'remover',motivo,usuario:'Admin'}); 
-            closeModal('modal-remove'); 
-            renderFuncionarios(); 
-            showToast(`${nome} removido do sistema (Mock)`); 
+    async function confirmRemove() {
+        let f = funcionarios.find(x => x.id === pendingRemoveId);
+        if (!f) return;
+        let motivo = document.getElementById('remove-func-motivo').value.trim();
+        if (!motivo) {
+            document.getElementById('remove-func-motivo-error').classList.add('visible');
+            document.getElementById('remove-func-motivo').classList.add('error');
+            return;
         }
-        pendingRemoveId=null; 
+        let nome = f.nome, email = f.email, cargo = f.cargo;
+        try {
+            const req = await fetch('/api/funcionarios/' + pendingRemoveId, { method: 'DELETE' });
+            if (req.ok) {
+                showToast(`${nome} removido do sistema`);
+                writeAuditFunc({ funcionario: nome, email, cargo, acao: 'remover', motivo, usuario: 'Admin' });
+                closeModal('modal-remove');
+                fetchFuncionarios();
+            } else {
+                showToast(`❌ Erro ao remover do banco`);
+            }
+        } catch (e) { console.error(e); }
+        pendingRemoveId = null;
     }
     function openModal(id){ document.getElementById(id).classList.add('open'); }
     function closeModal(id){ document.getElementById(id).classList.remove('open'); }
