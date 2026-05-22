@@ -63,6 +63,10 @@ model prato {
   nome          String          @db.VarChar(100)
   preco         Decimal         @db.Decimal(10, 2)
   custo         Decimal         @db.Decimal(10, 2)
+  categoria     String          @default("Pratos") @db.VarChar(50)
+  descricao     String?         @db.VarChar(300)
+  emoji         String?         @db.VarChar(10)
+  disponivel    Boolean         @default(true)
   pedido        pedido[]
   pratos_do_dia pratos_do_dia[]
   tempo         tempo?
@@ -86,6 +90,6 @@ model tempo {
 model mesa {
   mesa_id     Int           @id @default(autoincrement())
   capacidade  Int
-  status      String        @default("available") // available | occupied | unavailable
+  status      String        @default("available")
   atendimento atendimento[]
 }
