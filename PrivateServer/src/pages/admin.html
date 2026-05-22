@@ -743,7 +743,7 @@
 <!-- MODAIS (FUNCIONÁRIOS) -->
 <div class="fmodal-overlay" id="modal-add" onclick="closeModalOnBg(event,'modal-add')">
     <div class="fmodal"><div class="fmodal-header"><div class="fmodal-icon" id="add-modal-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div><div><div class="fmodal-title" id="add-modal-title">Adicionar funcionário</div><div class="fmodal-subtitle" id="add-modal-subtitle">Preencha os dados do novo membro</div></div><button class="fmodal-close" onclick="closeModal('modal-add')" aria-label="Fechar"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-        <div class="fmodal-body"><input type="hidden" id="edit-id"><div class="fmodal-field"><label class="fmodal-label" for="input-nome">Nome completo</label><input class="fmodal-input" id="input-nome" type="text" placeholder="Ex: João da Silva" autocomplete="off"><span class="fmodal-error" id="error-nome">Informe o nome do funcionário.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-email">E-mail (login)</label><input class="fmodal-input" id="input-email" type="email" placeholder="Ex: joao@restaurante.com" autocomplete="off"><span class="fmodal-error" id="error-email">Informe um e-mail válido.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-cargo">Cargo</label><select class="fmodal-select" id="input-cargo"><option value="garcom">Garçom</option><option value="cozinha">Cozinha</option><option value="recepcao">Recepção</option><option value="admin">Administrador</option></select></div><div class="fmodal-field" id="edit-motivo-field" style="display:none"><label class="fmodal-label" for="input-edit-motivo">Motivo da edição <span style="color:var(--status-unavailable)">*</span></label><textarea class="tmodal-motivo-input" id="input-edit-motivo" placeholder="Ex: Promoção de cargo, correção de dados." maxlength="200" rows="3"></textarea><span class="tmodal-motivo-error" id="error-edit-motivo">Informe o motivo antes de salvar.</span></div></div>
+        <div class="fmodal-body"><input type="hidden" id="edit-id"><div class="fmodal-field"><label class="fmodal-label" for="input-nome">Nome completo</label><input class="fmodal-input" id="input-nome" type="text" placeholder="Ex: João da Silva" autocomplete="off"><span class="fmodal-error" id="error-nome">Informe o nome do funcionário.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-email">E-mail (login)</label><input class="fmodal-input" id="input-email" type="email" placeholder="Ex: joao@restaurante.com" autocomplete="off"><span class="fmodal-error" id="error-email">Informe um e-mail válido.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-cargo">Cargo</label><select class="fmodal-select" id="input-cargo"><option value="garcom">Garçom</option><option value="cozinha">Cozinha</option><option value="recepcao">Recepção</option></select></div><div class="fmodal-field" id="edit-motivo-field" style="display:none"><label class="fmodal-label" for="input-edit-motivo">Motivo da edição <span style="color:var(--status-unavailable)">*</span></label><textarea class="tmodal-motivo-input" id="input-edit-motivo" placeholder="Ex: Promoção de cargo, correção de dados." maxlength="200" rows="3"></textarea><span class="tmodal-motivo-error" id="error-edit-motivo">Informe o motivo antes de salvar.</span></div></div>
         <div class="fmodal-actions"><button class="fmodal-btn secondary" onclick="closeModal('modal-add')">Cancelar</button><button class="fmodal-btn primary" id="add-modal-confirm-btn" onclick="confirmAddEdit()">Adicionar</button></div>
     </div>
 </div>
@@ -866,19 +866,33 @@
                 if(f.email!==email) diff.push({campo:campoLabels.email,de:f.email,para:email}); 
                 if(f.cargo!==cargo) diff.push({campo:campoLabels.cargo,de:cargoPtBR(f.cargo),para:cargoPtBR(cargo)}); 
                 let motivo=document.getElementById('input-edit-motivo').value.trim(); 
-                f.nome=nome; f.email=email; f.cargo=cargo; 
-                writeAuditFunc({funcionario:nome,email,cargo,acao:'editar',motivo,diff,usuario:'Admin'}); 
-                showToast(`✓ ${nome} atualizado com sucesso`);
+                try {
+                    const req = await fetch('/api/funcionarios/' + editingId, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nome, email, cargo })
+                    });
+                    if(req.ok) {
+                        f.nome=nome; f.email=email; f.cargo=cargo; 
+                        writeAuditFunc({funcionario:nome,email,cargo,acao:'editar',motivo,diff,usuario:'Admin'}); 
+                        showToast(`✓ ${nome} atualizado com sucesso`);
+                        closeModal('modal-add'); 
+                        renderFuncionarios(); 
+                    } else {
+                        showToast(`❌ Erro ao atualizar funcionário`);
+                    }
+                } catch(e) {
+                    console.error(e);
+                    showToast(`❌ Erro ao atualizar funcionário`);
+                }
             } 
-            closeModal('modal-add'); 
-            renderFuncionarios(); 
         } else { 
             // Save to DB
             try {
                 const req = await fetch('/api/funcionarios', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, email })
+                    body: JSON.stringify({ nome, email, cargo })
                 });
                 if(req.ok) {
                     writeAuditFunc({funcionario:nome,email,cargo,acao:'adicionar',usuario:'Admin'}); 

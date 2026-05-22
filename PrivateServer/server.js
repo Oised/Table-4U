@@ -98,15 +98,20 @@ app.get('/api/funcionarios', async (req, res) => {
 
 app.post('/api/funcionarios', async (req, res) => {
     try {
-        const { nome, email } = req.body;
-        
-        // Garante que exista pelo menos um admin
-        let admin = await prisma.adm.findFirst();
+        const { nome, email, cargo } = req.body;
+
+        if (!nome || !email || !cargo) {
+            return res.status(400).json({ error: 'Nome, e-mail e cargo são obrigatórios.' });
+        }
+
+        const cargosPermitidos = ['garcom', 'cozinha', 'recepcao'];
+        if (!cargosPermitidos.includes(cargo)) {
+            return res.status(400).json({ error: 'Cargo inválido.' });
+        }
+
+        const admin = await prisma.adm.findFirst();
         if (!admin) {
-            const senhaAdmHash = await bcrypt.hash('123', SALT_ROUNDS);
-            admin = await prisma.adm.create({
-                data: { nome: 'Admin Default', email: 'admin@table4u.com', senha: senhaAdmHash }
-            });
+            return res.status(500).json({ error: 'Nenhum administrador encontrado no sistema.' });
         }
 
         const senhaHash = await bcrypt.hash('123', SALT_ROUNDS);
@@ -114,7 +119,8 @@ app.post('/api/funcionarios', async (req, res) => {
             data: {
                 nome,
                 email,
-                senha: senhaHash, // Senha padrão hasheada
+                cargo,
+                senha: senhaHash,
                 adm_id: admin.adm_id
             }
         });
@@ -122,6 +128,31 @@ app.post('/api/funcionarios', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Erro ao criar funcionário' });
+    }
+});
+
+app.put('/api/funcionarios/:id', async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const { nome, email, cargo } = req.body;
+
+        if (!nome || !email || !cargo) {
+            return res.status(400).json({ error: 'Nome, e-mail e cargo são obrigatórios.' });
+        }
+
+        const cargosPermitidos = ['garcom', 'cozinha', 'recepcao'];
+        if (!cargosPermitidos.includes(cargo)) {
+            return res.status(400).json({ error: 'Cargo inválido.' });
+        }
+
+        const func = await prisma.funcionario.update({
+            where: { funcionario_id: id },
+            data: { nome, email, cargo }
+        });
+        res.json(func);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao atualizar funcionário' });
     }
 });
 

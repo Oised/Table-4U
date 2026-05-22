@@ -33,6 +33,7 @@ model funcionario {
   nome           String        @db.VarChar(100)
   email          String        @unique @db.VarChar(100)
   senha          String
+  cargo          String?       @db.VarChar(50)
   adm_id         Int
   atendimento    atendimento[]
   adm            adm           @relation(fields: [adm_id], references: [adm_id], onDelete: Cascade, onUpdate: NoAction)
