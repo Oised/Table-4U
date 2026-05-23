@@ -193,6 +193,9 @@
         .kprato-hist-btn:hover { color: var(--text-primary); }
         .kprato-hist-btn svg { width: 10px; height: 10px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
 
+        /* ── SIDEBAR UTILS ── */
+        .oculto { visibility: hidden; }
+
         /* finalização do pedido */
         @keyframes card-out { from { opacity:1; transform:scale(1); max-height:600px; } to { opacity:0; transform:scale(0.97); max-height:0; margin:0; padding:0; } }
         .pedido-card.removing { animation: card-out 0.35s cubic-bezier(0.4,0,1,1) both; pointer-events: none; }
@@ -230,6 +233,15 @@
         </button>
     </div>
     <div class="sidebar-footer">
+        <button id="btn-voltar-admin" class="nav-item oculto"
+                data-tooltip="Sair do modo" onclick="window.location.href='admin.html'">
+            <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span class="nav-label">Sair do Modo Cozinha</span>
+        </button>
         <button class="nav-item logout" onclick="logout()" data-tooltip="Sair">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span class="nav-label">Sair</span>
@@ -601,6 +613,11 @@
 
     // Inicialização
     document.addEventListener('DOMContentLoaded', () => {
+        T4U.requireAuth(['cozinha','admin']);
+        const user = T4U.getUser();
+        if (user.role === 'admin') {
+            document.getElementById('btn-voltar-admin').classList.remove('oculto');
+        }
         renderPedidos();
         renderHistorico();
         renderKMenu();

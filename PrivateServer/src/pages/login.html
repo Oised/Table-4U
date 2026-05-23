@@ -445,16 +445,12 @@
         const ROLE_DESTINATIONS = {
             admin:     'admin.html',
             waiter:    'waiter.html',
+            garcom:    'waiter.html',
+            cozinha:   'kitchen.html',
+            recepcao:  'reception.html',
             kitchen:   'kitchen.html',
             reception: 'reception.html',
         };
-
-        const USERS = [
-            { email: 'admin@rest.com',    password: 'admin123',    role: 'admin',     label: 'Administrador' },
-            { email: 'garcom@rest.com',   password: 'garcom123',   role: 'waiter',    label: 'Garçom'        },
-            { email: 'cozinha@rest.com',  password: 'cozinha123',  role: 'kitchen',   label: 'Cozinha'       },
-            { email: 'recepcao@rest.com', password: 'recepcao123', role: 'reception', label: 'Recepção'      },
-        ];
 
         function showError(msg) {
             const el = document.getElementById('login-error');
@@ -495,27 +491,54 @@
                 return;
             }
 
-            const user = USERS.find(u => u.email === email && u.password === password);
-            if (!user) {
-                const emailExists = USERS.some(u => u.email === email);
-                showError(emailExists ? 'Senha incorreta. Verifique e tente novamente.' : 'E-mail não reconhecido. Contate o administrador.');
-                document.getElementById('password-input').value = '';
-                document.getElementById('password-input').focus();
-                return;
-            }
-
-            hideError();
             const btn = document.getElementById('login-submit-btn');
-            btn.textContent = 'Redirecionando...';
+            btn.textContent = 'Verificando...';
             btn.disabled = true;
             btn.style.opacity = '0.7';
 
-            T4U.setUser({ email: user.email, role: user.role, label: user.label });
-            T4U.showToast(`✓ Bem-vindo(a)! Acessando como ${user.label}.`);
+            try {
+                const resp = await fetch('/api/login', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
 
-            setTimeout(() => {
-                window.location.href = ROLE_DESTINATIONS[user.role];
-            }, 1400);
+                const data = await resp.json();
+
+                if (!resp.ok) {
+                    showError(data.error || 'Credenciais inválidas. Tente novamente.');
+                    document.getElementById('password-input').value = '';
+                    document.getElementById('password-input').focus();
+                    btn.textContent = 'Entrar';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    return;
+                }
+
+                if (!ROLE_DESTINATIONS[data.role]) {
+                    showError('Cargo não reconhecido. Contate o administrador.');
+                    btn.textContent = 'Entrar';
+                    btn.disabled = false;
+                    btn.style.opacity = '1';
+                    return;
+                }
+
+                hideError();
+                btn.textContent = 'Redirecionando...';
+
+                T4U.setUser({ email: data.email, role: data.role, label: data.label });
+                T4U.showToast(`✓ Bem-vindo(a)! Acessando como ${data.label}.`);
+
+                setTimeout(() => {
+                    window.location.href = ROLE_DESTINATIONS[data.role];
+                }, 1400);
+
+            } catch (err) {
+                showError('Erro de conexão. Verifique sua rede e tente novamente.');
+                btn.textContent = 'Entrar';
+                btn.disabled = false;
+                btn.style.opacity = '1';
+            }
         });
 
         // Tab rápido

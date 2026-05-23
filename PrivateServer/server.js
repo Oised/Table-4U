@@ -9,6 +9,9 @@ const prismaPublic = new PrismaClientPublic();
 const express = require('express');
 const app = express();
 const path = require('path');
+const bcrypt = require('bcrypt');
+
+const SALT_ROUNDS = 10;
 
 app.use(express.static(path.join(__dirname, 'src')));
 app.use(express.json());
@@ -39,7 +42,50 @@ app.get('/api/todas-reservas', async (req, res) => {
     }
 });
 
-// Funcionários do Banco Privado
+// Login de funcionário (autenticação real com bcrypt)
+app.post('/api/login', async (req, res) => {
+    try {
+        const { email, password } = req.body;
+
+        if (!email || !password) {
+            return res.status(400).json({ error: 'E-mail e senha são obrigatórios.' });
+        }
+
+        // Tenta primeiro na tabela funcionario
+        let user = await prisma.funcionario.findUnique({ where: { email } });
+        let role = null;
+        let label = null;
+
+        if (user) {
+            role = user.cargo ?? 'waiter'; // fallback se não houver cargo definido
+            label = user.nome;
+        } else {
+            // Tenta na tabela adm
+            const adm = await prisma.adm.findUnique({ where: { email } });
+            if (adm) {
+                user = adm;
+                role = 'admin';
+                label = adm.nome;
+            }
+        }
+
+        if (!user) {
+            return res.status(401).json({ error: 'E-mail não reconhecido.' });
+        }
+
+        const senhaValida = await bcrypt.compare(password, user.senha);
+        if (!senhaValida) {
+            return res.status(401).json({ error: 'Senha incorreta.' });
+        }
+
+        res.json({ email: user.email, role, label });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro interno ao autenticar.' });
+    }
+});
+
+
 app.get('/api/funcionarios', async (req, res) => {
     try {
         const funcionarios = await prisma.funcionario.findMany();
@@ -52,21 +98,29 @@ app.get('/api/funcionarios', async (req, res) => {
 
 app.post('/api/funcionarios', async (req, res) => {
     try {
-        const { nome, email } = req.body;
-        
-        // Garante que exista pelo menos um admin
-        let admin = await prisma.adm.findFirst();
-        if (!admin) {
-            admin = await prisma.adm.create({
-                data: { nome: 'Admin Default', email: 'admin@table4u.com', senha: '123' }
-            });
+        const { nome, email, cargo } = req.body;
+
+        if (!nome || !email || !cargo) {
+            return res.status(400).json({ error: 'Nome, e-mail e cargo são obrigatórios.' });
         }
 
+        const cargosPermitidos = ['garcom', 'cozinha', 'recepcao'];
+        if (!cargosPermitidos.includes(cargo)) {
+            return res.status(400).json({ error: 'Cargo inválido.' });
+        }
+
+        const admin = await prisma.adm.findFirst();
+        if (!admin) {
+            return res.status(500).json({ error: 'Nenhum administrador encontrado no sistema.' });
+        }
+
+        const senhaHash = await bcrypt.hash('123', SALT_ROUNDS);
         const func = await prisma.funcionario.create({
             data: {
                 nome,
                 email,
-                senha: '123', // Senha padrão
+                cargo,
+                senha: senhaHash,
                 adm_id: admin.adm_id
             }
         });
@@ -74,6 +128,31 @@ app.post('/api/funcionarios', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Erro ao criar funcionário' });
+    }
+});
+
+app.put('/api/funcionarios/:id', async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const { nome, email, cargo } = req.body;
+
+        if (!nome || !email || !cargo) {
+            return res.status(400).json({ error: 'Nome, e-mail e cargo são obrigatórios.' });
+        }
+
+        const cargosPermitidos = ['garcom', 'cozinha', 'recepcao'];
+        if (!cargosPermitidos.includes(cargo)) {
+            return res.status(400).json({ error: 'Cargo inválido.' });
+        }
+
+        const func = await prisma.funcionario.update({
+            where: { funcionario_id: id },
+            data: { nome, email, cargo }
+        });
+        res.json(func);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao atualizar funcionário' });
     }
 });
 

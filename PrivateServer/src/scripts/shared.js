@@ -257,15 +257,17 @@ window.T4U = (function () {
      *
      * @param {string} [requiredRole]  Se informado, verifica também o cargo.
      */
-    function requireAuth(requiredRole) {
+    function requireAuth(allowedRoles) {
         const user = getUser();
         if (!user.email || user.email === 'usuario@rest.com') {
             window.location.href = 'login.html';
             return;
         }
-        if (requiredRole && user.role !== requiredRole) {
-            showToast('Acesso não autorizado.');
-            setTimeout(() => { window.location.href = 'login.html'; }, 1200);
+        if (allowedRoles) {
+            const roles = Array.isArray(allowedRoles) ? allowedRoles : [allowedRoles];
+            if (!roles.includes(user.role)) {
+                window.location.href = 'login.html';
+            }
         }
     }
 

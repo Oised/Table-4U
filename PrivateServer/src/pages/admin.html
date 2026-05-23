@@ -455,20 +455,17 @@
         </button>
 
         <div class="nav-section-label">Modos</div>
-        <button class="nav-item disabled" data-tooltip="Modo Garçom" onclick="showToast('Em desenvolvimento')">
+        <button class="nav-item" data-tooltip="Modo Garçom" onclick="window.location.href='waiter.html'">
             <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
             <span class="nav-label">Modo Garçom</span>
-            <span class="nav-badge">Em breve</span>
         </button>
-        <button class="nav-item disabled" data-tooltip="Modo Cozinha" onclick="showToast('Em desenvolvimento')">
+        <button class="nav-item" data-tooltip="Modo Cozinha" onclick="window.location.href='kitchen.html'">
             <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 0-2 2h-3"/></svg>
             <span class="nav-label">Modo Cozinha</span>
-            <span class="nav-badge">Em breve</span>
         </button>
-        <button class="nav-item disabled" data-tooltip="Modo Recepção" onclick="showToast('Em desenvolvimento')">
+        <button class="nav-item" data-tooltip="Modo Recepção" onclick="window.location.href='reception.html'">
             <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1 19.79 19.79 0 0 1 1.56 4.5 2 2 0 0 1 3.54 2.32h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l1.78-1.78a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
             <span class="nav-label">Modo Recepção</span>
-            <span class="nav-badge">Em breve</span>
         </button>
     </div>
     <div class="sidebar-footer">
@@ -743,7 +740,7 @@
 <!-- MODAIS (FUNCIONÁRIOS) -->
 <div class="fmodal-overlay" id="modal-add" onclick="closeModalOnBg(event,'modal-add')">
     <div class="fmodal"><div class="fmodal-header"><div class="fmodal-icon" id="add-modal-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div><div><div class="fmodal-title" id="add-modal-title">Adicionar funcionário</div><div class="fmodal-subtitle" id="add-modal-subtitle">Preencha os dados do novo membro</div></div><button class="fmodal-close" onclick="closeModal('modal-add')" aria-label="Fechar"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-        <div class="fmodal-body"><input type="hidden" id="edit-id"><div class="fmodal-field"><label class="fmodal-label" for="input-nome">Nome completo</label><input class="fmodal-input" id="input-nome" type="text" placeholder="Ex: João da Silva" autocomplete="off"><span class="fmodal-error" id="error-nome">Informe o nome do funcionário.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-email">E-mail (login)</label><input class="fmodal-input" id="input-email" type="email" placeholder="Ex: joao@restaurante.com" autocomplete="off"><span class="fmodal-error" id="error-email">Informe um e-mail válido.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-cargo">Cargo</label><select class="fmodal-select" id="input-cargo"><option value="garcom">Garçom</option><option value="cozinha">Cozinha</option><option value="recepcao">Recepção</option><option value="admin">Administrador</option></select></div><div class="fmodal-field" id="edit-motivo-field" style="display:none"><label class="fmodal-label" for="input-edit-motivo">Motivo da edição <span style="color:var(--status-unavailable)">*</span></label><textarea class="tmodal-motivo-input" id="input-edit-motivo" placeholder="Ex: Promoção de cargo, correção de dados." maxlength="200" rows="3"></textarea><span class="tmodal-motivo-error" id="error-edit-motivo">Informe o motivo antes de salvar.</span></div></div>
+        <div class="fmodal-body"><input type="hidden" id="edit-id"><div class="fmodal-field"><label class="fmodal-label" for="input-nome">Nome completo</label><input class="fmodal-input" id="input-nome" type="text" placeholder="Ex: João da Silva" autocomplete="off"><span class="fmodal-error" id="error-nome">Informe o nome do funcionário.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-email">E-mail (login)</label><input class="fmodal-input" id="input-email" type="email" placeholder="Ex: joao@restaurante.com" autocomplete="off"><span class="fmodal-error" id="error-email">Informe um e-mail válido.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-cargo">Cargo</label><select class="fmodal-select" id="input-cargo"><option value="garcom">Garçom</option><option value="cozinha">Cozinha</option><option value="recepcao">Recepção</option></select></div><div class="fmodal-field" id="edit-motivo-field" style="display:none"><label class="fmodal-label" for="input-edit-motivo">Motivo da edição <span style="color:var(--status-unavailable)">*</span></label><textarea class="tmodal-motivo-input" id="input-edit-motivo" placeholder="Ex: Promoção de cargo, correção de dados." maxlength="200" rows="3"></textarea><span class="tmodal-motivo-error" id="error-edit-motivo">Informe o motivo antes de salvar.</span></div></div>
         <div class="fmodal-actions"><button class="fmodal-btn secondary" onclick="closeModal('modal-add')">Cancelar</button><button class="fmodal-btn primary" id="add-modal-confirm-btn" onclick="confirmAddEdit()">Adicionar</button></div>
     </div>
 </div>
@@ -810,28 +807,19 @@
 
     // ── FUNCIONÁRIOS (lógica original) ──
     const cargoLabels = { admin: { label: 'Administrador', cls: 'admin' }, garcom: { label: 'Garçom', cls: 'garcom' }, cozinha: { label: 'Cozinha', cls: 'cozinha' }, recepcao: { label: 'Recepção', cls: 'recepcao' } };
-    let defaultFuncs = [
-        { id: 'mock_1', nome: 'Ana Ribeiro', email: 'ana@table4u.com', cargo: 'admin' },
-        { id: 'mock_2', nome: 'Carlos Mendes', email: 'carlos@table4u.com', cargo: 'garcom' },
-        { id: 'mock_3', nome: 'Fernanda Lima', email: 'fernanda@table4u.com', cargo: 'garcom' },
-        { id: 'mock_4', nome: 'Rafael Souza', email: 'rafael@table4u.com', cargo: 'cozinha' },
-        { id: 'mock_5', nome: 'Juliana Costa', email: 'juliana@table4u.com', cargo: 'recepcao' },
-    ];
-    let funcionarios = [...defaultFuncs];
-    let nextId = 1, pendingRemoveId = null, editingId = null;
+    let funcionarios = [];
+    let pendingRemoveId = null, editingId = null;
 
     async function fetchFuncionarios() {
         try {
             const res = await fetch('/api/funcionarios');
             const dbFuncs = await res.json();
-            const mapped = dbFuncs.map(f => ({
+            funcionarios = dbFuncs.map(f => ({
                 id: f.funcionario_id,
                 nome: f.nome,
                 email: f.email,
-                cargo: 'garcom'
+                cargo: f.cargo || 'garcom'   // usa o cargo real, com fallback
             }));
-            
-            funcionarios = [...defaultFuncs, ...mapped];
             renderFuncionarios();
         } catch (err) {
             console.error('Erro ao buscar funcionários do banco:', err);
@@ -875,19 +863,33 @@
                 if(f.email!==email) diff.push({campo:campoLabels.email,de:f.email,para:email}); 
                 if(f.cargo!==cargo) diff.push({campo:campoLabels.cargo,de:cargoPtBR(f.cargo),para:cargoPtBR(cargo)}); 
                 let motivo=document.getElementById('input-edit-motivo').value.trim(); 
-                f.nome=nome; f.email=email; f.cargo=cargo; 
-                writeAuditFunc({funcionario:nome,email,cargo,acao:'editar',motivo,diff,usuario:'Admin'}); 
-                showToast(`✓ ${nome} atualizado com sucesso`);
+                try {
+                    const req = await fetch('/api/funcionarios/' + editingId, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ nome, email, cargo })
+                    });
+                    if(req.ok) {
+                        f.nome=nome; f.email=email; f.cargo=cargo; 
+                        writeAuditFunc({funcionario:nome,email,cargo,acao:'editar',motivo,diff,usuario:'Admin'}); 
+                        showToast(`✓ ${nome} atualizado com sucesso`);
+                        closeModal('modal-add'); 
+                        renderFuncionarios(); 
+                    } else {
+                        showToast(`❌ Erro ao atualizar funcionário`);
+                    }
+                } catch(e) {
+                    console.error(e);
+                    showToast(`❌ Erro ao atualizar funcionário`);
+                }
             } 
-            closeModal('modal-add'); 
-            renderFuncionarios(); 
         } else { 
             // Save to DB
             try {
                 const req = await fetch('/api/funcionarios', {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, email })
+                    body: JSON.stringify({ nome, email, cargo })
                 });
                 if(req.ok) {
                     writeAuditFunc({funcionario:nome,email,cargo,acao:'adicionar',usuario:'Admin'}); 
@@ -905,36 +907,28 @@
     
     function openRemoveModal(id){ let f=funcionarios.find(x=>x.id===id); if(!f)return; pendingRemoveId=id; document.getElementById('remove-confirm-text').innerHTML=`Tem certeza que deseja remover <strong>${escHtml(f.nome)}</strong> (${escHtml(f.email)})? O acesso ao sistema será revogado imediatamente.`; document.getElementById('remove-func-motivo').value=''; document.getElementById('remove-func-motivo-error').classList.remove('visible'); document.getElementById('remove-func-motivo').classList.remove('error'); openModal('modal-remove'); }
     
-    async function confirmRemove(){ 
-        let f=funcionarios.find(x=>x.id===pendingRemoveId); 
-        if(!f)return; 
-        let motivo=document.getElementById('remove-func-motivo').value.trim(); 
-        if(!motivo){ document.getElementById('remove-func-motivo-error').classList.add('visible'); document.getElementById('remove-func-motivo').classList.add('error'); return; } 
-        
-        let nome=f.nome, email=f.email, cargo=f.cargo; 
-        
-        if (typeof pendingRemoveId === 'number') {
-            // It's a DB employee
-            try {
-                const req = await fetch('/api/funcionarios/' + pendingRemoveId, { method: 'DELETE' });
-                if(req.ok) {
-                    showToast(`${nome} removido do sistema (Banco atualizado)`);
-                    writeAuditFunc({funcionario:nome,email,cargo,acao:'remover',motivo,usuario:'Admin'}); 
-                    closeModal('modal-remove'); 
-                    fetchFuncionarios();
-                } else {
-                    showToast(`❌ Erro ao remover do banco`);
-                }
-            } catch(e) { console.error(e); }
-        } else {
-            // It's a mock employee
-            funcionarios = funcionarios.filter(x=>x.id!==pendingRemoveId); 
-            writeAuditFunc({funcionario:nome,email,cargo,acao:'remover',motivo,usuario:'Admin'}); 
-            closeModal('modal-remove'); 
-            renderFuncionarios(); 
-            showToast(`${nome} removido do sistema (Mock)`); 
+    async function confirmRemove() {
+        let f = funcionarios.find(x => x.id === pendingRemoveId);
+        if (!f) return;
+        let motivo = document.getElementById('remove-func-motivo').value.trim();
+        if (!motivo) {
+            document.getElementById('remove-func-motivo-error').classList.add('visible');
+            document.getElementById('remove-func-motivo').classList.add('error');
+            return;
         }
-        pendingRemoveId=null; 
+        let nome = f.nome, email = f.email, cargo = f.cargo;
+        try {
+            const req = await fetch('/api/funcionarios/' + pendingRemoveId, { method: 'DELETE' });
+            if (req.ok) {
+                showToast(`${nome} removido do sistema`);
+                writeAuditFunc({ funcionario: nome, email, cargo, acao: 'remover', motivo, usuario: 'Admin' });
+                closeModal('modal-remove');
+                fetchFuncionarios();
+            } else {
+                showToast(`❌ Erro ao remover do banco`);
+            }
+        } catch (e) { console.error(e); }
+        pendingRemoveId = null;
     }
     function openModal(id){ document.getElementById(id).classList.add('open'); }
     function closeModal(id){ document.getElementById(id).classList.remove('open'); }
@@ -1022,6 +1016,7 @@
     }
     
     document.addEventListener('DOMContentLoaded', () => {
+        T4U.requireAuth('admin');
         fetchFuncionarios();
         loadFilaReservas();
         setInterval(loadFilaReservas, 30000);

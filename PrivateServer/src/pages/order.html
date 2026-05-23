@@ -107,6 +107,9 @@
         .cancel-desc { font-size: 0.82rem; color: var(--text-secondary); text-align: center; line-height: 1.5; margin-bottom: 20px; }
         .cancel-actions { display: flex; gap: 10px; }
 
+        /* ── SIDEBAR UTILS ── */
+        .oculto { visibility: hidden; }
+
         /* Toast já vem do shared.css, mas ajustamos a posição para não colidir com FABs */
         #toast-container { bottom: 100px; }
 
@@ -146,6 +149,15 @@
         </div>
     </div>
     <div class="sidebar-footer">
+        <button id="btn-voltar-admin" class="nav-item oculto"
+                data-tooltip="Sair do modo" onclick="window.location.href='admin.html'">
+            <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span class="nav-label">Sair do Modo Garçom</span>
+        </button>
         <button class="nav-item logout" onclick="logout()" data-tooltip="Sair">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span class="nav-label">Sair</span>
@@ -428,6 +440,11 @@
     
     // Garantir que o DOM e o shared.js estejam prontos
     document.addEventListener('DOMContentLoaded', function() {
+        T4U.requireAuth(['garcom','recepcao','admin']);
+        const user = T4U.getUser();
+        if (user.role === 'admin') {
+            document.getElementById('btn-voltar-admin').classList.remove('oculto');
+        }
         const params = new URLSearchParams(window.location.search);
         const tableId = params.get('table') || '?';
         document.getElementById('topbar-title').textContent = `Pedido — Mesa ${tableId}`;
