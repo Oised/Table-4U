@@ -1019,6 +1019,7 @@
     }
     
     document.addEventListener('DOMContentLoaded', () => {
+        T4U.requireAuth('admin');
         fetchFuncionarios();
         loadFilaReservas();
         setInterval(loadFilaReservas, 30000);

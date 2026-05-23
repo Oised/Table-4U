@@ -428,6 +428,7 @@
     
     // Garantir que o DOM e o shared.js estejam prontos
     document.addEventListener('DOMContentLoaded', function() {
+        T4U.requireAuth(['garcom','recepcao','admin']);
         const params = new URLSearchParams(window.location.search);
         const tableId = params.get('table') || '?';
         document.getElementById('topbar-title').textContent = `Pedido — Mesa ${tableId}`;

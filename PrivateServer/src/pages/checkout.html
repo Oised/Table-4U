@@ -589,6 +589,7 @@
 
     // ── INICIALIZAÇÃO ──
     document.addEventListener('DOMContentLoaded', () => {
+        T4U.requireAuth(['garcom','recepcao','admin']);
         renderSidebar();
         render();
     });

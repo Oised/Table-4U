@@ -418,6 +418,7 @@
 
     // ── INIT ──
     document.addEventListener('DOMContentLoaded', () => {
+        T4U.requireAuth(['garcom','admin']);
         seedDemoOrders();
         // Verifica se alguma mesa foi liberada pelo checkout
         tables.forEach(table => {

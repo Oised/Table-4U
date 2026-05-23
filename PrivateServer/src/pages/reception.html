@@ -446,6 +446,7 @@
 
     // INICIALIZAÇÃO
     document.addEventListener('DOMContentLoaded', () => {
+        T4U.requireAuth(['recepcao','admin']);
         // Verifica se alguma mesa foi liberada pelo checkout
         tables.forEach(table => {
             const flag = `t4u-release-table-${table.id}`;
