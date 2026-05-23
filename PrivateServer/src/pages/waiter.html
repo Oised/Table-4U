@@ -98,6 +98,9 @@
         .order-item-qty { color: var(--text-muted); font-size: 0.72rem; font-family: 'IBM Plex Mono', monospace; }
         .orders-empty { font-size: 0.8rem; color: var(--text-muted); text-align: center; padding: 8px 0; }
 
+        /* ── SIDEBAR UTILS ── */
+        .oculto { visibility: hidden; }
+
         @media (max-width: 600px) { #sidebar { display: none; } #content { padding: 16px 12px; } .table-card { padding: 16px; } }
     </style>
 </head>
@@ -126,6 +129,15 @@
         </button>
     </div>
     <div class="sidebar-footer">
+        <button id="btn-voltar-admin" class="nav-item oculto"
+                data-tooltip="Sair do modo" onclick="window.location.href='admin.html'">
+            <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span class="nav-label">Sair do Modo Garçom</span>
+        </button>
         <button class="nav-item logout" onclick="logout()" data-tooltip="Sair">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span class="nav-label">Sair</span>
@@ -419,6 +431,10 @@
     // ── INIT ──
     document.addEventListener('DOMContentLoaded', () => {
         T4U.requireAuth(['garcom','admin']);
+        const user = T4U.getUser();
+        if (user.role === 'admin') {
+            document.getElementById('btn-voltar-admin').classList.remove('oculto');
+        }
         seedDemoOrders();
         // Verifica se alguma mesa foi liberada pelo checkout
         tables.forEach(table => {

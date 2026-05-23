@@ -299,6 +299,9 @@
         .confirm-btn-primary { background: var(--success); color: #fff; }
         .confirm-btn-primary:hover { filter: brightness(0.92); }
 
+        /* ── SIDEBAR UTILS ── */
+        .oculto { visibility: hidden; }
+
         /* Toast container - ajuste de posição para não sobrepor action bar */
         #toast-container { bottom: 90px; }
 
@@ -322,6 +325,15 @@
         <!-- renderizado por JS baseado no parâmetro origin -->
     </div>
     <div class="sidebar-footer">
+        <button id="btn-voltar-admin" class="nav-item oculto"
+                data-tooltip="Sair do modo" onclick="window.location.href='admin.html'">
+            <svg viewBox="0 0 24 24">
+                <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                <polyline points="16 17 21 12 16 7"/>
+                <line x1="21" y1="12" x2="9" y2="12"/>
+            </svg>
+            <span class="nav-label" id="btn-voltar-label">Sair do Modo</span>
+        </button>
         <button class="nav-item logout" onclick="logout()" data-tooltip="Sair">
             <svg viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
             <span class="nav-label">Sair</span>
@@ -590,6 +602,15 @@
     // ── INICIALIZAÇÃO ──
     document.addEventListener('DOMContentLoaded', () => {
         T4U.requireAuth(['garcom','recepcao','admin']);
+        const user = T4U.getUser();
+        if (user.role === 'admin') {
+            const btn = document.getElementById('btn-voltar-admin');
+            const label = document.getElementById('btn-voltar-label');
+            btn.classList.remove('oculto');
+            label.textContent = origin === 'reception' 
+                ? 'Sair do Modo Recepção' 
+                : 'Sair do Modo Garçom';
+        }
         renderSidebar();
         render();
     });
