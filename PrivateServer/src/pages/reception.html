@@ -101,12 +101,6 @@
         .occupied-guests svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
         .occupied-guests strong { font-weight: 600; }
 
-        .placeholder-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 480px; text-align: center; padding: 48px 24px; }
-        .placeholder-icon { width: 64px; height: 64px; border-radius: 18px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
-        .placeholder-icon svg { width: 28px; height: 28px; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
-        .placeholder-title { font-size: 1.05rem; font-weight: 600; color: var(--text-primary); margin-bottom: 8px; }
-        .placeholder-desc { font-size: 0.875rem; color: var(--text-secondary); max-width: 380px; line-height: 1.6; margin-bottom: 20px; }
-
         @media (max-width: 800px) {
             #sidebar { display: none; }
             .content-inner { padding: 16px 12px 32px; }
@@ -132,13 +126,9 @@
             <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>
             <span class="nav-label">Mesas</span>
         </button>
-        <button class="nav-item" data-tooltip="Fila" onclick="showSection('fila', this)">
+        <button class="nav-item" data-tooltip="Fila/Reservas" onclick="showSection('fila', this)">
             <svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-            <span class="nav-label">Fila</span>
-        </button>
-        <button class="nav-item" data-tooltip="Reservas" onclick="showSection('reservas', this)">
-            <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-            <span class="nav-label">Reservas</span>
+            <span class="nav-label">Fila/Reservas</span>
         </button>
     </div>
     <div class="sidebar-footer">
@@ -163,7 +153,9 @@
             <button id="toggle-theme-btn" aria-label="Alternar tema">
                 <div class="toggle-knob"><span id="toggle-icon">☀️</span></div>
             </button>
-            <button id="profile-btn" aria-label="Menu do perfil">RC</button>
+            <button id="profile-btn" aria-label="Menu do perfil">
+                <span id="profile-initials">RC</span>
+            </button>
         </div>
     </header>
 
@@ -206,18 +198,18 @@
             </div>
         </div>
 
-        <!-- FILA & RESERVAS -->
+        <!-- FILA/RESERVAS -->
         <div class="section-view" id="section-fila">
             <div class="content-inner">
                 <div class="mesas-header">
                     <div class="mesas-header-left">
-                        <div class="section-title">Fila de Espera & Reservas</div>
+                        <div class="section-title">Fila de Espera &amp; Reservas</div>
                         <div class="section-sub">Acompanhe os clientes aguardando e as reservas agendadas</div>
                     </div>
                 </div>
                 <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                    <div class="list-card" style="background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card);">
-                        <div class="list-title" style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card);">
+                        <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
                             👥 Fila Atual
                             <span style="background: var(--accent); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem;" id="fila-count-dash">0</span>
                         </div>
@@ -225,8 +217,8 @@
                             <div style="color: var(--text-muted); text-align: center; padding: 20px;">Carregando...</div>
                         </div>
                     </div>
-                    <div class="list-card" style="background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card);">
-                        <div class="list-title" style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card);">
+                        <div style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
                             📅 Reservas
                             <span style="background: var(--accent); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem;" id="reservas-count-dash">0</span>
                         </div>
@@ -234,19 +226,6 @@
                             <div style="color: var(--text-muted); text-align: center; padding: 20px;">Carregando...</div>
                         </div>
                     </div>
-                </div>
-            </div>
-        </div>
-
-        <!-- RESERVAS (placeholder) -->
-        <div class="section-view" id="section-reservas">
-            <div class="content-inner">
-                <div class="placeholder-page">
-                    <div class="placeholder-icon">
-                        <svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                    </div>
-                    <div class="placeholder-title">Reservas</div>
-                    <div class="placeholder-desc">Os dados de reservas estão integrados à aba Fila. Em breve, calendário detalhado aqui.</div>
                 </div>
             </div>
         </div>
@@ -277,12 +256,10 @@
 <script src="../scripts/reception.js" defer></script>
 
 <script>
-    // ── NAVEGAÇÃO ──
-    const topbarTitles = { mesas: 'Mesas', fila: 'Fila de Espera', reservas: 'Reservas' };
-    const topbarIcons = {
-        mesas:   `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
-        fila:    `<svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`,
-        reservas:`<svg viewBox="0 0 24 24"><rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>`
+    const topbarTitles = { mesas: 'Mesas', fila: 'Fila/Reservas' };
+    const topbarIcons  = {
+        mesas: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
+        fila:  `<svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`
     };
 
     function showSection(id, el) {
@@ -291,86 +268,67 @@
         document.getElementById('section-' + id).classList.add('active');
         if (el) el.classList.add('active');
         document.getElementById('topbar-title').textContent = topbarTitles[id] || id;
-        document.getElementById('topbar-icon').innerHTML = topbarIcons[id] || '';
+        document.getElementById('topbar-icon').innerHTML    = topbarIcons[id]  || '';
         if (id === 'fila') loadFilaReservas();
     }
 
-    // ── FILA & RESERVAS ──
     async function chamarFila(id) {
-        try {
-            await fetch('/api/chamar-fila/' + id, { method: 'POST' });
-            loadFilaReservas();
-            showToast('Cliente chamado!');
-        } catch (err) {
-            console.error(err);
-        }
+        try { await fetch('/api/chamar-fila/' + id, { method: 'POST' }); loadFilaReservas(); showToast('Cliente chamado!'); }
+        catch (err) { console.error(err); }
     }
 
     async function atenderFila(id) {
-        try {
-            await fetch('/api/atender-fila/' + id, { method: 'POST' });
-            loadFilaReservas();
-            showToast('Cliente atendido com sucesso!');
-        } catch (err) {
-            console.error(err);
-        }
+        try { await fetch('/api/atender-fila/' + id, { method: 'POST' }); loadFilaReservas(); showToast('Cliente atendido!'); }
+        catch (err) { console.error(err); }
     }
 
     async function loadFilaReservas() {
         try {
-            const [fRes, rRes] = await Promise.all([
-                fetch('/api/todas-filas'),
-                fetch('/api/todas-reservas')
-            ]);
-            const filas = await fRes.json();
-            const reservas = await rRes.json();
+            const [fRes, rRes] = await Promise.all([fetch('/api/todas-filas'), fetch('/api/todas-reservas')]);
+            const filas = await fRes.json(), reservas = await rRes.json();
 
             document.getElementById('fila-count-dash').textContent = filas.length;
             const filaContainer = document.getElementById('fila-container');
-            if (filas.length === 0) {
-                filaContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum cliente na fila</div>';
+            if (!filas.length) {
+                filaContainer.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px;">Nenhum cliente na fila</div>';
             } else {
                 filaContainer.innerHTML = filas.map(f => {
                     const isSuaVez = f.status === 'sua vez chegou';
                     const actionBtn = isSuaVez
-                        ? `<button onclick="atenderFila(${f.id_fila})" style="background: var(--status-available); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.75rem;">Atender</button>`
-                        : `<button onclick="chamarFila(${f.id_fila})" style="background: var(--accent); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.75rem;">Chamar</button>`;
-                    const statusColor  = isSuaVez ? 'var(--status-available)'        : 'var(--status-warning)';
-                    const statusBg     = isSuaVez ? 'var(--status-available-bg)'     : 'var(--status-warning-bg)';
-                    const statusBorder = isSuaVez ? 'var(--status-available-border)' : 'var(--status-warning-border)';
-                    return `
-                        <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border);">
-                            <div>
-                                <div style="font-weight: 600; color: var(--text-primary); font-size: 0.85rem;">${f.Cliente ? f.Cliente.nome : 'Desconhecido'}</div>
-                                <div style="font-size: 0.75rem; color: var(--text-muted);">${new Date(f.data_entrada).toLocaleTimeString('pt-BR', {hour:'2-digit',minute:'2-digit'})} · ${f.numero_pessoas} pessoas</div>
-                            </div>
-                            <div style="display: flex; gap: 8px; align-items: center;">
-                                <span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; text-transform: capitalize;">${f.status}</span>
-                                ${actionBtn}
-                            </div>
-                        </div>`;
+                        ? `<button onclick="atenderFila(${f.id_fila})" style="background:var(--status-available);color:white;border:none;padding:4px 10px;border-radius:6px;font-weight:600;cursor:pointer;font-size:0.75rem;">Atender</button>`
+                        : `<button onclick="chamarFila(${f.id_fila})" style="background:var(--accent);color:white;border:none;padding:4px 10px;border-radius:6px;font-weight:600;cursor:pointer;font-size:0.75rem;">Chamar</button>`;
+                    const sc  = isSuaVez ? 'var(--status-available)'        : 'var(--status-warning)';
+                    const sb  = isSuaVez ? 'var(--status-available-bg)'     : 'var(--status-warning-bg)';
+                    const sbr = isSuaVez ? 'var(--status-available-border)' : 'var(--status-warning-border)';
+                    return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid var(--border);">
+                        <div>
+                            <div style="font-weight:600;color:var(--text-primary);font-size:0.85rem;">${f.Cliente ? f.Cliente.nome : 'Desconhecido'}</div>
+                            <div style="font-size:0.75rem;color:var(--text-muted);">${new Date(f.data_entrada).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})} · ${f.numero_pessoas} pessoas</div>
+                        </div>
+                        <div style="display:flex;gap:8px;align-items:center;">
+                            <span style="font-size:0.7rem;padding:3px 8px;border-radius:12px;background:${sb};color:${sc};border:1px solid ${sbr};text-transform:capitalize;">${f.status}</span>
+                            ${actionBtn}
+                        </div>
+                    </div>`;
                 }).join('');
             }
 
             document.getElementById('reservas-count-dash').textContent = reservas.length;
             const reservasContainer = document.getElementById('reservas-container');
-            if (reservas.length === 0) {
-                reservasContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Sem reservas</div>';
+            if (!reservas.length) {
+                reservasContainer.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px;">Sem reservas</div>';
             } else {
                 reservasContainer.innerHTML = reservas.map(r => `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid var(--border);">
                         <div>
-                            <div style="font-weight: 600; color: var(--text-primary); font-size: 0.95rem; margin-bottom: 4px;">${r.Cliente ? r.Cliente.nome : 'Desconhecido'}</div>
-                            <div style="font-size: 1.15rem; font-weight: bold; color: var(--accent); margin-bottom: 4px;">${new Date(r.data_reserva).toLocaleString('pt-BR', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">${r.numero_pessoas} pessoas</div>
+                            <div style="font-weight:600;color:var(--text-primary);font-size:0.95rem;margin-bottom:4px;">${r.Cliente ? r.Cliente.nome : 'Desconhecido'}</div>
+                            <div style="font-size:1.15rem;font-weight:bold;color:var(--accent);margin-bottom:4px;">${new Date(r.data_reserva).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div>
+                            <div style="font-size:0.8rem;color:var(--text-muted);">${r.numero_pessoas} pessoas</div>
                         </div>
-                        <span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; background: var(--status-warning-bg); color: var(--status-warning); border: 1px solid var(--status-warning-border);">${r.status}</span>
-                    </div>`
-                ).join('');
+                        <span style="font-size:0.7rem;padding:3px 8px;border-radius:12px;background:var(--status-warning-bg);color:var(--status-warning);border:1px solid var(--status-warning-border);">${r.status}</span>
+                    </div>`).join('');
             }
-        } catch (err) {
-            console.error('Erro ao carregar fila/reservas:', err);
-        }
+        } catch (err) { console.error(err); }
     }
 
     setInterval(loadFilaReservas, 30000);
