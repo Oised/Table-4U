@@ -75,10 +75,13 @@ PublicServer/
 
 ```env
 DATABASE_URL_PUBLIC="postgresql://usuario:senha@host:5432/nomedobanco?sslmode=require"
+DATABASE_URL_PRIVATE="postgresql://usuario:senha@host:5432/nomedobanco?sslmode=require"
 MODEL_API_URL="http://localhost:5000/predict"
 ```
 
+> **Atenção:** o `.env.example` atual contém credenciais locais de desenvolvimento — substitua todos os valores pelas suas próprias credenciais antes de usar.
 > `DATABASE_URL_PUBLIC` é o banco dos clientes (fila, reservas, cadastro).
+> `DATABASE_URL_PRIVATE` é necessário porque o PublicServer acessa o banco privado em modo somente leitura (endpoint `/api/atendimentos-privados`).
 > `MODEL_API_URL` aponta para a API Flask do modelo de ML que calcula o tempo de espera.
 
 2. Instale as dependências:
@@ -87,7 +90,7 @@ MODEL_API_URL="http://localhost:5000/predict"
 npm install
 ```
 
-O `postinstall` executa `prisma generate` automaticamente, gerando o Prisma Client para o banco público e para o schema privado (somente leitura).
+O `postinstall` executa `prisma generate` automaticamente, gerando dois Prisma Clients: um para o banco público (`schema.prisma`) e um para o banco privado (`schema_private.prisma`, somente leitura).
 
 3. Rode as migrations no banco:
 
@@ -140,7 +143,7 @@ O banco público possui três modelos:
 - **Fila** — entradas na fila de espera, com número de pessoas e status (`esperando`)
 - **Reserva** — reservas com data/hora, número de pessoas e status (`pendente`)
 
-O schema privado (`schema_private.prisma`) é acessado em modo somente leitura pelo endpoint `/api/atendimentos-privados`, que expõe dados de atendimentos do banco interno para o dashboard público.
+O schema privado (`schema_private.prisma`) é acessado em modo somente leitura pelo endpoint `/api/atendimentos-privados`, que expõe dados de atendimentos do banco interno para o dashboard público. O schema espelha os modelos do PrivateServer — incluindo o campo `cargo` no modelo `funcionario`.
 
 ---
 

@@ -123,6 +123,20 @@ npm start
 # http://localhost:4000
 ```
 
+Para desenvolvimento (mata automaticamente o processo anterior na porta 4000):
+
+```bash
+npm run dev
+```
+
+Após rodar as migrations no banco privado pela primeira vez, popule as mesas padrão:
+
+```bash
+curl -X POST http://localhost:4000/api/mesas/seed
+```
+
+Isso cria as 12 mesas do restaurante. O endpoint é idempotente — não faz nada se as mesas já existirem.
+
 ---
 
 ## Banco de dados recomendado

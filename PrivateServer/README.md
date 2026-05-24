@@ -27,7 +27,11 @@ PrivateServer/
 │   │   ├── kitchen.html    # Fila de pedidos para a cozinha
 │   │   └── reception.html  # Gestão de fila de espera e reservas
 │   ├── scripts/
-│   │   └── shared.js       # Lógica compartilhada entre todas as páginas (tema, sidebar, profile, toast, sessão, dados de domínio)
+│   │   ├── shared.js       # Lógica compartilhada entre todas as páginas (tema, sidebar, profile, toast, sessão)
+│   │   ├── waiter.js       # Lógica de mesas — fetch, render, check-in, check-out, status
+│   │   ├── order.js        # Lógica de pedidos — busca cardápio da API, seleção e envio
+│   │   ├── reception.js    # Lógica de recepção — fila e reservas da API
+│   │   └── rehash-senhas.js # Script de migração: rehash de senhas em texto puro para bcrypt
 │   ├── styles/
 │   │   └── shared.css      # Design system compartilhado (tokens CSS, sidebar, topbar, modais, status)
 │   ├── api/
@@ -88,19 +92,71 @@ npm start
 # Redireciona automaticamente para /pages/login.html
 ```
 
+Para desenvolvimento (mata o processo anterior na porta 4000 automaticamente):
+
+```bash
+npm run dev
+```
+
+---
+
+## Migração de senhas (primeira execução após atualização)
+
+Se o banco tiver funcionários ou admins com senhas em texto puro (cadastrados antes da implementação do bcrypt), rode o script de migração **uma única vez**:
+
+```bash
+npm run rehash-senhas
+```
+
+O script detecta automaticamente quais senhas já estão hasheadas (`$2b$...`) e ignora, processando apenas as que ainda estão em texto puro.
+
 ---
 
 ## Rotas da API
 
-### Banco privado — Funcionários
+### Autenticação
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `POST` | `/api/login` | Autentica funcionário ou admin com bcrypt. Retorna `{ email, role, label }`. Busca primeiro em `funcionario`, depois em `adm`. |
+
+### Funcionários
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
 | `GET` | `/api/funcionarios` | Lista todos os funcionários |
-| `POST` | `/api/funcionarios` | Cria novo funcionário (senha padrão `123`, vinculado ao primeiro admin encontrado) |
+| `POST` | `/api/funcionarios` | Cria novo funcionário (senha padrão `123` hasheada com bcrypt, vinculado ao primeiro admin encontrado) |
+| `PUT` | `/api/funcionarios/:id` | Atualiza nome, e-mail e cargo de um funcionário |
 | `DELETE` | `/api/funcionarios/:id` | Remove um funcionário pelo ID |
 
-### Banco público — Fila (leitura e operações da recepção)
+### Mesas
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `GET` | `/api/mesas` | Lista todas as mesas com status atual |
+| `POST` | `/api/mesas/seed` | Cria as 12 mesas padrão (só executa se não houver nenhuma) |
+| `PUT` | `/api/mesas/:id/status` | Atualiza o status de uma mesa (`available`, `occupied`, `unavailable`) |
+| `POST` | `/api/mesas/:id/checkin` | Faz check-in: muda mesa para `occupied` e cria um `atendimento` |
+| `POST` | `/api/mesas/:id/checkout` | Faz check-out: muda mesa para `available` e fecha o `atendimento` ativo |
+| `GET` | `/api/mesas/:id/atendimento-ativo` | Retorna o atendimento em aberto de uma mesa (sem `checkout`) |
+
+### Pedidos
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `GET` | `/api/mesas/:id/pedidos` | Retorna os pedidos do atendimento ativo da mesa, com dados do prato |
+| `POST` | `/api/mesas/:id/pedidos` | Adiciona itens ao atendimento ativo da mesa |
+
+### Cardápio (Pratos)
+
+| Método | Rota | Descrição |
+|--------|------|-----------|
+| `GET` | `/api/pratos` | Lista todos os pratos com tempo de preparo |
+| `POST` | `/api/pratos` | Cria novo prato (com `tempo` opcional) |
+| `PUT` | `/api/pratos/:id` | Atualiza um prato (upsert no `tempo` de preparo) |
+| `DELETE` | `/api/pratos/:id` | Remove um prato |
+
+### Banco público — Fila (recepção)
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
@@ -120,10 +176,11 @@ npm start
 | Modelo | Descrição |
 |--------|-----------|
 | `adm` | Administradores do sistema |
-| `funcionario` | Funcionários (garçons, cozinha, recepção), vinculados a um `adm` |
-| `atendimento` | Registro de cada atendimento de mesa (check-in / check-out, número de pessoas, funcionário responsável) |
+| `funcionario` | Funcionários (garçons, cozinha, recepção), vinculados a um `adm`, com campo `cargo` |
+| `mesa` | Mesas do restaurante com capacidade e status (`available`, `occupied`, `unavailable`) |
+| `atendimento` | Registro de cada atendimento (check-in/check-out, número de pessoas, funcionário, mesa) |
 | `pedido` | Itens pedidos em um atendimento (prato + quantidade) |
-| `prato` | Cardápio interno com nome, preço e custo |
+| `prato` | Cardápio com nome, preço, custo, categoria, descrição, emoji e flag de disponibilidade |
 | `tempo` | Tempo de preparo estimado por prato (relação 1-1 com `prato`) |
 | `pratos_do_dia` | Pratos disponíveis em cada dia com quantidade |
 | `pagamento` | Registro de pagamento de cada atendimento (forma, valor, data) |
@@ -143,6 +200,14 @@ CREATE TRIGGER trigger_delete_funcionario ...
 
 ---
 
+## Autenticação
+
+O login é feito via `POST /api/login` com e-mail e senha. O servidor busca o usuário primeiro na tabela `funcionario` (retorna o campo `cargo` como role) e depois em `adm` (retorna `"admin"` como role). As senhas são comparadas com bcrypt.
+
+O frontend salva `{ email, role, label }` no `sessionStorage` após login bem-sucedido. Todas as páginas verificam essa sessão ao carregar e redirecionam para `login.html` se ela estiver ausente ou o cargo não corresponder ao permitido para aquela página.
+
+---
+
 ## Frontend interno
 
 Todas as páginas seguem um padrão de layout compartilhado composto por:
@@ -151,7 +216,7 @@ Todas as páginas seguem um padrão de layout compartilhado composto por:
 - **Topbar** com identificação da página atual, toggle de tema claro/escuro e menu de perfil
 - **Toast** para notificações não intrusivas
 
-O arquivo `src/scripts/shared.js` centraliza toda a lógica comum (tema, sidebar, profile dropdown, toast, sessão, dados de domínio como mesas e cardápio) sob o objeto global `T4U`. O arquivo `src/styles/shared.css` define os tokens de design (CSS custom properties para light/dark), o layout raiz, a sidebar, a topbar e os componentes de modal e status.
+O arquivo `src/scripts/shared.js` centraliza a lógica comum (tema, sidebar, profile dropdown, toast, sessão e guard de autenticação). Scripts específicos por página (`waiter.js`, `order.js`, `reception.js`) tratam a comunicação com a API e a renderização de cada funcionalidade. O arquivo `src/styles/shared.css` define os tokens de design (CSS custom properties para light/dark), o layout raiz, a sidebar, a topbar e os componentes de modal e status.
 
 ### Páginas e responsabilidades
 
@@ -159,8 +224,8 @@ O arquivo `src/scripts/shared.js` centraliza toda a lógica comum (tema, sidebar
 |--------|-------|-----------|
 | `login.html` | Todos | Login com redirecionamento por cargo |
 | `admin.html` | Admin | Dashboard com KPIs, gráficos, gestão de cardápio, funcionários e histórico de alterações |
-| `waiter.html` | Garçom | Lista de mesas com status (disponível, ocupada, indisponível), check-in e check-out |
-| `order.html` | Garçom | Seleção de pratos por categoria, anotações por item e confirmação de pedido |
+| `waiter.html` | Garçom | Lista de mesas carregada via API, com status em tempo real, check-in, check-out e navegação para pedidos |
+| `order.html` | Garçom | Cardápio carregado via API (`/api/pratos`), seleção por categoria, anotações por item e envio para `/api/mesas/:id/pedidos` |
 | `checkout.html` | Garçom | Nota fiscal com lista de pedidos, toggle de taxa de serviço (10%) e fechamento de conta |
 | `kitchen.html` | Cozinha | Fila de pedidos a preparar |
 | `reception.html` | Recepção | Gestão da fila de espera e reservas vindas do banco público |

@@ -6,21 +6,89 @@ Como o projeto é dividido em **PublicServer** e **PrivateServer**, a configura�
 
 ---
 
-## Passo a passo rápido
+## Passo a passo rápido (novo clone)
 
 ```bash
 # PublicServer
 cd PublicServer
 cp .env.example .env   # edite com suas credenciais
 npm install            # já roda prisma generate automaticamente
+npx prisma migrate deploy --config prisma.config.ts
 
 # PrivateServer
 cd ../PrivateServer
 cp .env.example .env   # edite com suas credenciais
 npm install            # já roda prisma generate automaticamente
+npx prisma migrate deploy --config prisma.config.ts
+```
+
+Após rodar as migrations do PrivateServer pela primeira vez, popule as mesas:
+
+```bash
+# Com o servidor rodando (npm start ou npm run dev):
+curl -X POST http://localhost:4000/api/mesas/seed
 ```
 
 > O `postinstall` em ambos os `package.json` executa `prisma generate` automaticamente ao final do `npm install`. Não é necessário rodar manualmente na maioria dos casos.
+
+---
+
+## Atualizando o ambiente após um pull
+
+Ao fazer `git pull` com mudanças no banco ou nas dependências, siga os passos abaixo conforme o que foi alterado.
+
+### 1. Novas dependências (`package.json` foi alterado)
+
+```bash
+# Em cada servidor que teve o package.json alterado:
+npm install
+```
+
+### 2. Novas migrations (arquivos em `prisma/migrations/` foram adicionados)
+
+```bash
+# PublicServer (se houver migrations novas lá):
+cd PublicServer
+npx prisma migrate deploy --config prisma.config.ts
+
+# PrivateServer (se houver migrations novas lá):
+cd PrivateServer
+npx prisma migrate deploy --config prisma.config.ts
+```
+
+> Para saber se há migrations novas, olhe se apareceram arquivos novos em `prisma/migrations/` no diff do pull. No PrivateServer, as últimas migrations adicionaram a tabela `mesa` e os campos `categoria`, `descricao`, `emoji` e `disponivel` ao `prato`.
+
+### 3. Schema Prisma alterado mas sem nova migration (mudança de campo opcional, etc.)
+
+O Prisma Client precisa ser regerado para refletir o schema atual:
+
+```bash
+npm install   # o postinstall já regenera
+# ou manualmente:
+npm run generate
+```
+
+### 4. Senhas em texto puro no banco (migração de autenticação)
+
+Se o banco foi populado antes da implementação do login com bcrypt, as senhas podem estar em texto puro. Rode o script de migração **uma única vez** no PrivateServer:
+
+```bash
+cd PrivateServer
+npm run rehash-senhas
+```
+
+O script detecta automaticamente quais senhas já estão hasheadas (`$2b$...`) e ignora, processando apenas as que ainda estão em texto puro.
+
+### 5. Mesas não existem no banco privado
+
+Se o banco privado foi recriado ou é novo, as mesas precisam ser populadas:
+
+```bash
+# Com o PrivateServer rodando:
+curl -X POST http://localhost:4000/api/mesas/seed
+```
+
+O endpoint é idempotente — não faz nada se as mesas já existirem.
 
 ---
 
