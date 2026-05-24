@@ -457,6 +457,26 @@ app.post('/api/mesas/:id/pedidos', async (req, res) => {
     }
 });
 
-app.listen(4000, () => {
-    console.log('Servidor privado rodando em http://localhost:4000');
+const PORT = 4000;
+
+const server = app.listen(PORT, () => {
+    console.log(`Servidor privado rodando em http://localhost:${PORT}`);
+}).on('error', (err) => {
+    if (err.code === 'EADDRINUSE') {
+        console.error(`Porta ${PORT} ocupada. Rode: kill $(lsof -ti:${PORT})`);
+        process.exit(1);
+    }
+    console.error('Erro ao iniciar servidor:', err);
+    process.exit(1);
 });
+
+process.on('uncaughtException', (err) => {
+    console.error('Erro não capturado:', err);
+});
+
+process.on('unhandledRejection', (err) => {
+    console.error('Promise rejeitada:', err);
+});
+
+process.on('SIGTERM', () => server.close(() => process.exit(0)));
+process.on('SIGINT',  () => server.close(() => process.exit(0)));

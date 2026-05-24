@@ -4,6 +4,7 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
+     "dev": "kill $(lsof -ti:4000) 2>/dev/null; node server.js",
     "generate": "npx prisma generate && npx prisma generate --schema=prisma/schema_public.prisma",
     "postinstall": "npm run generate",
     "rehash-senhas": "node src/scripts/rehash-senhas.js"
@@ -22,4 +23,10 @@
   "devDependencies": {
     "prisma": "^6.19.3"
   }
+  
 }
+
+    
+
+  
+
