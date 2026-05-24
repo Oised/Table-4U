@@ -300,6 +300,28 @@ app.delete('/api/pratos/:id', async (req, res) => {
     }
 });
 
+app.put('/api/funcionarios/:id', async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const { nome, email, cargo } = req.body;
+        if (!nome || !email || !cargo) {
+            return res.status(400).json({ error: 'Nome, e-mail e cargo são obrigatórios.' });
+        }
+        const cargosPermitidos = ['garcom', 'cozinha', 'recepcao'];
+        if (!cargosPermitidos.includes(cargo)) {
+            return res.status(400).json({ error: 'Cargo inválido.' });
+        }
+        const func = await prisma.funcionario.update({
+            where: { funcionario_id: id },
+            data: { nome, email, cargo }
+        });
+        res.json(func);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao atualizar funcionário' });
+    }
+});
+
 // ── MESAS ──
 app.get('/api/mesas', async (req, res) => {
     try {

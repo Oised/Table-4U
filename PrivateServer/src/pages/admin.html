@@ -769,18 +769,24 @@ function showSection(id, navEl) {
 }
 
     // ── FUNCIONÁRIOS (lógica original) ──
-    const cargoLabels = { admin: { label: 'Administrador', cls: 'admin' }, garcom: { label: 'Garçom', cls: 'garcom' }, cozinha: { label: 'Cozinha', cls: 'cozinha' }, recepcao: { label: 'Recepção', cls: 'recepcao' } };
-    let funcionarios = [];
-    let pendingRemoveId = null, editingId = null;
+   const cargoLabels = { admin: { label: 'Administrador', cls: 'admin' }, garcom: { label: 'Garçom', cls: 'garcom' }, cozinha: { label: 'Cozinha', cls: 'cozinha' }, recepcao: { label: 'Recepção', cls: 'recepcao' } };
+let funcionarios = [];
+let pendingRemoveId = null, editingId = null;
 
 async function fetchFuncionarios() {
     try {
         const res = await fetch('/api/funcionarios');
         const dbFuncs = await res.json();
-        funcionarios = [...defaultFuncs, ...dbFuncs.map(f => ({ id: f.funcionario_id, nome: f.nome, email: f.email, cargo: 'garcom' }))];
+        funcionarios = dbFuncs.map(f => ({
+            id:    f.funcionario_id,
+            nome:  f.nome,
+            email: f.email,
+            cargo: f.cargo || 'garcom'
+        }));
         renderFuncionarios();
     } catch (err) { console.error(err); }
 }
+
 function getInitials(nome) { const p = nome.trim().split(' ').filter(Boolean); return p.length === 1 ? p[0][0].toUpperCase() : (p[0][0] + p[p.length-1][0]).toUpperCase(); }
 function renderFuncionarios() {
     const q = (document.getElementById('func-search').value || '').toLowerCase();
@@ -799,8 +805,27 @@ async function confirmAddEdit() {
     if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showFuncError('error-email','input-email'); valid=false; }
     if(editingId){ let motivo=document.getElementById('input-edit-motivo').value.trim(); if(!motivo){ document.getElementById('error-edit-motivo').classList.add('visible'); document.getElementById('input-edit-motivo').classList.add('error'); valid=false; } }
     if(!valid)return;
-    if(editingId){ let f=funcionarios.find(x=>x.id===editingId); if(f){ let diff=[],cargoPtBR=k=>cargoLabels[k]?.label||k; if(f.nome!==nome)diff.push({campo:'Nome',de:f.nome,para:nome}); if(f.email!==email)diff.push({campo:'E-mail',de:f.email,para:email}); if(f.cargo!==cargo)diff.push({campo:'Cargo',de:cargoPtBR(f.cargo),para:cargoPtBR(cargo)}); let motivo=document.getElementById('input-edit-motivo').value.trim(); f.nome=nome;f.email=email;f.cargo=cargo; writeAuditFunc({funcionario:nome,email,cargo,acao:'editar',motivo,diff,usuario:'Admin'}); showToast(`✓ ${nome} atualizado`); } closeModal('modal-add'); renderFuncionarios(); }
-    else { try { const req=await fetch('/api/funcionarios',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,email})}); if(req.ok){writeAuditFunc({funcionario:nome,email,cargo,acao:'adicionar',usuario:'Admin'}); showToast(`✓ ${nome} adicionado`); closeModal('modal-add'); fetchFuncionarios(); }else showToast('❌ Erro ao salvar'); }catch(e){console.error(e);} }
+    if(editingId){
+        let f=funcionarios.find(x=>x.id===editingId); 
+        if(f){
+            let diff=[],cargoPtBR=k=>cargoLabels[k]?.label||k;
+            if(f.nome!==nome)diff.push({campo:'Nome',de:f.nome,para:nome});
+            if(f.email!==email)diff.push({campo:'E-mail',de:f.email,para:email});
+            if(f.cargo!==cargo)diff.push({campo:'Cargo',de:cargoPtBR(f.cargo),para:cargoPtBR(cargo)});
+            let motivo=document.getElementById('input-edit-motivo').value.trim();
+            try {
+                const req=await fetch('/api/funcionarios/'+editingId,{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,email,cargo})});
+                if(req.ok){ f.nome=nome;f.email=email;f.cargo=cargo; writeAuditFunc({funcionario:nome,email,cargo,acao:'editar',motivo,diff,usuario:'Admin'}); showToast(`✓ ${nome} atualizado`); closeModal('modal-add'); fetchFuncionarios(); }
+                else showToast('❌ Erro ao atualizar');
+            } catch(e){ console.error(e); }
+        }
+    } else {
+        try {
+            const req=await fetch('/api/funcionarios',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,email,cargo})});
+            if(req.ok){ writeAuditFunc({funcionario:nome,email,cargo,acao:'adicionar',usuario:'Admin'}); showToast(`✓ ${nome} adicionado`); closeModal('modal-add'); fetchFuncionarios(); }
+            else showToast('❌ Erro ao salvar');
+        } catch(e){ console.error(e); }
+    }
 }
 function openRemoveModal(id){ let f=funcionarios.find(x=>x.id===id); if(!f)return; pendingRemoveId=id; document.getElementById('remove-confirm-text').innerHTML=`Tem certeza que deseja remover <strong>${escHtml(f.nome)}</strong>?`; document.getElementById('remove-func-motivo').value=''; document.getElementById('remove-func-motivo-error').classList.remove('visible'); document.getElementById('remove-func-motivo').classList.remove('error'); openModal('modal-remove'); }
 async function confirmRemove(){ let f=funcionarios.find(x=>x.id===pendingRemoveId); if(!f)return; let motivo=document.getElementById('remove-func-motivo').value.trim(); if(!motivo){document.getElementById('remove-func-motivo-error').classList.add('visible');document.getElementById('remove-func-motivo').classList.add('error');return;} let nome=f.nome,email=f.email,cargo=f.cargo; if(typeof pendingRemoveId==='number'){try{const req=await fetch('/api/funcionarios/'+pendingRemoveId,{method:'DELETE'});if(req.ok){showToast(`${nome} removido`);writeAuditFunc({funcionario:nome,email,cargo,acao:'remover',motivo,usuario:'Admin'});closeModal('modal-remove');fetchFuncionarios();}else showToast('❌ Erro');}catch(e){console.error(e);}}else{funcionarios=funcionarios.filter(x=>x.id!==pendingRemoveId);writeAuditFunc({funcionario:nome,email,cargo,acao:'remover',motivo,usuario:'Admin'});closeModal('modal-remove');renderFuncionarios();showToast(`${nome} removido`);} pendingRemoveId=null; }
