@@ -223,7 +223,7 @@ app.get("/tempo-espera", async (req, res) => {
     const totalPessoas = filas.reduce((acc, fila) => acc + fila.numero_pessoas, 0);
 
     // 3. Chamar a API de previsão para cada pessoa e calcular a média
-    const modelApiUrl = process.env.MODEL_API_URL || "http://localhost:5000/predict";
+    const modelApiUrl = process.env.MODEL_API_URL || "http://localhost:3000/predict";
     let somaTempoIa = 0;
 
     for (const fila of filas) {

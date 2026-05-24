@@ -300,27 +300,6 @@ app.delete('/api/pratos/:id', async (req, res) => {
     }
 });
 
-app.put('/api/funcionarios/:id', async (req, res) => {
-    try {
-        const id = parseInt(req.params.id);
-        const { nome, email, cargo } = req.body;
-        if (!nome || !email || !cargo) {
-            return res.status(400).json({ error: 'Nome, e-mail e cargo são obrigatórios.' });
-        }
-        const cargosPermitidos = ['garcom', 'cozinha', 'recepcao'];
-        if (!cargosPermitidos.includes(cargo)) {
-            return res.status(400).json({ error: 'Cargo inválido.' });
-        }
-        const func = await prisma.funcionario.update({
-            where: { funcionario_id: id },
-            data: { nome, email, cargo }
-        });
-        res.json(func);
-    } catch (err) {
-        console.error(err);
-        res.status(500).json({ error: 'Erro ao atualizar funcionário' });
-    }
-});
 
 // ── MESAS ──
 app.get('/api/mesas', async (req, res) => {
@@ -391,11 +370,21 @@ app.post('/api/mesas/:id/checkout', async (req, res) => {
             orderBy: { checkin: 'desc' }
         });
         if (!atendimento) return res.status(404).json({ error: 'Atendimento não encontrado' });
+
+        const checkoutTime = new Date();
+        const duracao = Math.round((checkoutTime - new Date(atendimento.checkin)) / 60000);
+
         const [mesa, atendimentoFechado] = await prisma.$transaction([
-            prisma.mesa.update({ where: { mesa_id }, data: { status: 'available' } }),
+            prisma.mesa.update({
+                where: { mesa_id },
+                data: { status: 'available' }
+            }),
             prisma.atendimento.update({
                 where: { atendimento_id: atendimento.atendimento_id },
-                data: { checkout: new Date() }
+                data: {
+                    checkout: checkoutTime,
+                    duracao: duracao < 1 ? 1 : duracao
+                }
             })
         ]);
         res.json({ mesa, atendimento: atendimentoFechado });
@@ -476,6 +465,307 @@ app.post('/api/mesas/:id/pedidos', async (req, res) => {
     } catch (err) {
         console.error(err);
         res.status(500).json({ error: 'Erro ao salvar pedidos' });
+    }
+});
+
+// ── PEDIDOS ATIVOS (cozinha) ──
+app.get('/api/pedidos-ativos', async (req, res) => {
+    try {
+        const atendimentos = await prisma.atendimento.findMany({
+            where: { checkout: null },
+            include: {
+                mesa: true,
+                pedido: {
+                    include: { prato: true },
+                    orderBy: { pedido_id: 'asc' }
+                }
+            },
+            orderBy: { checkin: 'asc' }
+        });
+        const resultado = atendimentos
+            .filter(a => a.pedido.length > 0)
+            .map(a => ({
+                atendimento_id: a.atendimento_id,
+                mesa_id: a.mesa_id,
+                checkin: a.checkin,
+                itens: a.pedido.map(p => ({
+                    pedido_id: p.pedido_id,
+                    nome: p.prato.nome,
+                    quantidade: p.quantidade,
+                    prato_id: p.prato_id
+                }))
+            }));
+        res.json(resultado);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao buscar pedidos ativos' });
+    }
+});
+app.put('/api/pratos/:id/disponibilidade', async (req, res) => {
+    try {
+        const id = parseInt(req.params.id);
+        const { disponivel } = req.body;
+        const prato = await prisma.prato.update({
+            where: { prato_id: id },
+            data: { disponivel }
+        });
+        res.json(prato);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao atualizar disponibilidade' });
+    }
+});
+
+app.post('/api/pagamento', async (req, res) => {
+    try {
+        const { atendimento_id, forma, valor } = req.body;
+        const pagamento = await prisma.pagamento.create({
+            data: {
+                forma,
+                valor,
+                data_pagamento: new Date(),
+                atendimento_id
+            }
+        });
+        res.json(pagamento);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao registrar pagamento' });
+    }
+});
+
+// ── DASHBOARD KPIs ──
+app.get('/api/dashboard', async (req, res) => {
+    try {
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+        const amanha = new Date(hoje);
+        amanha.setDate(amanha.getDate() + 1);
+
+        // Faturamento do dia (soma dos pagamentos de hoje)
+        const pagamentos = await prisma.pagamento.findMany({
+            where: { data_pagamento: { gte: hoje, lt: amanha } }
+        });
+        const faturamento = pagamentos.reduce((s, p) => s + Number(p.valor), 0);
+
+        // Atendimentos do dia
+        const atendimentosHoje = await prisma.atendimento.findMany({
+            where: { checkin: { gte: hoje, lt: amanha } },
+            include: {
+                pedido: { include: { prato: true } }
+            }
+        });
+        const clientesAtendidos = atendimentosHoje.reduce((s, a) => s + a.n_pessoas, 0);
+
+        // Ticket médio
+        const ticketMedio = atendimentosHoje.length > 0
+            ? faturamento / atendimentosHoje.length
+            : 0;
+
+        // Ocupação atual
+        const todasMesas = await prisma.mesa.findMany();
+        const ocupadas   = todasMesas.filter(m => m.status === 'occupied').length;
+        const ocupacao   = {
+            pct:     todasMesas.length > 0 ? Math.round((ocupadas / todasMesas.length) * 100) : 0,
+            ocupadas,
+            total:   todasMesas.length
+        };
+
+        // Top pratos do dia
+        const contagem = {};
+        atendimentosHoje.forEach(a => {
+            a.pedido.forEach(p => {
+                if (!contagem[p.prato_id]) contagem[p.prato_id] = { prato_id: p.prato_id, nome: p.prato.nome, emoji: p.prato.emoji || '🍽️', quantidade: 0 };
+                contagem[p.prato_id].quantidade += p.quantidade;
+            });
+        });
+        const topPratos = Object.values(contagem)
+            .sort((a, b) => b.quantidade - a.quantidade)
+            .slice(0, 5);
+
+        // Atividade recente — checkins e checkouts do dia
+        const atividade = [];
+        atendimentosHoje.forEach(a => {
+            atividade.push({ tipo: 'checkin', mesa: a.mesa_id, pessoas: a.n_pessoas, hora: a.checkin });
+            if (a.checkout) {
+                const total = a.pedido.reduce((s, p) => s + Number(p.prato.preco) * p.quantidade, 0);
+                atividade.push({ tipo: 'checkout', mesa: a.mesa_id, total, hora: a.checkout });
+            }
+        });
+        atividade.sort((a, b) => new Date(b.hora) - new Date(a.hora));
+
+        res.json({ faturamento, clientesAtendidos, ticketMedio, ocupacao, topPratos, atividade: atividade.slice(0, 8) });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao buscar dashboard' });
+    }
+});
+
+// ── FATURAMENTO - ÚLTIMOS 7 DIAS ──
+app.get('/api/dashboard/faturamento-7dias', async (req, res) => {
+    try {
+        const dias = [];
+        for (let i = 6; i >= 0; i--) {
+            const data = new Date();
+            data.setDate(data.getDate() - i);
+            data.setHours(0, 0, 0, 0);
+            
+            const proximaData = new Date(data);
+            proximaData.setDate(proximaData.getDate() + 1);
+            
+            const pagamentos = await prisma.pagamento.findMany({
+                where: { data_pagamento: { gte: data, lt: proximaData } }
+            });
+            const valor = pagamentos.reduce((s, p) => s + Number(p.valor), 0);
+            
+            const nomesDia = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
+            dias.push({
+                dia: nomesDia[data.getDay()],
+                valor: Math.round(valor)
+            });
+        }
+        res.json(dias);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao buscar faturamento' });
+    }
+});
+
+// ── VENDAS POR CATEGORIA ──
+app.get('/api/dashboard/vendas-categoria', async (req, res) => {
+    try {
+        const hoje = new Date();
+        hoje.setHours(0, 0, 0, 0);
+        const amanha = new Date(hoje);
+        amanha.setDate(amanha.getDate() + 1);
+
+        // Obter todos os pedidos de hoje com detalhes dos pratos
+        const atendimentos = await prisma.atendimento.findMany({
+            where: { checkin: { gte: hoje, lt: amanha } },
+            include: {
+                pedido: { include: { prato: true } }
+            }
+        });
+
+        // Contar vendas por categoria
+        const categorias = {};
+        let totalVendas = 0;
+
+        atendimentos.forEach(a => {
+            a.pedido.forEach(p => {
+                const cat = p.prato.categoria || 'Outros';
+                if (!categorias[cat]) {
+                    categorias[cat] = 0;
+                }
+                categorias[cat] += Number(p.prato.preco) * p.quantidade;
+                totalVendas += Number(p.prato.preco) * p.quantidade;
+            });
+        });
+
+        // Converter para array e calcular percentuais
+        const resultado = Object.entries(categorias)
+            .map(([categoria, valor]) => ({
+                categoria,
+                valor: Math.round(valor * 100) / 100,
+                percentual: totalVendas > 0 ? Math.round((valor / totalVendas) * 100) : 0
+            }))
+            .sort((a, b) => b.valor - a.valor);
+
+        res.json({
+            total: Math.round(totalVendas * 100) / 100,
+            categorias: resultado
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao buscar vendas por categoria' });
+    }
+});
+
+// ── AUDIT PEDIDOS (admin) ──
+app.get('/api/audit/pedidos', async (req, res) => {
+    try {
+        const { de, ate } = req.query;
+        const where = {};
+        if (de && ate) {
+            const inicio = new Date(de);
+            const fim    = new Date(ate);
+            fim.setHours(23, 59, 59, 999);
+            where.checkin = { gte: inicio, lte: fim };
+        }
+        const atendimentos = await prisma.atendimento.findMany({
+            where,
+            include: {
+                pedido:     { include: { prato: true }, orderBy: { pedido_id: 'asc' } },
+                funcionario: true
+            },
+            orderBy: { checkin: 'desc' },
+            take: 100
+        });
+        const resultado = atendimentos.map(a => {
+            const total = a.pedido.reduce((s, p) => s + Number(p.prato.preco) * p.quantidade, 0);
+            return {
+                atendimento_id: a.atendimento_id,
+                mesa:           a.mesa_id,
+                checkin:        a.checkin,
+                checkout:       a.checkout,
+                n_pessoas:      a.n_pessoas,
+                responsavel:    a.funcionario?.nome || '—',
+                total,
+                itens: a.pedido.map(p => ({
+                    nome:       p.prato.nome,
+                    quantidade: p.quantidade,
+                    subtotal:   Number(p.prato.preco) * p.quantidade
+                }))
+            };
+        });
+        res.json(resultado);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao buscar audit de pedidos' });
+    }
+});
+
+// ── AUDIT MESAS (admin) ──
+app.get('/api/audit/mesas', async (req, res) => {
+    try {
+        const { de, ate } = req.query;
+        const where = {};
+        if (de && ate) {
+            const inicio = new Date(de);
+            const fim    = new Date(ate);
+            fim.setHours(23, 59, 59, 999);
+            where.checkin = { gte: inicio, lte: fim };
+        }
+        const atendimentos = await prisma.atendimento.findMany({
+            where,
+            include: { funcionario: true },
+            orderBy: { checkin: 'desc' },
+            take: 200
+        });
+        const eventos = [];
+        atendimentos.forEach(a => {
+            eventos.push({
+                evento:      'checkin',
+                mesa:        a.mesa_id,
+                pessoas:     a.n_pessoas,
+                responsavel: a.funcionario?.nome || '—',
+                hora:        a.checkin
+            });
+            if (a.checkout) {
+                eventos.push({
+                    evento:      'checkout',
+                    mesa:        a.mesa_id,
+                    pessoas:     a.n_pessoas,
+                    responsavel: a.funcionario?.nome || '—',
+                    hora:        a.checkout
+                });
+            }
+        });
+        eventos.sort((a, b) => new Date(b.hora) - new Date(a.hora));
+        res.json(eventos);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Erro ao buscar audit de mesas' });
     }
 });
 
