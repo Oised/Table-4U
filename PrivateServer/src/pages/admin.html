@@ -8,7 +8,6 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles/shared.css">
 
-    <!-- Tema aplicado antes do paint para evitar flash -->
     <script>
         (function () {
             var t = localStorage.getItem('t4u-private-theme') || 'light';
@@ -100,7 +99,7 @@
         .activity-text strong { color: var(--text-primary); font-weight: 600; }
         .activity-time { font-family: 'IBM Plex Mono', monospace; font-size: 0.68rem; color: var(--text-muted); flex-shrink: 0; margin-top: 2px; }
 
-        /* ── PLACEHOLDER (seções vazias) ── */
+        /* ── PLACEHOLDER ── */
         .placeholder-page { display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 480px; text-align: center; padding: 48px 24px; }
         .placeholder-icon { width: 64px; height: 64px; border-radius: 18px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; margin-bottom: 20px; }
         .placeholder-icon svg { width: 28px; height: 28px; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
@@ -118,14 +117,12 @@
         .btn-add-func:hover { background: var(--accent-hover); }
         .btn-add-func:active { transform: scale(0.97); }
         .btn-add-func svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-
         .func-table-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); overflow: hidden; }
         .func-search-bar { padding: 14px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
         .func-search-bar svg { width: 15px; height: 15px; fill: none; stroke: var(--text-muted); stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
         .func-search-input { flex: 1; border: none; background: none; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; color: var(--text-primary); outline: none; }
         .func-search-input::placeholder { color: var(--text-muted); }
         .func-count-badge { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-muted); background: var(--accent-subtle); padding: 3px 8px; border-radius: 20px; flex-shrink: 0; }
-
         .func-table { width: 100%; border-collapse: collapse; }
         .func-table thead tr { border-bottom: 1px solid var(--border); }
         .func-table th { padding: 10px 20px; text-align: left; font-size: 0.68rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--text-muted); white-space: nowrap; }
@@ -206,18 +203,12 @@
         .btn-add-prato:hover { background: var(--accent-hover); }
         .btn-add-prato:active { transform: scale(0.97); }
         .btn-add-prato svg { width: 15px; height: 15px; fill: none; stroke: currentColor; stroke-width: 2.5; stroke-linecap: round; stroke-linejoin: round; }
-
-        /* stats strip */
         .menu-stats-strip { display: flex; gap: 8px; margin-bottom: 18px; flex-wrap: wrap; }
         .menu-stat { display: flex; align-items: center; gap: 7px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 9px; padding: 7px 13px; font-size: 0.78rem; box-shadow: var(--shadow-card); }
         .menu-stat-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
         .menu-stat-label { color: var(--text-secondary); }
         .menu-stat-val { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--text-primary); margin-left: 2px; }
-
-        /* grid */
         .menu-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 14px; }
-
-        /* prato card */
         .prato-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; box-shadow: var(--shadow-card); display: flex; flex-direction: column; overflow: hidden; transition: transform 0.15s, box-shadow 0.15s; }
         .prato-card:hover { transform: translateY(-2px); box-shadow: 0 4px 20px rgba(0,0,0,0.09); }
         .prato-card.unavailable { opacity: 0.72; }
@@ -242,8 +233,6 @@
         .prato-btn.edit:hover { background: var(--border); }
         .prato-btn.del { background: var(--status-unavailable-bg); color: var(--status-unavailable); }
         .prato-btn.del:hover { background: rgba(220,38,38,0.16); }
-
-        /* menu empty */
         .menu-empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 80px 24px; text-align: center; }
         .menu-empty-icon { width: 60px; height: 60px; border-radius: 16px; background: var(--accent-subtle); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
         .menu-empty-icon svg { width: 26px; height: 26px; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
@@ -253,7 +242,7 @@
         /* toggle confirm modal */
         .tmodal-icon-wrap { width: 44px; height: 44px; border-radius: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; transition: background 0.2s; }
         .tmodal-icon-wrap svg { width: 20px; height: 20px; fill: none; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; transition: stroke 0.2s; }
-        .tmodal-icon-wrap.activate   { background: var(--status-available-bg);   }
+        .tmodal-icon-wrap.activate   { background: var(--status-available-bg); }
         .tmodal-icon-wrap.activate svg { stroke: var(--status-available); }
         .tmodal-icon-wrap.deactivate { background: var(--status-unavailable-bg); }
         .tmodal-icon-wrap.deactivate svg { stroke: var(--status-unavailable); }
@@ -323,10 +312,6 @@
         .audit-header-left { display: flex; flex-direction: column; gap: 2px; }
         .audit-header-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
         .audit-header-sub { font-size: 0.78rem; color: var(--text-muted); }
-        .audit-header-actions { display: flex; gap: 8px; flex-shrink: 0; }
-        .audit-clear-btn { display: inline-flex; align-items: center; gap: 6px; padding: 8px 14px; border-radius: 9px; border: 1.5px solid var(--border); background: var(--bg-card); color: var(--text-muted); font-family: 'DM Sans', sans-serif; font-size: 0.8rem; font-weight: 500; cursor: pointer; transition: background 0.15s, color 0.15s, border-color 0.15s; }
-        .audit-clear-btn:hover { background: var(--status-unavailable-bg); color: var(--status-unavailable); border-color: var(--status-unavailable-border); }
-        .audit-clear-btn svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .audit-filters { display: flex; align-items: center; gap: 16px; margin-bottom: 14px; flex-wrap: wrap; }
         .audit-filter-group { display: flex; align-items: center; gap: 8px; }
         .audit-filter-label { font-size: 0.72rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.07em; color: var(--text-muted); white-space: nowrap; }
@@ -372,32 +357,22 @@
         .audit-empty-icon svg { width: 22px; height: 22px; fill: none; stroke: var(--accent); stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }
         .audit-empty-title { font-size: 0.9rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
         .audit-empty-desc { font-size: 0.8rem; color: var(--text-muted); max-width: 300px; line-height: 1.6; }
-
-        /* ── AUDIT TABS ── */
         .audit-tabs { display: flex; gap: 4px; margin-bottom: 20px; border-bottom: 1.5px solid var(--border); padding-bottom: 0; }
         .audit-tab { display: inline-flex; align-items: center; gap: 7px; padding: 10px 16px; border: none; background: none; font-family: 'DM Sans', sans-serif; font-size: 0.83rem; font-weight: 600; color: var(--text-muted); cursor: pointer; border-bottom: 2.5px solid transparent; margin-bottom: -1.5px; transition: color 0.15s, border-color 0.15s; border-radius: 0; }
         .audit-tab svg { width: 14px; height: 14px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; }
         .audit-tab:hover { color: var(--text-primary); }
         .audit-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
         .audit-tab-count { font-family: 'IBM Plex Mono', monospace; font-size: 0.65rem; font-weight: 600; background: var(--accent-subtle); color: var(--accent); padding: 1px 6px; border-radius: 20px; min-width: 20px; text-align: center; }
-        .audit-tab.active .audit-tab-count { background: rgba(44,62,80,0.12); }
-        [data-theme="dark"] .audit-tab.active .audit-tab-count { background: rgba(58,110,165,0.2); }
         .audit-tab-panel { display: none; }
         .audit-tab-panel.active { display: block; }
-
-        /* date filter */
         .audit-date-input { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 9px; padding: 6px 11px; font-family: 'DM Sans', sans-serif; font-size: 0.78rem; color: var(--text-primary); outline: none; cursor: pointer; transition: border-color 0.15s; }
         .audit-date-input:focus { border-color: var(--border-focus); }
-
-        /* new audit entry action types */
         .audit-entry-icon.adicionar { background: var(--status-occupied-bg); color: var(--status-occupied); }
         .audit-entry-icon.editar { background: var(--status-warning-bg); color: var(--status-warning); }
         .audit-entry-icon.remover { background: var(--status-unavailable-bg); color: var(--status-unavailable); }
         .audit-entry-action.adicionar { background: var(--status-occupied-bg); color: var(--status-occupied); border: 1px solid var(--status-occupied-border); }
         .audit-entry-action.editar { background: var(--status-warning-bg); color: var(--status-warning); border: 1px solid var(--status-warning-border); }
         .audit-entry-action.remover { background: var(--status-unavailable-bg); color: var(--status-unavailable); border: 1px solid var(--status-unavailable-border); }
-
-        /* diff block */
         .audit-entry-diff { font-size: 0.75rem; color: var(--text-muted); background: var(--bg-input); border: 1px solid var(--border); border-radius: 7px; padding: 6px 10px; margin-bottom: 6px; line-height: 1.6; }
         .audit-diff-row { display: flex; gap: 6px; align-items: baseline; }
         .audit-diff-field { font-weight: 600; color: var(--text-secondary); min-width: 60px; }
@@ -454,19 +429,19 @@
             <span class="nav-label">Histórico</span>
         </button>
 
-        <div class="nav-section-label">Modos</div>
-        <button class="nav-item" data-tooltip="Modo Garçom" onclick="window.location.href='waiter.html'">
-            <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
-            <span class="nav-label">Modo Garçom</span>
-        </button>
-        <button class="nav-item" data-tooltip="Modo Cozinha" onclick="window.location.href='kitchen.html'">
-            <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 0-2 2h-3"/></svg>
-            <span class="nav-label">Modo Cozinha</span>
-        </button>
-        <button class="nav-item" data-tooltip="Modo Recepção" onclick="window.location.href='reception.html'">
-            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1 19.79 19.79 0 0 1 1.56 4.5 2 2 0 0 1 3.54 2.32h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l1.78-1.78a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
-            <span class="nav-label">Modo Recepção</span>
-        </button>
+      <div class="nav-section-label">Modos</div>
+<button class="nav-item" data-tooltip="Modo Garçom" onclick="window.location.href='waiter.html'">
+    <svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 1 0-16 0"/></svg>
+    <span class="nav-label">Modo Garçom</span>
+</button>
+<button class="nav-item" data-tooltip="Modo Cozinha" onclick="window.location.href='kitchen.html'">
+    <svg viewBox="0 0 24 24"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3M3 16v3a2 2 0 0 0 2 2h3m13-5v3a2 2 0 0 0-2 2h-3"/></svg>
+    <span class="nav-label">Modo Cozinha</span>
+</button>
+<button class="nav-item" data-tooltip="Modo Recepção" onclick="window.location.href='reception.html'">
+    <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 13.1 19.79 19.79 0 0 1 1.56 4.5 2 2 0 0 1 3.54 2.32h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L7.91 9.91a16 16 0 0 0 6.09 6.09l1.78-1.78a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+    <span class="nav-label">Modo Recepção</span>
+</button>
     </div>
     <div class="sidebar-footer">
         <button class="nav-item logout" onclick="logout()" data-tooltip="Sair">
@@ -542,7 +517,6 @@
                         <div class="kpi-delta down"><svg viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9"/></svg> -3% vs semana</div>
                     </div>
                 </div>
-
                 <div class="charts-row">
                     <div class="chart-card">
                         <div class="chart-header"><div><div class="chart-title">Faturamento — últimos 7 dias</div><div class="chart-subtitle">Valores em R$</div></div></div>
@@ -572,7 +546,6 @@
                             </svg>
                         </div>
                     </div>
-
                     <div class="chart-card">
                         <div class="chart-header"><div><div class="chart-title">Vendas por categoria</div><div class="chart-subtitle">Distribuição de hoje</div></div></div>
                         <div class="donut-wrap">
@@ -594,15 +567,14 @@
                         </div>
                     </div>
                 </div>
-
                 <div class="bottom-row">
                     <div class="list-card">
                         <div class="list-title">🍽️ Pratos mais pedidos hoje</div>
-                        <div class="list-row"><span class="list-rank">#1</span><div class="list-icon">🥩</div><div style="flex:1; min-width:0"><div class="list-name">Picanha grelhada</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:88%"></div></div></div><span class="list-amount">×22</span></div>
-                        <div class="list-row"><span class="list-rank">#2</span><div class="list-icon">🍝</div><div style="flex:1; min-width:0"><div class="list-name">Massa ao sugo</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:65%"></div></div></div><span class="list-amount">×16</span></div>
-                        <div class="list-row"><span class="list-rank">#3</span><div class="list-icon">🍤</div><div style="flex:1; min-width:0"><div class="list-name">Camarão na manteiga</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:52%"></div></div></div><span class="list-amount">×13</span></div>
-                        <div class="list-row"><span class="list-rank">#4</span><div class="list-icon">🥗</div><div style="flex:1; min-width:0"><div class="list-name">Salada tropical</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:38%"></div></div></div><span class="list-amount">×9</span></div>
-                        <div class="list-row"><span class="list-rank">#5</span><div class="list-icon">🍰</div><div style="flex:1; min-width:0"><div class="list-name">Petit gateau</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:28%"></div></div></div><span class="list-amount">×7</span></div>
+                        <div class="list-row"><span class="list-rank">#1</span><div class="list-icon">🥩</div><div style="flex:1;min-width:0"><div class="list-name">Picanha grelhada</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:88%"></div></div></div><span class="list-amount">×22</span></div>
+                        <div class="list-row"><span class="list-rank">#2</span><div class="list-icon">🍝</div><div style="flex:1;min-width:0"><div class="list-name">Massa ao sugo</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:65%"></div></div></div><span class="list-amount">×16</span></div>
+                        <div class="list-row"><span class="list-rank">#3</span><div class="list-icon">🍤</div><div style="flex:1;min-width:0"><div class="list-name">Camarão na manteiga</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:52%"></div></div></div><span class="list-amount">×13</span></div>
+                        <div class="list-row"><span class="list-rank">#4</span><div class="list-icon">🥗</div><div style="flex:1;min-width:0"><div class="list-name">Salada tropical</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:38%"></div></div></div><span class="list-amount">×9</span></div>
+                        <div class="list-row"><span class="list-rank">#5</span><div class="list-icon">🍰</div><div style="flex:1;min-width:0"><div class="list-name">Petit gateau</div><div class="list-bar-wrap"><div class="list-bar-fill" style="width:28%"></div></div></div><span class="list-amount">×7</span></div>
                     </div>
                     <div class="list-card">
                         <div class="list-title">⚡ Atividade recente</div>
@@ -621,14 +593,14 @@
         <!-- RESTAURANTE -->
         <div class="section-view" id="section-restaurante">
             <div class="content-inner">
-                <div class="placeholder-page"><div class="placeholder-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="placeholder-title">Informações do Restaurante</div><div class="placeholder-desc">Esta seção exibirá dados detalhados do restaurante: configurações gerais, horários de funcionamento, capacidade, fotos e informações de contato.</div><div class="placeholder-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Em implementação</div></div>
+                <div class="placeholder-page"><div class="placeholder-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="placeholder-title">Informações do Restaurante</div><div class="placeholder-desc">Esta seção exibirá dados detalhados do restaurante.</div><div class="placeholder-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Em implementação</div></div>
             </div>
         </div>
 
         <!-- FATURAMENTO -->
         <div class="section-view" id="section-faturamento">
             <div class="content-inner">
-                <div class="placeholder-page"><div class="placeholder-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="placeholder-title">Faturamento & Financeiro</div><div class="placeholder-desc">Esta seção exibirá relatórios financeiros completos: faturamento por período, comparativos mensais, custos, margem de lucro e exportação de dados.</div><div class="placeholder-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Em implementação</div></div>
+                <div class="placeholder-page"><div class="placeholder-icon"><svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="placeholder-title">Faturamento &amp; Financeiro</div><div class="placeholder-desc">Esta seção exibirá relatórios financeiros completos.</div><div class="placeholder-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Em implementação</div></div>
             </div>
         </div>
 
@@ -667,35 +639,29 @@
             </div>
         </div>
 
-        <!-- FILA E RESERVAS (Integrado ao Banco Público) -->
+        <!-- FILA E RESERVAS -->
         <div class="section-view" id="section-filareservas">
             <div class="content-inner">
                 <div class="func-header">
                     <div class="func-header-left">
-                        <div class="func-header-title">Fila de Espera & Reservas</div>
+                        <div class="func-header-title">Fila de Espera &amp; Reservas</div>
                         <div class="func-header-sub">Acompanhe os clientes aguardando e as reservas agendadas</div>
                     </div>
                 </div>
-                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px;">
-                    <!-- Card Fila -->
-                    <div class="list-card" style="background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card);">
-                        <div class="list-title" style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+                <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:20px;">
+                    <div class="list-card" style="background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--shadow-card);">
+                        <div class="list-title" style="font-size:0.95rem;font-weight:600;color:var(--text-primary);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
                             👥 Fila Atual
-                            <span style="background: var(--accent); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem;" id="fila-count-dash">0</span>
+                            <span style="background:var(--accent);color:white;padding:2px 8px;border-radius:20px;font-size:0.75rem;" id="fila-count-dash">0</span>
                         </div>
-                        <div id="fila-container" style="display: flex; flex-direction: column; gap: 10px;">
-                            <div style="color: var(--text-muted); text-align: center; padding: 20px;">Carregando...</div>
-                        </div>
+                        <div id="fila-container" style="display:flex;flex-direction:column;gap:10px;"><div style="color:var(--text-muted);text-align:center;padding:20px;">Carregando...</div></div>
                     </div>
-                    <!-- Card Reservas -->
-                    <div class="list-card" style="background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 20px; box-shadow: var(--shadow-card);">
-                        <div class="list-title" style="font-size: 0.95rem; font-weight: 600; color: var(--text-primary); margin-bottom: 14px; display: flex; justify-content: space-between; align-items: center;">
+                    <div class="list-card" style="background:var(--bg-card);border:1.5px solid var(--border);border-radius:14px;padding:20px;box-shadow:var(--shadow-card);">
+                        <div class="list-title" style="font-size:0.95rem;font-weight:600;color:var(--text-primary);margin-bottom:14px;display:flex;justify-content:space-between;align-items:center;">
                             📅 Reservas
-                            <span style="background: var(--accent); color: white; padding: 2px 8px; border-radius: 20px; font-size: 0.75rem;" id="reservas-count-dash">0</span>
+                            <span style="background:var(--accent);color:white;padding:2px 8px;border-radius:20px;font-size:0.75rem;" id="reservas-count-dash">0</span>
                         </div>
-                        <div id="reservas-container" style="display: flex; flex-direction: column; gap: 10px;">
-                            <div style="color: var(--text-muted); text-align: center; padding: 20px;">Carregando...</div>
-                        </div>
+                        <div id="reservas-container" style="display:flex;flex-direction:column;gap:10px;"><div style="color:var(--text-muted);text-align:center;padding:20px;">Carregando...</div></div>
                     </div>
                 </div>
             </div>
@@ -737,17 +703,16 @@
     </main>
 </div>
 
-<!-- MODAIS (FUNCIONÁRIOS) -->
+<!-- MODAIS FUNCIONÁRIOS -->
 <div class="fmodal-overlay" id="modal-add" onclick="closeModalOnBg(event,'modal-add')">
     <div class="fmodal"><div class="fmodal-header"><div class="fmodal-icon" id="add-modal-icon"><svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg></div><div><div class="fmodal-title" id="add-modal-title">Adicionar funcionário</div><div class="fmodal-subtitle" id="add-modal-subtitle">Preencha os dados do novo membro</div></div><button class="fmodal-close" onclick="closeModal('modal-add')" aria-label="Fechar"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
         <div class="fmodal-body"><input type="hidden" id="edit-id"><div class="fmodal-field"><label class="fmodal-label" for="input-nome">Nome completo</label><input class="fmodal-input" id="input-nome" type="text" placeholder="Ex: João da Silva" autocomplete="off"><span class="fmodal-error" id="error-nome">Informe o nome do funcionário.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-email">E-mail (login)</label><input class="fmodal-input" id="input-email" type="email" placeholder="Ex: joao@restaurante.com" autocomplete="off"><span class="fmodal-error" id="error-email">Informe um e-mail válido.</span></div><div class="fmodal-field"><label class="fmodal-label" for="input-cargo">Cargo</label><select class="fmodal-select" id="input-cargo"><option value="garcom">Garçom</option><option value="cozinha">Cozinha</option><option value="recepcao">Recepção</option></select></div><div class="fmodal-field" id="edit-motivo-field" style="display:none"><label class="fmodal-label" for="input-edit-motivo">Motivo da edição <span style="color:var(--status-unavailable)">*</span></label><textarea class="tmodal-motivo-input" id="input-edit-motivo" placeholder="Ex: Promoção de cargo, correção de dados." maxlength="200" rows="3"></textarea><span class="tmodal-motivo-error" id="error-edit-motivo">Informe o motivo antes de salvar.</span></div></div>
         <div class="fmodal-actions"><button class="fmodal-btn secondary" onclick="closeModal('modal-add')">Cancelar</button><button class="fmodal-btn primary" id="add-modal-confirm-btn" onclick="confirmAddEdit()">Adicionar</button></div>
     </div>
 </div>
-
 <div class="fmodal-overlay" id="modal-remove" onclick="closeModalOnBg(event,'modal-remove')">
     <div class="fmodal"><div class="fmodal-header"><div class="fmodal-icon danger"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/><path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg></div><div><div class="fmodal-title">Remover funcionário</div><div class="fmodal-subtitle">Esta ação não pode ser desfeita</div></div><button class="fmodal-close" onclick="closeModal('modal-remove')" aria-label="Fechar"><svg viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button></div>
-        <div class="fmodal-body"><p class="fmodal-confirm-text" id="remove-confirm-text">Tem certeza que deseja remover este funcionário? O acesso ao sistema será revogado imediatamente.</p><div class="fmodal-field"><label class="fmodal-label" for="remove-func-motivo">Motivo da remoção <span style="color:var(--status-unavailable)">*</span></label><textarea class="tmodal-motivo-input" id="remove-func-motivo" placeholder="Ex: Funcionário desligado da empresa." maxlength="200" rows="3"></textarea><span class="tmodal-motivo-error" id="remove-func-motivo-error">Informe o motivo antes de confirmar.</span></div></div>
+        <div class="fmodal-body"><p class="fmodal-confirm-text" id="remove-confirm-text">Tem certeza?</p><div class="fmodal-field"><label class="fmodal-label" for="remove-func-motivo">Motivo da remoção <span style="color:var(--status-unavailable)">*</span></label><textarea class="tmodal-motivo-input" id="remove-func-motivo" placeholder="Ex: Funcionário desligado da empresa." maxlength="200" rows="3"></textarea><span class="tmodal-motivo-error" id="remove-func-motivo-error">Informe o motivo antes de confirmar.</span></div></div>
         <div class="fmodal-actions"><button class="fmodal-btn secondary" onclick="closeModal('modal-remove')">Cancelar</button><button class="fmodal-btn danger" onclick="confirmRemove()">Sim, remover</button></div>
     </div>
 </div>
@@ -781,323 +746,257 @@
 <script src="../scripts/shared.js" defer></script>
 
 <script>
-    // ── NAVEGAÇÃO ──
-    const sectionTitles = {
-        dashboard: 'Dashboard', restaurante: 'Restaurante', faturamento: 'Faturamento',
-        menu: 'Pratos / Menu', funcionarios: 'Funcionários', filareservas: 'Fila e Reservas', auditlog: 'Histórico de alterações'
-    };
-    const sectionIcons = {
-        dashboard: `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
-        restaurante: `<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
-        faturamento: `<svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
-        menu: `<svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>`,
-        funcionarios: `<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`,
-        filareservas: `<svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>`,
-        auditlog: `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg>`
-    };
-    function showSection(id, navEl) {
-        document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
-        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-        document.getElementById('section-' + id).classList.add('active');
-        if (navEl) navEl.classList.add('active');
-        document.getElementById('topbar-title').textContent = sectionTitles[id] || id;
-        document.getElementById('topbar-icon').innerHTML = sectionIcons[id] || '';
-        if (id === 'auditlog') { updateAuditTabCounts(); renderAuditLog(); }
-    }
+// ── NAVEGAÇÃO ──
+const sectionTitles = { dashboard:'Dashboard', restaurante:'Restaurante', faturamento:'Faturamento', menu:'Pratos / Menu', funcionarios:'Funcionários', filareservas:'Fila e Reservas', auditlog:'Histórico de alterações' };
+const sectionIcons  = {
+    dashboard:    `<svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/></svg>`,
+    restaurante:  `<svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>`,
+    faturamento:  `<svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>`,
+    menu:         `<svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg>`,
+    funcionarios: `<svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>`,
+    filareservas: `<svg viewBox="0 0 24 24"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/></svg>`,
+    auditlog:     `<svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>`
+};
+function showSection(id, navEl) {
+    document.querySelectorAll('.section-view').forEach(v => v.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+    document.getElementById('section-' + id).classList.add('active');
+    if (navEl) navEl.classList.add('active');
+    document.getElementById('topbar-title').textContent = sectionTitles[id] || id;
+    document.getElementById('topbar-icon').innerHTML   = sectionIcons[id]  || '';
+    if (id === 'menu') fetchPratos();
+    if (id === 'auditlog') { updateAuditTabCounts(); renderAuditLog(); }
+}
 
     // ── FUNCIONÁRIOS (lógica original) ──
     const cargoLabels = { admin: { label: 'Administrador', cls: 'admin' }, garcom: { label: 'Garçom', cls: 'garcom' }, cozinha: { label: 'Cozinha', cls: 'cozinha' }, recepcao: { label: 'Recepção', cls: 'recepcao' } };
     let funcionarios = [];
     let pendingRemoveId = null, editingId = null;
 
-    async function fetchFuncionarios() {
-        try {
-            const res = await fetch('/api/funcionarios');
-            const dbFuncs = await res.json();
-            funcionarios = dbFuncs.map(f => ({
-                id: f.funcionario_id,
-                nome: f.nome,
-                email: f.email,
-                cargo: f.cargo || 'garcom'   // usa o cargo real, com fallback
-            }));
-            renderFuncionarios();
-        } catch (err) {
-            console.error('Erro ao buscar funcionários do banco:', err);
-        }
-    }
-
-    function getInitials(nome) { const parts = nome.trim().split(' ').filter(Boolean); if (parts.length === 1) return parts[0][0].toUpperCase(); return (parts[0][0] + parts[parts.length-1][0]).toUpperCase(); }
-    function renderFuncionarios() {
-        const q = (document.getElementById('func-search').value || '').toLowerCase();
-        const list = funcionarios.filter(f => f.nome.toLowerCase().includes(q) || f.email.toLowerCase().includes(q));
-        document.getElementById('func-count').textContent = `${list.length} funcionário${list.length !== 1 ? 's' : ''}`;
-        const tbody = document.getElementById('func-tbody');
-        if (!list.length) { tbody.innerHTML = `<tr><td colspan="3"><div class="func-empty"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>Nenhum funcionário encontrado.</div></td></tr>`; return; }
-        tbody.innerHTML = list.map(f => { 
-            const cargo = cargoLabels[f.cargo] || { label: f.cargo, cls: 'garcom' }; 
-            const idArg = typeof f.id === 'string' ? `'${f.id}'` : f.id;
-            return `<tr><td><div class="func-name-cell"><div class="func-avatar">${getInitials(f.nome)}</div><div><div class="func-name">${escHtml(f.nome)}</div><div class="func-email">${escHtml(f.email)}</div></div></div></td><td><span class="func-role-badge ${cargo.cls}">${cargo.label}</span></td><td><div class="func-actions"><button class="func-btn edit" onclick="openEditModal(${idArg})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Gerenciar</button><button class="func-btn remove" onclick="openRemoveModal(${idArg})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6"/><path d="M14 11v6"/></svg>Remover</button></div></td></tr>`; 
-        }).join('');
-    }
-    function openAddModal() { editingId = null; document.getElementById('edit-id').value = ''; document.getElementById('input-nome').value = ''; document.getElementById('input-email').value = ''; document.getElementById('input-cargo').value = 'garcom'; document.getElementById('input-edit-motivo').value = ''; document.getElementById('edit-motivo-field').style.display = 'none'; clearFuncErrors(); document.getElementById('add-modal-title').textContent = 'Adicionar funcionário'; document.getElementById('add-modal-subtitle').textContent = 'Preencha os dados do novo membro'; document.getElementById('add-modal-confirm-btn').textContent = 'Adicionar'; document.getElementById('add-modal-icon').innerHTML = `<svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/></svg>`; document.getElementById('add-modal-icon').classList.remove('danger'); openModal('modal-add'); setTimeout(()=>document.getElementById('input-nome').focus(),80); }
-    function openEditModal(id) { const f = funcionarios.find(x=>x.id===id); if(!f)return; editingId=id; document.getElementById('edit-id').value=id; document.getElementById('input-nome').value=f.nome; document.getElementById('input-email').value=f.email; document.getElementById('input-cargo').value=f.cargo; document.getElementById('input-edit-motivo').value=''; document.getElementById('edit-motivo-field').style.display=''; clearFuncErrors(); document.getElementById('add-modal-title').textContent='Editar funcionário'; document.getElementById('add-modal-subtitle').textContent='Altere os dados do funcionário'; document.getElementById('add-modal-confirm-btn').textContent='Salvar alterações'; document.getElementById('add-modal-icon').innerHTML=`<svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>`; document.getElementById('add-modal-icon').classList.remove('danger'); openModal('modal-add'); setTimeout(()=>document.getElementById('input-nome').focus(),80); }
-    
-    async function confirmAddEdit() { 
-        let nome=document.getElementById('input-nome').value.trim(), email=document.getElementById('input-email').value.trim(), cargo=document.getElementById('input-cargo').value, valid=true; 
-        clearFuncErrors(); 
-        if(!nome){ showFuncError('error-nome','input-nome'); valid=false; } 
-        if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showFuncError('error-email','input-email'); valid=false; } 
-        if(editingId){ 
-            let motivo=document.getElementById('input-edit-motivo').value.trim(); 
-            if(!motivo){ document.getElementById('error-edit-motivo').classList.add('visible'); document.getElementById('input-edit-motivo').classList.add('error'); valid=false; } 
-        } 
-        if(!valid) return; 
-
-        if(editingId){ 
-            let f=funcionarios.find(x=>x.id===editingId); 
-            if(f){ 
-                let diff=[]; 
-                const campoLabels={nome:'Nome',email:'E-mail',cargo:'Cargo'}; 
-                const cargoPtBR=k=>cargoLabels[k]?.label||k; 
-                if(f.nome!==nome) diff.push({campo:campoLabels.nome,de:f.nome,para:nome}); 
-                if(f.email!==email) diff.push({campo:campoLabels.email,de:f.email,para:email}); 
-                if(f.cargo!==cargo) diff.push({campo:campoLabels.cargo,de:cargoPtBR(f.cargo),para:cargoPtBR(cargo)}); 
-                let motivo=document.getElementById('input-edit-motivo').value.trim(); 
-                try {
-                    const req = await fetch('/api/funcionarios/' + editingId, {
-                        method: 'PUT',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({ nome, email, cargo })
-                    });
-                    if(req.ok) {
-                        f.nome=nome; f.email=email; f.cargo=cargo; 
-                        writeAuditFunc({funcionario:nome,email,cargo,acao:'editar',motivo,diff,usuario:'Admin'}); 
-                        showToast(`✓ ${nome} atualizado com sucesso`);
-                        closeModal('modal-add'); 
-                        renderFuncionarios(); 
-                    } else {
-                        showToast(`❌ Erro ao atualizar funcionário`);
-                    }
-                } catch(e) {
-                    console.error(e);
-                    showToast(`❌ Erro ao atualizar funcionário`);
-                }
-            } 
-        } else { 
-            // Save to DB
-            try {
-                const req = await fetch('/api/funcionarios', {
-                    method: 'POST',
-                    headers: { 'Content-Type': 'application/json' },
-                    body: JSON.stringify({ nome, email, cargo })
-                });
-                if(req.ok) {
-                    writeAuditFunc({funcionario:nome,email,cargo,acao:'adicionar',usuario:'Admin'}); 
-                    showToast(`✓ ${nome} adicionado com sucesso (Salvo no Banco!)`); 
-                    closeModal('modal-add');
-                    fetchFuncionarios();
-                } else {
-                    showToast(`❌ Erro ao salvar funcionário`);
-                }
-            } catch(e) {
-                console.error(e);
-            }
-        } 
-    }
-    
-    function openRemoveModal(id){ let f=funcionarios.find(x=>x.id===id); if(!f)return; pendingRemoveId=id; document.getElementById('remove-confirm-text').innerHTML=`Tem certeza que deseja remover <strong>${escHtml(f.nome)}</strong> (${escHtml(f.email)})? O acesso ao sistema será revogado imediatamente.`; document.getElementById('remove-func-motivo').value=''; document.getElementById('remove-func-motivo-error').classList.remove('visible'); document.getElementById('remove-func-motivo').classList.remove('error'); openModal('modal-remove'); }
-    
-    async function confirmRemove() {
-        let f = funcionarios.find(x => x.id === pendingRemoveId);
-        if (!f) return;
-        let motivo = document.getElementById('remove-func-motivo').value.trim();
-        if (!motivo) {
-            document.getElementById('remove-func-motivo-error').classList.add('visible');
-            document.getElementById('remove-func-motivo').classList.add('error');
-            return;
-        }
-        let nome = f.nome, email = f.email, cargo = f.cargo;
-        try {
-            const req = await fetch('/api/funcionarios/' + pendingRemoveId, { method: 'DELETE' });
-            if (req.ok) {
-                showToast(`${nome} removido do sistema`);
-                writeAuditFunc({ funcionario: nome, email, cargo, acao: 'remover', motivo, usuario: 'Admin' });
-                closeModal('modal-remove');
-                fetchFuncionarios();
-            } else {
-                showToast(`❌ Erro ao remover do banco`);
-            }
-        } catch (e) { console.error(e); }
-        pendingRemoveId = null;
-    }
-    function openModal(id){ document.getElementById(id).classList.add('open'); }
-    function closeModal(id){ document.getElementById(id).classList.remove('open'); }
-    function closeModalOnBg(e,id){ if(e.target===document.getElementById(id)) closeModal(id); }
-    function showFuncError(errId,inputId){ document.getElementById(errId).classList.add('visible'); document.getElementById(inputId).classList.add('error'); }
-    function clearFuncErrors(){ ['error-nome','error-email','error-edit-motivo'].forEach(id=>document.getElementById(id).classList.remove('visible')); ['input-nome','input-email','input-edit-motivo'].forEach(id=>document.getElementById(id).classList.remove('error')); }
-
-    // Fila e Reservas Logic
-    async function chamarFila(id) {
-        try {
-            await fetch('/api/chamar-fila/' + id, { method: 'POST' });
-            loadFilaReservas();
-            showToast('Cliente chamado!');
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    async function atenderFila(id) {
-        try {
-            await fetch('/api/atender-fila/' + id, { method: 'POST' });
-            loadFilaReservas();
-            showToast('Cliente atendido com sucesso!');
-        } catch (err) {
-            console.error(err);
-        }
-    }
-
-    async function loadFilaReservas() {
-        try {
-            const [fRes, rRes] = await Promise.all([
-                fetch('/api/todas-filas'),
-                fetch('/api/todas-reservas')
-            ]);
-            const filas = await fRes.json();
-            const reservas = await rRes.json();
-            
-            document.getElementById('fila-count-dash').textContent = filas.length;
-            const filaContainer = document.getElementById('fila-container');
-            if (filas.length === 0) {
-                filaContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Nenhum cliente na fila</div>';
-            } else {
-                filaContainer.innerHTML = filas.map(f => {
-                    const isSuaVez = f.status === 'sua vez chegou';
-                    const actionBtn = isSuaVez 
-                        ? `<button onclick="atenderFila(${f.id_fila})" style="background: var(--status-available); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.75rem;">Atender</button>`
-                        : `<button onclick="chamarFila(${f.id_fila})" style="background: var(--accent); color: white; border: none; padding: 4px 10px; border-radius: 6px; font-weight: 600; cursor: pointer; font-size: 0.75rem;">Chamar</button>`;
-                    const statusColor = isSuaVez ? 'var(--status-available)' : 'var(--status-warning)';
-                    const statusBg = isSuaVez ? 'var(--status-available-bg)' : 'var(--status-warning-bg)';
-                    const statusBorder = isSuaVez ? 'var(--status-available-border)' : 'var(--status-warning-border)';
-                    
-                    return `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 10px; border-bottom: 1px solid var(--border);">
-                        <div>
-                            <div style="font-weight: 600; color: var(--text-primary); font-size: 0.85rem;">${f.Cliente ? f.Cliente.nome : 'Desconhecido'}</div>
-                            <div style="font-size: 0.75rem; color: var(--text-muted);">${new Date(f.data_entrada).toLocaleTimeString('pt-BR', {hour: '2-digit', minute:'2-digit'})} · ${f.numero_pessoas} pessoas</div>
-                        </div>
-                        <div style="display: flex; gap: 8px; align-items: center;">
-                            <span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; background: ${statusBg}; color: ${statusColor}; border: 1px solid ${statusBorder}; text-transform: capitalize;">${f.status}</span>
-                            ${actionBtn}
-                        </div>
-                    </div>
-                `}).join('');
-            }
-
-            document.getElementById('reservas-count-dash').textContent = reservas.length;
-            const reservasContainer = document.getElementById('reservas-container');
-            if (reservas.length === 0) {
-                reservasContainer.innerHTML = '<div style="color: var(--text-muted); text-align: center; padding: 20px;">Sem reservas</div>';
-            } else {
-                reservasContainer.innerHTML = reservas.map(r => `
-                    <div style="display: flex; justify-content: space-between; align-items: center; padding: 12px; border-bottom: 1px solid var(--border);">
-                        <div>
-                            <div style="font-weight: 600; color: var(--text-primary); font-size: 0.95rem; margin-bottom: 4px;">${r.Cliente ? r.Cliente.nome : 'Desconhecido'}</div>
-                            <div style="font-size: 1.15rem; font-weight: bold; color: var(--accent); margin-bottom: 4px;">${new Date(r.data_reserva).toLocaleString('pt-BR', {day: '2-digit', month: '2-digit', hour: '2-digit', minute:'2-digit'})}</div>
-                            <div style="font-size: 0.8rem; color: var(--text-muted);">${r.numero_pessoas} pessoas</div>
-                        </div>
-                        <span style="font-size: 0.7rem; padding: 3px 8px; border-radius: 12px; background: var(--status-warning-bg); color: var(--status-warning); border: 1px solid var(--status-warning-border);">${r.status}</span>
-                    </div>
-                `).join('');
-            }
-        } catch (err) {
-            console.error('Erro ao carregar fila/reservas:', err);
-        }
-    }
-    
-    document.addEventListener('DOMContentLoaded', () => {
-        T4U.requireAuth('admin');
-        fetchFuncionarios();
-        loadFilaReservas();
-        setInterval(loadFilaReservas, 30000);
-    });
-
-    // ── MENU / PRATOS (lógica original) ──
-    const MENU_KEY = 't4u-menu';
-    const defaultMenu = [
-        { id:1, nome:'Bruschetta ao tomate', cat:'Entradas', preco:28.90, desc:'Pão italiano grelhado com tomate fresco, manjericão e azeite extravirgem.', emoji:'🍞', avail:true },
-        { id:2, nome:'Carpaccio de carne', cat:'Entradas', preco:42.00, desc:'Finas lâminas de filé mignon com alcaparras, parmesão e molho mostarda.', emoji:'🥩', avail:true },
-        { id:3, nome:'Sopa de cebola', cat:'Entradas', preco:34.00, desc:'Cebolas caramelizadas, caldo de carne, croutons e queijo gruyère gratinado.', emoji:'🍲', avail:false },
-        { id:4, nome:'Risoto de cogumelos', cat:'Pratos principais', preco:68.00, desc:'Arroz arbóreo com mix de cogumelos frescos, parmesão e manteiga trufa.', emoji:'🍚', avail:true },
-        { id:5, nome:'Salmão grelhado', cat:'Pratos principais', preco:89.00, desc:'Filé de salmão grelhado com crosta de ervas, aspargos salteados e purê.', emoji:'🐟', avail:true },
-        { id:6, nome:'Frango à parmegiana', cat:'Pratos principais', preco:58.00, desc:'Filé de frango empanado, molho de tomate artesanal, mozzarella e presunto.', emoji:'🍗', avail:true },
-        { id:7, nome:'Picanha na brasa', cat:'Pratos principais', preco:112.00, desc:'Picanha premium grelhada na brasa, acompanha farofa, vinagrete e arroz.', emoji:'🥩', avail:true },
-        { id:8, nome:'Água mineral', cat:'Bebidas', preco:8.00, desc:'Água mineral natural ou com gás 500ml.', emoji:'💧', avail:true },
-        { id:9, nome:'Suco de laranja', cat:'Bebidas', preco:18.00, desc:'Suco natural de laranja espremido na hora, sem adição de açúcar.', emoji:'🍊', avail:true },
-        { id:10, nome:'Refrigerante lata', cat:'Bebidas', preco:12.00, desc:'Cola, guaraná, limão ou laranja — lata 350ml gelada.', emoji:'🥤', avail:true },
-        { id:11, nome:'Vinho da casa (taça)', cat:'Bebidas', preco:32.00, desc:'Vinho tinto ou branco selecionado, taça 180ml.', emoji:'🍷', avail:true },
-        { id:12, nome:'Petit gâteau', cat:'Sobremesas', preco:34.00, desc:'Bolinho de chocolate quente com sorvete de creme e calda de frutas.', emoji:'🍫', avail:true },
-        { id:13, nome:'Pudim de leite', cat:'Sobremesas', preco:22.00, desc:'Pudim cremoso de leite condensado com calda de caramelo artesanal.', emoji:'🍮', avail:true },
-        { id:14, nome:'Torta de limão', cat:'Sobremesas', preco:26.00, desc:'Torta gelada de limão siciliano com merengue italiano.', emoji:'🍋', avail:false },
-    ];
-    function loadMenu(){ try{ let raw=localStorage.getItem(MENU_KEY); return raw?JSON.parse(raw):defaultMenu; }catch(e){ return defaultMenu; } }
-    function saveMenu(menu){ localStorage.setItem(MENU_KEY,JSON.stringify(menu)); }
-    let pratoMenu = loadMenu(), pratoNextId = pratoMenu.reduce((m,p)=>Math.max(m,p.id),0)+1, menuFilterCat='todos', pratoPendingDelId=null, pratoEditingId=null, pratoAvailState=true, toggleDispPendingId=null;
-    function getFilteredMenu(){ let q=(document.getElementById('menu-search')?.value||'').toLowerCase(); return pratoMenu.filter(p=>(menuFilterCat==='todos'||p.cat===menuFilterCat)&&(p.nome.toLowerCase().includes(q)||p.desc.toLowerCase().includes(q)||p.cat.toLowerCase().includes(q))); }
-    function setMenuFilter(cat,el){ menuFilterCat=cat; document.querySelectorAll('.filter-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderMenu(); }
-    function renderMenuStats(){ let total=pratoMenu.length, avail=pratoMenu.filter(p=>p.avail).length, unavail=total-avail, cats=[...new Set(pratoMenu.map(p=>p.cat))].length; document.getElementById('menu-stats-strip').innerHTML=`<div class="menu-stat"><div class="menu-stat-dot" style="background:var(--accent)"></div><span class="menu-stat-label">Total</span><span class="menu-stat-val">${total}</span></div><div class="menu-stat"><div class="menu-stat-dot" style="background:var(--status-available)"></div><span class="menu-stat-label">Disponíveis</span><span class="menu-stat-val">${avail}</span></div><div class="menu-stat"><div class="menu-stat-dot" style="background:var(--status-unavailable)"></div><span class="menu-stat-label">Indisponíveis</span><span class="menu-stat-val">${unavail}</span></div><div class="menu-stat"><div class="menu-stat-dot" style="background:var(--status-warning)"></div><span class="menu-stat-label">Categorias</span><span class="menu-stat-val">${cats}</span></div>`; }
-    function renderMenu(){ renderMenuStats(); let grid=document.getElementById('menu-grid'), list=getFilteredMenu(); if(!list.length){ grid.innerHTML=`<div class="menu-empty" style="grid-column:1/-1"><div class="menu-empty-icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/></svg></div><div class="menu-empty-title">Nenhum prato encontrado</div><div class="menu-empty-desc">Tente outro filtro ou adicione um novo prato ao cardápio.</div></div>`; return; }
-        grid.innerHTML=list.map(p=>`<div class="prato-card ${p.avail?'':'unavailable'}"><div class="prato-card-top"><div class="prato-card-row1"><span class="prato-emoji">${escHtml(p.emoji||'🍽️')}</span><span class="prato-status-badge ${p.avail?'available':'unavailable'}">${p.avail?'Disponível':'Indisponível'}</span></div><div class="prato-name">${escHtml(p.nome)}</div><div class="prato-cat-badge">${escHtml(p.cat)}</div><div class="prato-desc">${escHtml(p.desc)}</div><div class="prato-price">R$ ${p.preco.toFixed(2).replace('.',',')}</div></div><div class="prato-card-footer"><button class="prato-btn ${p.avail?'toggle-unavail':'toggle-avail'}" onclick="togglePratoDisp(${p.id})"><svg viewBox="0 0 24 24">${p.avail?'<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>':'<polyline points="20 6 9 17 4 12"/>'}</svg>${p.avail?'Desativar':'Ativar'}</button><button class="prato-btn edit" onclick="openEditPratoModal(${p.id})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar</button><button class="prato-btn del" onclick="openDelPratoModal(${p.id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`).join(''); }
-    function togglePratoDisp(id){ let p=pratoMenu.find(x=>x.id===id); if(!p)return; toggleDispPendingId=id; let activating=!p.avail; let wrap=document.getElementById('tmodal-icon-wrap'), svg=document.getElementById('tmodal-icon-svg'); wrap.className='tmodal-icon-wrap '+(activating?'activate':'deactivate'); svg.innerHTML=activating?'<polyline points="20 6 9 17 4 12"/>':'<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>'; document.getElementById('tmodal-title').textContent=activating?'Ativar prato':'Desativar prato'; document.getElementById('tmodal-prato-name').textContent=p.nome; document.getElementById('tmodal-motivo').value=''; document.getElementById('tmodal-motivo').placeholder=activating?'Ex: Ingredientes disponíveis novamente.':'Ex: Ingrediente em falta, prato temporariamente retirado.'; document.getElementById('tmodal-motivo-error').classList.remove('visible'); document.getElementById('tmodal-motivo').classList.remove('error'); let btn=document.getElementById('tmodal-confirm-btn'); btn.className='pmodal-btn '+(activating?'activate':'deactivate'); btn.textContent=activating?'Ativar':'Desativar'; document.getElementById('modal-toggle-disp').classList.add('open'); setTimeout(()=>document.getElementById('tmodal-motivo').focus(),80); }
-    function confirmToggleDisp(){ let motivo=document.getElementById('tmodal-motivo').value.trim(); if(!motivo){ document.getElementById('tmodal-motivo-error').classList.add('visible'); document.getElementById('tmodal-motivo').classList.add('error'); return; } let p=pratoMenu.find(x=>x.id===toggleDispPendingId); if(!p)return; let acao=p.avail?'desativar':'ativar'; p.avail=!p.avail; saveMenu(pratoMenu); writeAuditCardapio({prato:p.nome,pratoId:p.id,acao,motivo,usuario:'Admin',origem:'Admin'}); closeToggleDispModal(); renderMenu(); showToast(p.avail?`✓ ${p.nome} — disponível`:`${p.nome} — indisponível`); }
-    function closeToggleDispModal(){ document.getElementById('modal-toggle-disp').classList.remove('open'); toggleDispPendingId=null; }
-    function openAddPratoModal(){ pratoEditingId=null; pratoAvailState=true; document.getElementById('prato-edit-id').value=''; document.getElementById('prato-nome').value=''; document.getElementById('prato-categoria').value='Entradas'; document.getElementById('prato-preco').value=''; document.getElementById('prato-desc').value=''; document.getElementById('prato-emoji').value=''; document.getElementById('prato-avail-switch').classList.add('on'); clearPratoErrors(); document.getElementById('pmodal-title').textContent='Adicionar prato'; document.getElementById('pmodal-subtitle').textContent='Preencha as informações do novo prato'; document.getElementById('pmodal-confirm-btn').textContent='Adicionar'; document.getElementById('pmodal-icon').textContent='🍽️'; document.getElementById('modal-prato').classList.add('open'); setTimeout(()=>document.getElementById('prato-nome').focus(),80); }
-    function openEditPratoModal(id){ let p=pratoMenu.find(x=>x.id===id); if(!p)return; pratoEditingId=id; pratoAvailState=p.avail; document.getElementById('prato-edit-id').value=id; document.getElementById('prato-nome').value=p.nome; document.getElementById('prato-categoria').value=p.cat; document.getElementById('prato-preco').value=p.preco; document.getElementById('prato-desc').value=p.desc; document.getElementById('prato-emoji').value=p.emoji||''; let sw=document.getElementById('prato-avail-switch'); sw.classList.toggle('on',p.avail); clearPratoErrors(); document.getElementById('pmodal-title').textContent='Editar prato'; document.getElementById('pmodal-subtitle').textContent='Altere as informações do prato'; document.getElementById('pmodal-confirm-btn').textContent='Salvar alterações'; document.getElementById('pmodal-icon').textContent=p.emoji||'🍽️'; document.getElementById('modal-prato').classList.add('open'); setTimeout(()=>document.getElementById('prato-nome').focus(),80); }
-    function togglePratoAvail(){ pratoAvailState=!pratoAvailState; document.getElementById('prato-avail-switch').classList.toggle('on',pratoAvailState); }
-    function confirmPrato(){ let nome=document.getElementById('prato-nome').value.trim(), cat=document.getElementById('prato-categoria').value, preco=parseFloat(document.getElementById('prato-preco').value), desc=document.getElementById('prato-desc').value.trim(), emoji=document.getElementById('prato-emoji').value.trim()||'🍽️', valid=true; clearPratoErrors(); if(!nome){ document.getElementById('prato-error-nome').classList.add('visible'); document.getElementById('prato-nome').classList.add('error'); valid=false; } if(isNaN(preco)||preco<0){ document.getElementById('prato-error-preco').classList.add('visible'); document.getElementById('prato-preco').classList.add('error'); valid=false; } if(!valid)return; if(pratoEditingId){ let p=pratoMenu.find(x=>x.id===pratoEditingId); if(p){ let diff=[]; let fmtPrice=v=>`R$ ${Number(v).toFixed(2).replace('.',',')}`; if(p.nome!==nome) diff.push({campo:'Nome',de:p.nome,para:nome}); if(p.cat!==cat) diff.push({campo:'Categoria',de:p.cat,para:cat}); if(p.preco!==preco) diff.push({campo:'Preço',de:fmtPrice(p.preco),para:fmtPrice(preco)}); if(p.desc!==desc) diff.push({campo:'Descrição',de:p.desc,para:desc}); if(p.emoji!==emoji) diff.push({campo:'Emoji',de:p.emoji,para:emoji}); if(p.avail!==pratoAvailState) diff.push({campo:'Disponível',de:p.avail?'Sim':'Não',para:pratoAvailState?'Sim':'Não'}); p.nome=nome; p.cat=cat; p.preco=preco; p.desc=desc; p.emoji=emoji; p.avail=pratoAvailState; writeAuditCardapio({prato:nome,pratoId:p.id,acao:'editar',diff,usuario:'Admin'}); } showToast(`✓ ${nome} atualizado`); }else{ let newId=pratoNextId++; pratoMenu.push({id:newId,nome,cat,preco,desc,emoji,avail:pratoAvailState}); writeAuditCardapio({prato:nome,pratoId:newId,acao:'adicionar',usuario:'Admin'}); showToast(`✓ ${nome} adicionado ao cardápio`); } saveMenu(pratoMenu); closePratoModal(); renderMenu(); }
-    function clearPratoErrors(){ ['prato-error-nome','prato-error-preco'].forEach(id=>document.getElementById(id).classList.remove('visible')); ['prato-nome','prato-preco'].forEach(id=>document.getElementById(id).classList.remove('error')); }
-    function closePratoModal(){ document.getElementById('modal-prato').classList.remove('open'); }
-    function closePratoModalOnBg(e){ if(e.target===document.getElementById('modal-prato')) closePratoModal(); }
-    function openDelPratoModal(id){ let p=pratoMenu.find(x=>x.id===id); if(!p)return; pratoPendingDelId=id; document.getElementById('del-prato-subtitle').textContent=p.nome; document.getElementById('del-prato-text').innerHTML=`Tem certeza que deseja remover <strong>${escHtml(p.nome)}</strong> do cardápio? Esta ação não pode ser desfeita.`; document.getElementById('del-prato-motivo').value=''; document.getElementById('del-prato-motivo-error').classList.remove('visible'); document.getElementById('del-prato-motivo').classList.remove('error'); document.getElementById('modal-del-prato').classList.add('open'); }
-    function confirmDelPrato(){ let p=pratoMenu.find(x=>x.id===pratoPendingDelId); if(!p)return; let motivo=document.getElementById('del-prato-motivo').value.trim(); if(!motivo){ document.getElementById('del-prato-motivo-error').classList.add('visible'); document.getElementById('del-prato-motivo').classList.add('error'); return; } let nome=p.nome,pratoId=p.id; pratoMenu=pratoMenu.filter(x=>x.id!==pratoPendingDelId); pratoPendingDelId=null; writeAuditCardapio({prato:nome,pratoId,acao:'remover',motivo,usuario:'Admin'}); saveMenu(pratoMenu); closeDelPratoModal(); renderMenu(); showToast(`${nome} removido do cardápio`); }
-    function closeDelPratoModal(){ document.getElementById('modal-del-prato').classList.remove('open'); pratoPendingDelId=null; }
-
-    // ── AUDIT LOG (lógica original) ──
-    const AUDIT_KEY_CARDAPIO='t4u-audit-cardapio', AUDIT_KEY_FUNC='t4u-audit-func', AUDIT_KEY_PEDIDOS='t4u-audit-pedidos', AUDIT_KEY_MESAS='t4u-audit-mesas';
-    function loadAuditLog(key){ try{ return JSON.parse(localStorage.getItem(key)||'[]'); }catch(e){ return []; } }
-    function saveAuditLog(key,log){ localStorage.setItem(key,JSON.stringify(log)); }
-    function writeAuditCardapio(entry){ let log=loadAuditLog(AUDIT_KEY_CARDAPIO); log.unshift({id:Date.now(),timestamp:new Date().toISOString(),...entry}); saveAuditLog(AUDIT_KEY_CARDAPIO,log); updateAuditTabCounts(); }
-    function writeAuditFunc(entry){ let log=loadAuditLog(AUDIT_KEY_FUNC); log.unshift({id:Date.now(),timestamp:new Date().toISOString(),...entry}); saveAuditLog(AUDIT_KEY_FUNC,log); updateAuditTabCounts(); }
-    let auditCurrentTab='cardapio', auditFilterCardapio='todos', auditFilterFunc='todos', auditFilterPedidos='todos', auditFilterMesas='todos';
-    function setAuditTab(tab,el){ auditCurrentTab=tab; document.querySelectorAll('.audit-tab').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.audit-tab-panel').forEach(p=>p.classList.remove('active')); el.classList.add('active'); document.getElementById('audit-panel-'+tab).classList.add('active'); if(tab==='cardapio') renderAuditCardapio(); else if(tab==='funcionarios') renderAuditFunc(); else if(tab==='pedidos') renderAuditPedidos(); else if(tab==='mesas') renderAuditMesas(); }
-    function updateAuditTabCounts(){ let counts={cardapio:loadAuditLog(AUDIT_KEY_CARDAPIO).length,funcionarios:loadAuditLog(AUDIT_KEY_FUNC).length,pedidos:loadAuditLog(AUDIT_KEY_PEDIDOS).length,mesas:loadAuditLog(AUDIT_KEY_MESAS).length}; Object.entries(counts).forEach(([key,val])=>{ let el=document.getElementById(`tab-count-${key}`); if(el) el.textContent=val>0?val:''; }); }
-    function formatAuditTime(iso){ let d=new Date(iso), hoje=new Date(), ontem=new Date(); ontem.setDate(hoje.getDate()-1); let pad=n=>String(n).padStart(2,'0'); let hora=`${pad(d.getHours())}:${pad(d.getMinutes())}`; if(d.toDateString()===hoje.toDateString()) return `Hoje, ${hora}`; if(d.toDateString()===ontem.toDateString()) return `Ontem, ${hora}`; return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}, ${hora}`; }
-    function filterByDate(log,dateVal){ if(!dateVal) return log; return log.filter(e=>{ let d=new Date(e.timestamp), pad=n=>String(n).padStart(2,'0'); let iso=`${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; return iso===dateVal; }); }
-    function setAuditFilterCardapio(val,el){ auditFilterCardapio=val; document.querySelectorAll('#audit-filter-pills-cardapio .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditCardapio(); }
-    const CARDAPIO_ACTION_LABELS={ adicionar:{label:'Adicionado',icon:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>'}, editar:{label:'Editado',icon:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>'}, remover:{label:'Removido',icon:'<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>'}, desativar:{label:'Desativado',icon:'<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>'}, ativar:{label:'Ativado',icon:'<polyline points="20 6 9 17 4 12"/>'} };
-    function renderAuditCardapio(){ let log=loadAuditLog(AUDIT_KEY_CARDAPIO), dateVal=document.getElementById('audit-date-cardapio')?.value||'', q=(document.getElementById('audit-search-cardapio')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal); filtered=filtered.filter(e=>{ let matchAcao=auditFilterCardapio==='todos'||e.acao===auditFilterCardapio; let matchQ=!q||(e.prato||'').toLowerCase().includes(q)||(e.usuario||'').toLowerCase().includes(q)||(e.motivo||'').toLowerCase().includes(q); return matchAcao&&matchQ; }); let total=log.length, adds=log.filter(e=>e.acao==='adicionar').length, edits=log.filter(e=>e.acao==='editar').length, dels=log.filter(e=>e.acao==='remover').length; document.getElementById('audit-stats-cardapio').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-occupied)"></div><span class="audit-stat-label">Adições</span><span class="audit-stat-val">${adds}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-warning)"></div><span class="audit-stat-label">Edições</span><span class="audit-stat-val">${edits}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-unavailable)"></div><span class="audit-stat-label">Remoções</span><span class="audit-stat-val">${dels}</span></div>`; let wrap=document.getElementById('audit-log-cardapio'); if(filtered.length===0){ wrap.innerHTML=renderAuditEmpty(total,'prato ou usuário'); return; } wrap.innerHTML=filtered.map(e=>{ let def=CARDAPIO_ACTION_LABELS[e.acao]||{label:e.acao,icon:''}; let motivoHtml=e.motivo?`<div class="audit-entry-motivo">${escHtml(e.motivo)}</div>`:''; let diffHtml=''; if(e.diff&&e.diff.length>0){ let rows=e.diff.map(d=>`<div class="audit-diff-row"><span class="audit-diff-field">${escHtml(d.campo)}</span><span class="audit-diff-old">${escHtml(String(d.de))}</span><svg style="width:11px;height:11px;flex-shrink:0;fill:none;stroke:var(--text-muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg><span class="audit-diff-new">${escHtml(String(d.para))}</span></div>`).join(''); diffHtml=`<div class="audit-entry-diff">${rows}</div>`; } return `<div class="audit-entry"><div class="audit-entry-icon ${e.acao}"><svg viewBox="0 0 24 24">${def.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">${escHtml(e.prato||'')}</span><span class="audit-entry-action ${e.acao}">${def.label}</span></div>${motivoHtml}${diffHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.usuario||'Admin')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`; }).join(''); }
-    function setAuditFilterFunc(val,el){ auditFilterFunc=val; document.querySelectorAll('#audit-filter-pills-func .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditFunc(); }
-    const FUNC_ACTION_LABELS={ adicionar:{label:'Adicionado',icon:'<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>'}, editar:{label:'Editado',icon:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>'}, remover:{label:'Removido',icon:'<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>'} };
-    function renderAuditFunc(){ let log=loadAuditLog(AUDIT_KEY_FUNC), dateVal=document.getElementById('audit-date-func')?.value||'', q=(document.getElementById('audit-search-func')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal); filtered=filtered.filter(e=>{ let matchAcao=auditFilterFunc==='todos'||e.acao===auditFilterFunc; let matchQ=!q||(e.funcionario||'').toLowerCase().includes(q)||(e.email||'').toLowerCase().includes(q)||(e.motivo||'').toLowerCase().includes(q); return matchAcao&&matchQ; }); let total=log.length, adds=log.filter(e=>e.acao==='adicionar').length, edits=log.filter(e=>e.acao==='editar').length, dels=log.filter(e=>e.acao==='remover').length; document.getElementById('audit-stats-func').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-available)"></div><span class="audit-stat-label">Adições</span><span class="audit-stat-val">${adds}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-warning)"></div><span class="audit-stat-label">Edições</span><span class="audit-stat-val">${edits}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-unavailable)"></div><span class="audit-stat-label">Remoções</span><span class="audit-stat-val">${dels}</span></div>`; let wrap=document.getElementById('audit-log-func'); if(filtered.length===0){ wrap.innerHTML=renderAuditEmpty(total,'funcionário'); return; } wrap.innerHTML=filtered.map(e=>{ let def=FUNC_ACTION_LABELS[e.acao]||{label:e.acao,icon:''}; let cargoLabel=e.cargo?(cargoLabels[e.cargo]?.label||e.cargo):''; let motivoHtml=e.motivo?`<div class="audit-entry-motivo">${escHtml(e.motivo)}</div>`:''; let diffHtml=''; if(e.diff&&e.diff.length>0){ let rows=e.diff.map(d=>`<div class="audit-diff-row"><span class="audit-diff-field">${escHtml(d.campo)}</span><span class="audit-diff-old">${escHtml(String(d.de))}</span><svg style="width:11px;height:11px;flex-shrink:0;fill:none;stroke:var(--text-muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg><span class="audit-diff-new">${escHtml(String(d.para))}</span></div>`).join(''); diffHtml=`<div class="audit-entry-diff">${rows}</div>`; } return `<div class="audit-entry"><div class="audit-entry-icon ${e.acao}"><svg viewBox="0 0 24 24">${def.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">${escHtml(e.funcionario||'')}</span><span class="audit-entry-action ${e.acao}">${def.label}</span>${cargoLabel?`<span class="audit-entry-origin">${escHtml(cargoLabel)}</span>`:''}</div>${e.email?`<div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:4px">${escHtml(e.email)}</div>`:''}${motivoHtml}${diffHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.usuario||'Admin')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`; }).join(''); }
-    function renderAuditEmpty(total,tipo){ return `<div class="audit-empty"><div class="audit-empty-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div class="audit-empty-title">${total===0?'Nenhuma alteração registrada ainda':'Nenhum resultado para o filtro'}</div><div class="audit-empty-desc">${total===0?'Quando houver uma ação registrada, ela aparecerá aqui.':`Tente outro filtro, data ou busca por ${tipo}.`}</div></div>`; }
-    function setAuditFilterPedidos(val,el){ auditFilterPedidos=val; document.querySelectorAll('#audit-filter-pills-pedidos .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditPedidos(); }
-    const PEDIDO_ACTION_CONFIG={ anotado:{label:'Anotado',iconCls:'editar',icon:'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>',badgeCls:'editar'}, pronto:{label:'Pronto',iconCls:'activate',icon:'<polyline points="20 6 9 17 4 12"/>',badgeCls:'activate'} };
-    function renderAuditPedidos(){ let log=loadAuditLog(AUDIT_KEY_PEDIDOS), dateVal=document.getElementById('audit-date-pedidos')?.value||'', q=(document.getElementById('audit-search-pedidos')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal).filter(e=>{ let matchStatus=auditFilterPedidos==='todos'||e.status===auditFilterPedidos; let matchQ=!q||String(e.mesa||'').toLowerCase().includes(q)||(e.responsavel||'').toLowerCase().includes(q)||(e.itens||[]).some(i=>i.nome.toLowerCase().includes(q)); return matchStatus&&matchQ; }); let total=log.length, anotados=log.filter(e=>e.status==='anotado').length, prontos=log.filter(e=>e.status==='pronto').length; document.getElementById('audit-stats-pedidos').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-warning)"></div><span class="audit-stat-label">Anotados</span><span class="audit-stat-val">${anotados}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-available)"></div><span class="audit-stat-label">Prontos</span><span class="audit-stat-val">${prontos}</span></div>`; let wrap=document.getElementById('audit-log-pedidos'); if(filtered.length===0){ wrap.innerHTML=renderAuditEmpty(total,'mesa ou garçom'); return; } wrap.innerHTML=filtered.map(e=>{ let cfg=PEDIDO_ACTION_CONFIG[e.status]||PEDIDO_ACTION_CONFIG.anotado; let itensHtml=(e.itens||[]).length?`<div class="audit-entry-diff">${e.itens.map(i=>`<div class="audit-diff-row"><span class="audit-diff-field">${escHtml(i.nome)}</span><span style="color:var(--text-muted)">×${i.qty}${i.nota?` — <em>${escHtml(i.nota)}</em>`:''}</span></div>`).join('')}</div>`:''; let totalHtml=e.total!=null?`<span class="audit-entry-origin">R$ ${Number(e.total).toFixed(2).replace('.',',')}</span>`:''; let tempoHtml=e.tempoPreparo?`<span class="audit-entry-origin">⏱ ${e.tempoPreparo} min</span>`:''; return `<div class="audit-entry"><div class="audit-entry-icon ${cfg.iconCls}"><svg viewBox="0 0 24 24">${cfg.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">Mesa ${escHtml(String(e.mesa||'?'))}</span><span class="audit-entry-action ${cfg.badgeCls}">${cfg.label}</span>${totalHtml}${tempoHtml}</div>${itensHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.responsavel||'—')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`; }).join(''); }
-    function setAuditFilterMesas(val,el){ auditFilterMesas=val; document.querySelectorAll('#audit-filter-pills-mesas .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditMesas(); }
-    const MESA_EVENT_CONFIG={ checkin:{label:'Check-in',iconCls:'activate',icon:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>',badgeCls:'activate'}, checkout:{label:'Check-out',iconCls:'adicionar',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',badgeCls:'adicionar'}, disponivel:{label:'Disponível',iconCls:'activate',icon:'<polyline points="20 6 9 17 4 12"/>',badgeCls:'activate'}, indisponivel:{label:'Indisponível',iconCls:'deactivate',icon:'<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>',badgeCls:'deactivate'} };
-    function renderAuditMesas(){ let log=loadAuditLog(AUDIT_KEY_MESAS), dateVal=document.getElementById('audit-date-mesas')?.value||'', q=(document.getElementById('audit-search-mesas')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal).filter(e=>{ let matchEvento=auditFilterMesas==='todos'||e.evento===auditFilterMesas; let matchQ=!q||String(e.mesa||'').toLowerCase().includes(q)||(e.responsavel||'').toLowerCase().includes(q)||(e.obs||'').toLowerCase().includes(q); return matchEvento&&matchQ; }); let total=log.length, checkins=log.filter(e=>e.evento==='checkin').length, checkouts=log.filter(e=>e.evento==='checkout').length, indisp=log.filter(e=>e.evento==='indisponivel').length; document.getElementById('audit-stats-mesas').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-available)"></div><span class="audit-stat-label">Check-ins</span><span class="audit-stat-val">${checkins}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-occupied)"></div><span class="audit-stat-label">Check-outs</span><span class="audit-stat-val">${checkouts}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-unavailable)"></div><span class="audit-stat-label">Indisponíveis</span><span class="audit-stat-val">${indisp}</span></div>`; let wrap=document.getElementById('audit-log-mesas'); if(filtered.length===0){ wrap.innerHTML=renderAuditEmpty(total,'mesa ou responsável'); return; } wrap.innerHTML=filtered.map(e=>{ let cfg=MESA_EVENT_CONFIG[e.evento]||MESA_EVENT_CONFIG.disponivel; let detalhesHtml=[]; if(e.pessoas) detalhesHtml.push(`<span class="audit-entry-origin">👥 ${e.pessoas} pessoa${e.pessoas>1?'s':''}</span>`); if(e.total!=null) detalhesHtml.push(`<span class="audit-entry-origin">R$ ${Number(e.total).toFixed(2).replace('.',',')}</span>`); let obsHtml=e.obs?`<div class="audit-entry-motivo">${escHtml(e.obs)}</div>`:''; return `<div class="audit-entry"><div class="audit-entry-icon ${cfg.iconCls}"><svg viewBox="0 0 24 24">${cfg.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">Mesa ${escHtml(String(e.mesa||'?'))}</span><span class="audit-entry-action ${cfg.badgeCls}">${cfg.label}</span>${detalhesHtml.join('')}</div>${obsHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.responsavel||'—')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`; }).join(''); }
-    function renderAuditLog(){ if(auditCurrentTab==='cardapio') renderAuditCardapio(); else if(auditCurrentTab==='funcionarios') renderAuditFunc(); else if(auditCurrentTab==='pedidos') renderAuditPedidos(); else if(auditCurrentTab==='mesas') renderAuditMesas(); }
-    (function seedSampleData(){ if(loadAuditLog(AUDIT_KEY_PEDIDOS).length===0){ let now=Date.now(), min=m=>now-m*60000; let log=[{id:now+1,timestamp:new Date(min(8)).toISOString(),mesa:4,status:'pronto',responsavel:'Cozinha — Rafael',itens:[{nome:'Risoto de camarão',qty:2,nota:''},{nome:'Suco natural',qty:2,nota:''}],total:188.00,tempoPreparo:22},{id:now+2,timestamp:new Date(min(30)).toISOString(),mesa:4,status:'anotado',responsavel:'Carlos Mendes',itens:[{nome:'Risoto de camarão',qty:2,nota:''},{nome:'Suco natural',qty:2,nota:'sem gelo'}],total:188.00},{id:now+3,timestamp:new Date(min(55)).toISOString(),mesa:7,status:'pronto',responsavel:'Cozinha — Rafael',itens:[{nome:'Frango grelhado',qty:1,nota:''},{nome:'Água mineral',qty:2,nota:''}],total:66.00,tempoPreparo:18},{id:now+4,timestamp:new Date(min(73)).toISOString(),mesa:7,status:'anotado',responsavel:'Fernanda Lima',itens:[{nome:'Frango grelhado',qty:1,nota:'sem molho'},{nome:'Água mineral',qty:2,nota:''}],total:66.00}]; saveAuditLog(AUDIT_KEY_PEDIDOS,log); } if(loadAuditLog(AUDIT_KEY_MESAS).length===0){ let now=Date.now(), min=m=>now-m*60000; let log=[{id:now+10,timestamp:new Date(min(5)).toISOString(),mesa:3,evento:'checkin',responsavel:'Fernanda Lima',pessoas:2},{id:now+11,timestamp:new Date(min(40)).toISOString(),mesa:1,evento:'checkout',responsavel:'Carlos Mendes',total:212.00},{id:now+12,timestamp:new Date(min(42)).toISOString(),mesa:1,evento:'disponivel',responsavel:'Carlos Mendes'},{id:now+13,timestamp:new Date(min(60)).toISOString(),mesa:5,evento:'indisponivel',responsavel:'Fernanda Lima',obs:'Cadeira quebrada, aguardando manutenção.'},{id:now+14,timestamp:new Date(min(90)).toISOString(),mesa:3,evento:'checkin',responsavel:'Carlos Mendes',pessoas:4}]; saveAuditLog(AUDIT_KEY_MESAS,log); } updateAuditTabCounts(); })();
-
-    // ESC key to close modals
-    document.addEventListener('keydown', e => { if(e.key==='Escape'){ closePratoModal(); closeDelPratoModal(); closeToggleDispModal(); closeModal('modal-add'); closeModal('modal-remove'); } });
-
-    // Inicialização
-    document.addEventListener('DOMContentLoaded', () => {
+async function fetchFuncionarios() {
+    try {
+        const res = await fetch('/api/funcionarios');
+        const dbFuncs = await res.json();
+        funcionarios = [...defaultFuncs, ...dbFuncs.map(f => ({ id: f.funcionario_id, nome: f.nome, email: f.email, cargo: 'garcom' }))];
         renderFuncionarios();
-        renderMenu();
-        updateAuditTabCounts();
-    });
+    } catch (err) { console.error(err); }
+}
+function getInitials(nome) { const p = nome.trim().split(' ').filter(Boolean); return p.length === 1 ? p[0][0].toUpperCase() : (p[0][0] + p[p.length-1][0]).toUpperCase(); }
+function renderFuncionarios() {
+    const q = (document.getElementById('func-search').value || '').toLowerCase();
+    const list = funcionarios.filter(f => f.nome.toLowerCase().includes(q) || f.email.toLowerCase().includes(q));
+    document.getElementById('func-count').textContent = `${list.length} funcionário${list.length !== 1 ? 's' : ''}`;
+    const tbody = document.getElementById('func-tbody');
+    if (!list.length) { tbody.innerHTML = `<tr><td colspan="3"><div class="func-empty"><svg viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>Nenhum funcionário encontrado.</div></td></tr>`; return; }
+    tbody.innerHTML = list.map(f => { const cargo = cargoLabels[f.cargo] || { label: f.cargo, cls:'garcom' }; const idArg = typeof f.id === 'string' ? `'${f.id}'` : f.id; return `<tr><td><div class="func-name-cell"><div class="func-avatar">${getInitials(f.nome)}</div><div><div class="func-name">${escHtml(f.nome)}</div><div class="func-email">${escHtml(f.email)}</div></div></div></td><td><span class="func-role-badge ${cargo.cls}">${cargo.label}</span></td><td><div class="func-actions"><button class="func-btn edit" onclick="openEditModal(${idArg})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Gerenciar</button><button class="func-btn remove" onclick="openRemoveModal(${idArg})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Remover</button></div></td></tr>`; }).join('');
+}
+function openAddModal() { editingId=null; document.getElementById('edit-id').value=''; document.getElementById('input-nome').value=''; document.getElementById('input-email').value=''; document.getElementById('input-cargo').value='garcom'; document.getElementById('input-edit-motivo').value=''; document.getElementById('edit-motivo-field').style.display='none'; clearFuncErrors(); document.getElementById('add-modal-title').textContent='Adicionar funcionário'; document.getElementById('add-modal-subtitle').textContent='Preencha os dados do novo membro'; document.getElementById('add-modal-confirm-btn').textContent='Adicionar'; openModal('modal-add'); setTimeout(()=>document.getElementById('input-nome').focus(),80); }
+function openEditModal(id) { const f=funcionarios.find(x=>x.id===id); if(!f)return; editingId=id; document.getElementById('edit-id').value=id; document.getElementById('input-nome').value=f.nome; document.getElementById('input-email').value=f.email; document.getElementById('input-cargo').value=f.cargo; document.getElementById('input-edit-motivo').value=''; document.getElementById('edit-motivo-field').style.display=''; clearFuncErrors(); document.getElementById('add-modal-title').textContent='Editar funcionário'; document.getElementById('add-modal-subtitle').textContent='Altere os dados do funcionário'; document.getElementById('add-modal-confirm-btn').textContent='Salvar alterações'; openModal('modal-add'); setTimeout(()=>document.getElementById('input-nome').focus(),80); }
+async function confirmAddEdit() {
+    let nome=document.getElementById('input-nome').value.trim(), email=document.getElementById('input-email').value.trim(), cargo=document.getElementById('input-cargo').value, valid=true;
+    clearFuncErrors();
+    if(!nome){ showFuncError('error-nome','input-nome'); valid=false; }
+    if(!email||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)){ showFuncError('error-email','input-email'); valid=false; }
+    if(editingId){ let motivo=document.getElementById('input-edit-motivo').value.trim(); if(!motivo){ document.getElementById('error-edit-motivo').classList.add('visible'); document.getElementById('input-edit-motivo').classList.add('error'); valid=false; } }
+    if(!valid)return;
+    if(editingId){ let f=funcionarios.find(x=>x.id===editingId); if(f){ let diff=[],cargoPtBR=k=>cargoLabels[k]?.label||k; if(f.nome!==nome)diff.push({campo:'Nome',de:f.nome,para:nome}); if(f.email!==email)diff.push({campo:'E-mail',de:f.email,para:email}); if(f.cargo!==cargo)diff.push({campo:'Cargo',de:cargoPtBR(f.cargo),para:cargoPtBR(cargo)}); let motivo=document.getElementById('input-edit-motivo').value.trim(); f.nome=nome;f.email=email;f.cargo=cargo; writeAuditFunc({funcionario:nome,email,cargo,acao:'editar',motivo,diff,usuario:'Admin'}); showToast(`✓ ${nome} atualizado`); } closeModal('modal-add'); renderFuncionarios(); }
+    else { try { const req=await fetch('/api/funcionarios',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({nome,email})}); if(req.ok){writeAuditFunc({funcionario:nome,email,cargo,acao:'adicionar',usuario:'Admin'}); showToast(`✓ ${nome} adicionado`); closeModal('modal-add'); fetchFuncionarios(); }else showToast('❌ Erro ao salvar'); }catch(e){console.error(e);} }
+}
+function openRemoveModal(id){ let f=funcionarios.find(x=>x.id===id); if(!f)return; pendingRemoveId=id; document.getElementById('remove-confirm-text').innerHTML=`Tem certeza que deseja remover <strong>${escHtml(f.nome)}</strong>?`; document.getElementById('remove-func-motivo').value=''; document.getElementById('remove-func-motivo-error').classList.remove('visible'); document.getElementById('remove-func-motivo').classList.remove('error'); openModal('modal-remove'); }
+async function confirmRemove(){ let f=funcionarios.find(x=>x.id===pendingRemoveId); if(!f)return; let motivo=document.getElementById('remove-func-motivo').value.trim(); if(!motivo){document.getElementById('remove-func-motivo-error').classList.add('visible');document.getElementById('remove-func-motivo').classList.add('error');return;} let nome=f.nome,email=f.email,cargo=f.cargo; if(typeof pendingRemoveId==='number'){try{const req=await fetch('/api/funcionarios/'+pendingRemoveId,{method:'DELETE'});if(req.ok){showToast(`${nome} removido`);writeAuditFunc({funcionario:nome,email,cargo,acao:'remover',motivo,usuario:'Admin'});closeModal('modal-remove');fetchFuncionarios();}else showToast('❌ Erro');}catch(e){console.error(e);}}else{funcionarios=funcionarios.filter(x=>x.id!==pendingRemoveId);writeAuditFunc({funcionario:nome,email,cargo,acao:'remover',motivo,usuario:'Admin'});closeModal('modal-remove');renderFuncionarios();showToast(`${nome} removido`);} pendingRemoveId=null; }
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+function closeModalOnBg(e,id){ if(e.target===document.getElementById(id))closeModal(id); }
+function showFuncError(errId,inputId){ document.getElementById(errId).classList.add('visible'); document.getElementById(inputId).classList.add('error'); }
+function clearFuncErrors(){ ['error-nome','error-email','error-edit-motivo'].forEach(id=>document.getElementById(id).classList.remove('visible')); ['input-nome','input-email','input-edit-motivo'].forEach(id=>document.getElementById(id).classList.remove('error')); }
+
+// ── FILA E RESERVAS ──
+async function chamarFila(id){ try{await fetch('/api/chamar-fila/'+id,{method:'POST'});loadFilaReservas();showToast('Cliente chamado!');}catch(err){console.error(err);} }
+async function atenderFila(id){ try{await fetch('/api/atender-fila/'+id,{method:'POST'});loadFilaReservas();showToast('Cliente atendido!');}catch(err){console.error(err);} }
+async function loadFilaReservas() {
+    try {
+        const [fRes,rRes] = await Promise.all([fetch('/api/todas-filas'),fetch('/api/todas-reservas')]);
+        const filas=await fRes.json(), reservas=await rRes.json();
+        document.getElementById('fila-count-dash').textContent=filas.length;
+        const filaContainer=document.getElementById('fila-container');
+        if(!filas.length){filaContainer.innerHTML='<div style="color:var(--text-muted);text-align:center;padding:20px;">Nenhum cliente na fila</div>';}
+        else filaContainer.innerHTML=filas.map(f=>{const isSuaVez=f.status==='sua vez chegou';const actionBtn=isSuaVez?`<button onclick="atenderFila(${f.id_fila})" style="background:var(--status-available);color:white;border:none;padding:4px 10px;border-radius:6px;font-weight:600;cursor:pointer;font-size:0.75rem;">Atender</button>`:`<button onclick="chamarFila(${f.id_fila})" style="background:var(--accent);color:white;border:none;padding:4px 10px;border-radius:6px;font-weight:600;cursor:pointer;font-size:0.75rem;">Chamar</button>`;const sc=isSuaVez?'var(--status-available)':'var(--status-warning)';const sb=isSuaVez?'var(--status-available-bg)':'var(--status-warning-bg)';const sbr=isSuaVez?'var(--status-available-border)':'var(--status-warning-border)';return `<div style="display:flex;justify-content:space-between;align-items:center;padding:10px;border-bottom:1px solid var(--border);"><div><div style="font-weight:600;color:var(--text-primary);font-size:0.85rem;">${f.Cliente?f.Cliente.nome:'Desconhecido'}</div><div style="font-size:0.75rem;color:var(--text-muted);">${new Date(f.data_entrada).toLocaleTimeString('pt-BR',{hour:'2-digit',minute:'2-digit'})} · ${f.numero_pessoas} pessoas</div></div><div style="display:flex;gap:8px;align-items:center;"><span style="font-size:0.7rem;padding:3px 8px;border-radius:12px;background:${sb};color:${sc};border:1px solid ${sbr};">${f.status}</span>${actionBtn}</div></div>`;}).join('');
+        document.getElementById('reservas-count-dash').textContent=reservas.length;
+        const reservasContainer=document.getElementById('reservas-container');
+        if(!reservas.length){reservasContainer.innerHTML='<div style="color:var(--text-muted);text-align:center;padding:20px;">Sem reservas</div>';}
+        else reservasContainer.innerHTML=reservas.map(r=>`<div style="display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid var(--border);"><div><div style="font-weight:600;color:var(--text-primary);font-size:0.95rem;margin-bottom:4px;">${r.Cliente?r.Cliente.nome:'Desconhecido'}</div><div style="font-size:1.15rem;font-weight:bold;color:var(--accent);margin-bottom:4px;">${new Date(r.data_reserva).toLocaleString('pt-BR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'})}</div><div style="font-size:0.8rem;color:var(--text-muted);">${r.numero_pessoas} pessoas</div></div><span style="font-size:0.7rem;padding:3px 8px;border-radius:12px;background:var(--status-warning-bg);color:var(--status-warning);border:1px solid var(--status-warning-border);">${r.status}</span></div>`).join('');
+    } catch(err){ console.error(err); }
+}
+
+// ── MENU / PRATOS — BANCO ──
+let pratoMenu = [], menuFilterCat = 'todos', pratoPendingDelId = null, pratoEditingId = null, pratoAvailState = true, toggleDispPendingId = null;
+
+async function fetchPratos() {
+    try {
+        const res = await fetch('/api/pratos');
+        if (!res.ok) throw new Error();
+        pratoMenu = await res.json();
+    } catch (_) {
+        pratoMenu = [];
+    }
+    renderMenu();
+}
+
+function getFilteredMenu() {
+    const q = (document.getElementById('menu-search')?.value || '').toLowerCase();
+    return pratoMenu.filter(p =>
+        (menuFilterCat === 'todos' || p.categoria === menuFilterCat) &&
+        (p.nome.toLowerCase().includes(q) || (p.descricao || '').toLowerCase().includes(q) || (p.categoria || '').toLowerCase().includes(q))
+    );
+}
+function setMenuFilter(cat, el) { menuFilterCat = cat; document.querySelectorAll('.filter-pill').forEach(p => p.classList.remove('active')); el.classList.add('active'); renderMenu(); }
+function renderMenuStats() {
+    const total = pratoMenu.length, avail = pratoMenu.filter(p => p.disponivel !== false).length, unavail = total - avail, cats = [...new Set(pratoMenu.map(p => p.categoria))].length;
+    document.getElementById('menu-stats-strip').innerHTML = `<div class="menu-stat"><div class="menu-stat-dot" style="background:var(--accent)"></div><span class="menu-stat-label">Total</span><span class="menu-stat-val">${total}</span></div><div class="menu-stat"><div class="menu-stat-dot" style="background:var(--status-available)"></div><span class="menu-stat-label">Disponíveis</span><span class="menu-stat-val">${avail}</span></div><div class="menu-stat"><div class="menu-stat-dot" style="background:var(--status-unavailable)"></div><span class="menu-stat-label">Indisponíveis</span><span class="menu-stat-val">${unavail}</span></div><div class="menu-stat"><div class="menu-stat-dot" style="background:var(--status-warning)"></div><span class="menu-stat-label">Categorias</span><span class="menu-stat-val">${cats}</span></div>`;
+}
+function renderMenu() {
+    renderMenuStats();
+    const grid = document.getElementById('menu-grid'), list = getFilteredMenu();
+    if (!list.length) { grid.innerHTML = `<div class="menu-empty" style="grid-column:1/-1"><div class="menu-empty-icon"><svg viewBox="0 0 24 24"><path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/></svg></div><div class="menu-empty-title">Nenhum prato encontrado</div><div class="menu-empty-desc">Tente outro filtro ou adicione um novo prato ao cardápio.</div></div>`; return; }
+    grid.innerHTML = list.map(p => {
+        const avail = p.disponivel !== false;
+        return `<div class="prato-card ${avail ? '' : 'unavailable'}"><div class="prato-card-top"><div class="prato-card-row1"><span class="prato-emoji">${escHtml(p.emoji || '🍽️')}</span><span class="prato-status-badge ${avail ? 'available' : 'unavailable'}">${avail ? 'Disponível' : 'Indisponível'}</span></div><div class="prato-name">${escHtml(p.nome)}</div><div class="prato-cat-badge">${escHtml(p.categoria || '')}</div><div class="prato-desc">${escHtml(p.descricao || '')}</div><div class="prato-price">R$ ${Number(p.preco).toFixed(2).replace('.', ',')}</div></div><div class="prato-card-footer"><button class="prato-btn ${avail ? 'toggle-unavail' : 'toggle-avail'}" onclick="togglePratoDisp(${p.prato_id})"><svg viewBox="0 0 24 24">${avail ? '<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>' : '<polyline points="20 6 9 17 4 12"/>'}</svg>${avail ? 'Desativar' : 'Ativar'}</button><button class="prato-btn edit" onclick="openEditPratoModal(${p.prato_id})"><svg viewBox="0 0 24 24"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Editar</button><button class="prato-btn del" onclick="openDelPratoModal(${p.prato_id})"><svg viewBox="0 0 24 24"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg></button></div></div>`;
+    }).join('');
+}
+
+function togglePratoDisp(id) {
+    const p = pratoMenu.find(x => x.prato_id === id); if (!p) return;
+    toggleDispPendingId = id;
+    const activating = p.disponivel === false;
+    const wrap = document.getElementById('tmodal-icon-wrap'), svg = document.getElementById('tmodal-icon-svg');
+    wrap.className = 'tmodal-icon-wrap ' + (activating ? 'activate' : 'deactivate');
+    svg.innerHTML  = activating ? '<polyline points="20 6 9 17 4 12"/>' : '<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>';
+    document.getElementById('tmodal-title').textContent  = activating ? 'Ativar prato' : 'Desativar prato';
+    document.getElementById('tmodal-prato-name').textContent = p.nome;
+    document.getElementById('tmodal-motivo').value = '';
+    document.getElementById('tmodal-motivo').placeholder = activating ? 'Ex: Ingredientes disponíveis novamente.' : 'Ex: Ingrediente em falta.';
+    document.getElementById('tmodal-motivo-error').classList.remove('visible');
+    document.getElementById('tmodal-motivo').classList.remove('error');
+    const btn = document.getElementById('tmodal-confirm-btn');
+    btn.className   = 'pmodal-btn ' + (activating ? 'activate' : 'deactivate');
+    btn.textContent = activating ? 'Ativar' : 'Desativar';
+    document.getElementById('modal-toggle-disp').classList.add('open');
+    setTimeout(() => document.getElementById('tmodal-motivo').focus(), 80);
+}
+async function confirmToggleDisp() {
+    const motivo = document.getElementById('tmodal-motivo').value.trim();
+    if (!motivo) { document.getElementById('tmodal-motivo-error').classList.add('visible'); document.getElementById('tmodal-motivo').classList.add('error'); return; }
+    const p = pratoMenu.find(x => x.prato_id === toggleDispPendingId); if (!p) return;
+    const novoDisponivel = p.disponivel === false;
+    const acao = novoDisponivel ? 'ativar' : 'desativar';
+    try {
+        const res = await fetch(`/api/pratos/${p.prato_id}`, {
+            method: 'PUT', headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ nome: p.nome, preco: p.preco, custo: p.custo || 0, categoria: p.categoria, descricao: p.descricao, emoji: p.emoji, disponivel: novoDisponivel })
+        });
+        if (!res.ok) throw new Error();
+        p.disponivel = novoDisponivel;
+        writeAuditCardapio({ prato: p.nome, pratoId: p.prato_id, acao, motivo, usuario: 'Admin', origem: 'Admin' });
+        closeToggleDispModal(); renderMenu();
+        showToast(novoDisponivel ? `✓ ${p.nome} — disponível` : `${p.nome} — indisponível`);
+    } catch (_) { showToast('Erro ao atualizar disponibilidade'); }
+}
+function closeToggleDispModal() { document.getElementById('modal-toggle-disp').classList.remove('open'); toggleDispPendingId = null; }
+
+function openAddPratoModal() { pratoEditingId=null; pratoAvailState=true; document.getElementById('prato-edit-id').value=''; document.getElementById('prato-nome').value=''; document.getElementById('prato-categoria').value='Entradas'; document.getElementById('prato-preco').value=''; document.getElementById('prato-desc').value=''; document.getElementById('prato-emoji').value=''; document.getElementById('prato-avail-switch').classList.add('on'); clearPratoErrors(); document.getElementById('pmodal-title').textContent='Adicionar prato'; document.getElementById('pmodal-subtitle').textContent='Preencha as informações do novo prato'; document.getElementById('pmodal-confirm-btn').textContent='Adicionar'; document.getElementById('pmodal-icon').textContent='🍽️'; document.getElementById('modal-prato').classList.add('open'); setTimeout(()=>document.getElementById('prato-nome').focus(),80); }
+function openEditPratoModal(id) { const p=pratoMenu.find(x=>x.prato_id===id); if(!p)return; pratoEditingId=id; pratoAvailState=p.disponivel!==false; document.getElementById('prato-edit-id').value=id; document.getElementById('prato-nome').value=p.nome; document.getElementById('prato-categoria').value=p.categoria||'Entradas'; document.getElementById('prato-preco').value=p.preco; document.getElementById('prato-desc').value=p.descricao||''; document.getElementById('prato-emoji').value=p.emoji||''; document.getElementById('prato-avail-switch').classList.toggle('on',pratoAvailState); clearPratoErrors(); document.getElementById('pmodal-title').textContent='Editar prato'; document.getElementById('pmodal-subtitle').textContent='Altere as informações do prato'; document.getElementById('pmodal-confirm-btn').textContent='Salvar alterações'; document.getElementById('pmodal-icon').textContent=p.emoji||'🍽️'; document.getElementById('modal-prato').classList.add('open'); setTimeout(()=>document.getElementById('prato-nome').focus(),80); }
+function togglePratoAvail() { pratoAvailState=!pratoAvailState; document.getElementById('prato-avail-switch').classList.toggle('on',pratoAvailState); }
+async function confirmPrato() {
+    const nome=document.getElementById('prato-nome').value.trim(), categoria=document.getElementById('prato-categoria').value, preco=parseFloat(document.getElementById('prato-preco').value), descricao=document.getElementById('prato-desc').value.trim(), emoji=document.getElementById('prato-emoji').value.trim()||'🍽️'; let valid=true; clearPratoErrors();
+    if(!nome){document.getElementById('prato-error-nome').classList.add('visible');document.getElementById('prato-nome').classList.add('error');valid=false;}
+    if(isNaN(preco)||preco<0){document.getElementById('prato-error-preco').classList.add('visible');document.getElementById('prato-preco').classList.add('error');valid=false;}
+    if(!valid)return;
+    const payload = { nome, preco, custo: 0, categoria, descricao, emoji, disponivel: pratoAvailState };
+    try {
+        let res;
+        if (pratoEditingId) {
+            const old = pratoMenu.find(x => x.prato_id === pratoEditingId);
+            res = await fetch(`/api/pratos/${pratoEditingId}`, { method:'PUT', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+            if (!res.ok) throw new Error();
+            const updated = await res.json();
+            const idx = pratoMenu.findIndex(x => x.prato_id === pratoEditingId);
+            if (idx >= 0) pratoMenu[idx] = updated;
+            let diff = [];
+            if (old) { if(old.nome!==nome)diff.push({campo:'Nome',de:old.nome,para:nome}); if(Number(old.preco)!==preco)diff.push({campo:'Preço',de:`R$${Number(old.preco).toFixed(2)}`,para:`R$${preco.toFixed(2)}`}); if(old.categoria!==categoria)diff.push({campo:'Categoria',de:old.categoria,para:categoria}); }
+            writeAuditCardapio({ prato:nome, pratoId:pratoEditingId, acao:'editar', diff, usuario:'Admin' });
+            showToast(`✓ ${nome} atualizado`);
+        } else {
+            res = await fetch('/api/pratos', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify(payload) });
+            if (!res.ok) throw new Error();
+            const created = await res.json();
+            pratoMenu.push(created);
+            writeAuditCardapio({ prato:nome, pratoId:created.prato_id, acao:'adicionar', usuario:'Admin' });
+            showToast(`✓ ${nome} adicionado ao cardápio`);
+        }
+        closePratoModal(); renderMenu();
+    } catch (_) { showToast('Erro ao salvar prato'); }
+}
+function clearPratoErrors(){ ['prato-error-nome','prato-error-preco'].forEach(id=>document.getElementById(id).classList.remove('visible')); ['prato-nome','prato-preco'].forEach(id=>document.getElementById(id).classList.remove('error')); }
+function closePratoModal(){ document.getElementById('modal-prato').classList.remove('open'); }
+function closePratoModalOnBg(e){ if(e.target===document.getElementById('modal-prato'))closePratoModal(); }
+function openDelPratoModal(id){ const p=pratoMenu.find(x=>x.prato_id===id); if(!p)return; pratoPendingDelId=id; document.getElementById('del-prato-subtitle').textContent=p.nome; document.getElementById('del-prato-text').innerHTML=`Tem certeza que deseja remover <strong>${escHtml(p.nome)}</strong>?`; document.getElementById('del-prato-motivo').value=''; document.getElementById('del-prato-motivo-error').classList.remove('visible'); document.getElementById('del-prato-motivo').classList.remove('error'); document.getElementById('modal-del-prato').classList.add('open'); }
+async function confirmDelPrato() {
+    const p = pratoMenu.find(x => x.prato_id === pratoPendingDelId); if(!p)return;
+    const motivo = document.getElementById('del-prato-motivo').value.trim();
+    if(!motivo){ document.getElementById('del-prato-motivo-error').classList.add('visible'); document.getElementById('del-prato-motivo').classList.add('error'); return; }
+    try {
+        const res = await fetch(`/api/pratos/${pratoPendingDelId}`, { method:'DELETE' });
+        if (!res.ok) throw new Error();
+        writeAuditCardapio({ prato:p.nome, pratoId:pratoPendingDelId, acao:'remover', motivo, usuario:'Admin' });
+        pratoMenu = pratoMenu.filter(x => x.prato_id !== pratoPendingDelId);
+        pratoPendingDelId = null;
+        closeDelPratoModal(); renderMenu();
+        showToast(`${p.nome} removido do cardápio`);
+    } catch (_) { showToast('Erro ao remover prato'); }
+}
+function closeDelPratoModal(){ document.getElementById('modal-del-prato').classList.remove('open'); pratoPendingDelId=null; }
+
+// ── AUDIT LOG ──
+const AUDIT_KEY_CARDAPIO='t4u-audit-cardapio', AUDIT_KEY_FUNC='t4u-audit-func', AUDIT_KEY_PEDIDOS='t4u-audit-pedidos', AUDIT_KEY_MESAS='t4u-audit-mesas';
+function loadAuditLog(key){ try{return JSON.parse(localStorage.getItem(key)||'[]');}catch(e){return[];} }
+function saveAuditLog(key,log){ localStorage.setItem(key,JSON.stringify(log)); }
+function writeAuditCardapio(entry){ let log=loadAuditLog(AUDIT_KEY_CARDAPIO); log.unshift({id:Date.now(),timestamp:new Date().toISOString(),...entry}); saveAuditLog(AUDIT_KEY_CARDAPIO,log); updateAuditTabCounts(); }
+function writeAuditFunc(entry){ let log=loadAuditLog(AUDIT_KEY_FUNC); log.unshift({id:Date.now(),timestamp:new Date().toISOString(),...entry}); saveAuditLog(AUDIT_KEY_FUNC,log); updateAuditTabCounts(); }
+let auditCurrentTab='cardapio', auditFilterCardapio='todos', auditFilterFunc='todos', auditFilterPedidos='todos', auditFilterMesas='todos';
+function setAuditTab(tab,el){ auditCurrentTab=tab; document.querySelectorAll('.audit-tab').forEach(t=>t.classList.remove('active')); document.querySelectorAll('.audit-tab-panel').forEach(p=>p.classList.remove('active')); el.classList.add('active'); document.getElementById('audit-panel-'+tab).classList.add('active'); if(tab==='cardapio')renderAuditCardapio(); else if(tab==='funcionarios')renderAuditFunc(); else if(tab==='pedidos')renderAuditPedidos(); else if(tab==='mesas')renderAuditMesas(); }
+function updateAuditTabCounts(){ let counts={cardapio:loadAuditLog(AUDIT_KEY_CARDAPIO).length,funcionarios:loadAuditLog(AUDIT_KEY_FUNC).length,pedidos:loadAuditLog(AUDIT_KEY_PEDIDOS).length,mesas:loadAuditLog(AUDIT_KEY_MESAS).length}; Object.entries(counts).forEach(([key,val])=>{let el=document.getElementById(`tab-count-${key}`);if(el)el.textContent=val>0?val:'';}); }
+function formatAuditTime(iso){ let d=new Date(iso),hoje=new Date(),ontem=new Date(); ontem.setDate(hoje.getDate()-1); let pad=n=>String(n).padStart(2,'0'),hora=`${pad(d.getHours())}:${pad(d.getMinutes())}`; if(d.toDateString()===hoje.toDateString())return `Hoje, ${hora}`; if(d.toDateString()===ontem.toDateString())return `Ontem, ${hora}`; return `${pad(d.getDate())}/${pad(d.getMonth()+1)}/${d.getFullYear()}, ${hora}`; }
+function filterByDate(log,dateVal){ if(!dateVal)return log; return log.filter(e=>{let d=new Date(e.timestamp),pad=n=>String(n).padStart(2,'0');return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`===dateVal;}); }
+function setAuditFilterCardapio(val,el){ auditFilterCardapio=val; document.querySelectorAll('#audit-filter-pills-cardapio .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditCardapio(); }
+const CARDAPIO_ACTION_LABELS={ adicionar:{label:'Adicionado',icon:'<line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>'}, editar:{label:'Editado',icon:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>'}, remover:{label:'Removido',icon:'<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>'}, desativar:{label:'Desativado',icon:'<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>'}, ativar:{label:'Ativado',icon:'<polyline points="20 6 9 17 4 12"/>'} };
+function renderAuditCardapio(){ let log=loadAuditLog(AUDIT_KEY_CARDAPIO),dateVal=document.getElementById('audit-date-cardapio')?.value||'',q=(document.getElementById('audit-search-cardapio')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal).filter(e=>{let matchAcao=auditFilterCardapio==='todos'||e.acao===auditFilterCardapio;let matchQ=!q||(e.prato||'').toLowerCase().includes(q)||(e.usuario||'').toLowerCase().includes(q)||(e.motivo||'').toLowerCase().includes(q);return matchAcao&&matchQ;}); let total=log.length,adds=log.filter(e=>e.acao==='adicionar').length,edits=log.filter(e=>e.acao==='editar').length,dels=log.filter(e=>e.acao==='remover').length; document.getElementById('audit-stats-cardapio').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-occupied)"></div><span class="audit-stat-label">Adições</span><span class="audit-stat-val">${adds}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-warning)"></div><span class="audit-stat-label">Edições</span><span class="audit-stat-val">${edits}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-unavailable)"></div><span class="audit-stat-label">Remoções</span><span class="audit-stat-val">${dels}</span></div>`; let wrap=document.getElementById('audit-log-cardapio'); if(!filtered.length){wrap.innerHTML=renderAuditEmpty(total,'prato ou usuário');return;} wrap.innerHTML=filtered.map(e=>{let def=CARDAPIO_ACTION_LABELS[e.acao]||{label:e.acao,icon:''};let motivoHtml=e.motivo?`<div class="audit-entry-motivo">${escHtml(e.motivo)}</div>`:'';let diffHtml='';if(e.diff&&e.diff.length>0){let rows=e.diff.map(d=>`<div class="audit-diff-row"><span class="audit-diff-field">${escHtml(d.campo)}</span><span class="audit-diff-old">${escHtml(String(d.de))}</span><svg style="width:11px;height:11px;flex-shrink:0;fill:none;stroke:var(--text-muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg><span class="audit-diff-new">${escHtml(String(d.para))}</span></div>`).join('');diffHtml=`<div class="audit-entry-diff">${rows}</div>`;} return `<div class="audit-entry"><div class="audit-entry-icon ${e.acao}"><svg viewBox="0 0 24 24">${def.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">${escHtml(e.prato||'')}</span><span class="audit-entry-action ${e.acao}">${def.label}</span></div>${motivoHtml}${diffHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.usuario||'Admin')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`;}).join(''); }
+function setAuditFilterFunc(val,el){ auditFilterFunc=val; document.querySelectorAll('#audit-filter-pills-func .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditFunc(); }
+const FUNC_ACTION_LABELS={ adicionar:{label:'Adicionado',icon:'<path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="23" y1="11" x2="17" y2="11"/>'}, editar:{label:'Editado',icon:'<path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/>'}, remover:{label:'Removido',icon:'<polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/>'} };
+function renderAuditFunc(){ let log=loadAuditLog(AUDIT_KEY_FUNC),dateVal=document.getElementById('audit-date-func')?.value||'',q=(document.getElementById('audit-search-func')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal).filter(e=>{let matchAcao=auditFilterFunc==='todos'||e.acao===auditFilterFunc;let matchQ=!q||(e.funcionario||'').toLowerCase().includes(q)||(e.email||'').toLowerCase().includes(q)||(e.motivo||'').toLowerCase().includes(q);return matchAcao&&matchQ;}); let total=log.length,adds=log.filter(e=>e.acao==='adicionar').length,edits=log.filter(e=>e.acao==='editar').length,dels=log.filter(e=>e.acao==='remover').length; document.getElementById('audit-stats-func').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-available)"></div><span class="audit-stat-label">Adições</span><span class="audit-stat-val">${adds}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-warning)"></div><span class="audit-stat-label">Edições</span><span class="audit-stat-val">${edits}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-unavailable)"></div><span class="audit-stat-label">Remoções</span><span class="audit-stat-val">${dels}</span></div>`; let wrap=document.getElementById('audit-log-func'); if(!filtered.length){wrap.innerHTML=renderAuditEmpty(total,'funcionário');return;} wrap.innerHTML=filtered.map(e=>{let def=FUNC_ACTION_LABELS[e.acao]||{label:e.acao,icon:''};let cargoLabel=e.cargo?(cargoLabels[e.cargo]?.label||e.cargo):'';let motivoHtml=e.motivo?`<div class="audit-entry-motivo">${escHtml(e.motivo)}</div>`:'';let diffHtml='';if(e.diff&&e.diff.length>0){let rows=e.diff.map(d=>`<div class="audit-diff-row"><span class="audit-diff-field">${escHtml(d.campo)}</span><span class="audit-diff-old">${escHtml(String(d.de))}</span><svg style="width:11px;height:11px;flex-shrink:0;fill:none;stroke:var(--text-muted);stroke-width:2;stroke-linecap:round;stroke-linejoin:round" viewBox="0 0 24 24"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg><span class="audit-diff-new">${escHtml(String(d.para))}</span></div>`).join('');diffHtml=`<div class="audit-entry-diff">${rows}</div>`;} return `<div class="audit-entry"><div class="audit-entry-icon ${e.acao}"><svg viewBox="0 0 24 24">${def.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">${escHtml(e.funcionario||'')}</span><span class="audit-entry-action ${e.acao}">${def.label}</span>${cargoLabel?`<span class="audit-entry-origin">${escHtml(cargoLabel)}</span>`:''}</div>${e.email?`<div style="font-size:0.75rem;color:var(--text-muted);margin-bottom:4px">${escHtml(e.email)}</div>`:''}${motivoHtml}${diffHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.usuario||'Admin')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`;}).join(''); }
+function renderAuditEmpty(total,tipo){ return `<div class="audit-empty"><div class="audit-empty-icon"><svg viewBox="0 0 24 24"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/></svg></div><div class="audit-empty-title">${total===0?'Nenhuma alteração registrada ainda':'Nenhum resultado para o filtro'}</div><div class="audit-empty-desc">${total===0?'Quando houver uma ação registrada, ela aparecerá aqui.':`Tente outro filtro, data ou busca por ${tipo}.`}</div></div>`; }
+function setAuditFilterPedidos(val,el){ auditFilterPedidos=val; document.querySelectorAll('#audit-filter-pills-pedidos .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditPedidos(); }
+const PEDIDO_ACTION_CONFIG={ anotado:{label:'Anotado',iconCls:'editar',icon:'<path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/>',badgeCls:'editar'}, pronto:{label:'Pronto',iconCls:'activate',icon:'<polyline points="20 6 9 17 4 12"/>',badgeCls:'activate'} };
+function renderAuditPedidos(){ let log=loadAuditLog(AUDIT_KEY_PEDIDOS),dateVal=document.getElementById('audit-date-pedidos')?.value||'',q=(document.getElementById('audit-search-pedidos')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal).filter(e=>{let matchStatus=auditFilterPedidos==='todos'||e.status===auditFilterPedidos;let matchQ=!q||String(e.mesa||'').toLowerCase().includes(q)||(e.responsavel||'').toLowerCase().includes(q)||(e.itens||[]).some(i=>i.nome.toLowerCase().includes(q));return matchStatus&&matchQ;}); let total=log.length,anotados=log.filter(e=>e.status==='anotado').length,prontos=log.filter(e=>e.status==='pronto').length; document.getElementById('audit-stats-pedidos').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-warning)"></div><span class="audit-stat-label">Anotados</span><span class="audit-stat-val">${anotados}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-available)"></div><span class="audit-stat-label">Prontos</span><span class="audit-stat-val">${prontos}</span></div>`; let wrap=document.getElementById('audit-log-pedidos'); if(!filtered.length){wrap.innerHTML=renderAuditEmpty(total,'mesa ou garçom');return;} wrap.innerHTML=filtered.map(e=>{let cfg=PEDIDO_ACTION_CONFIG[e.status]||PEDIDO_ACTION_CONFIG.anotado;let itensHtml=(e.itens||[]).length?`<div class="audit-entry-diff">${e.itens.map(i=>`<div class="audit-diff-row"><span class="audit-diff-field">${escHtml(i.nome)}</span><span style="color:var(--text-muted)">×${i.qty}${i.nota?` — <em>${escHtml(i.nota)}</em>`:''}</span></div>`).join('')}</div>`:'';let totalHtml=e.total!=null?`<span class="audit-entry-origin">R$ ${Number(e.total).toFixed(2).replace('.',',')}</span>`:'';let tempoHtml=e.tempoPreparo?`<span class="audit-entry-origin">⏱ ${e.tempoPreparo} min</span>`:'';return `<div class="audit-entry"><div class="audit-entry-icon ${cfg.iconCls}"><svg viewBox="0 0 24 24">${cfg.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">Mesa ${escHtml(String(e.mesa||'?'))}</span><span class="audit-entry-action ${cfg.badgeCls}">${cfg.label}</span>${totalHtml}${tempoHtml}</div>${itensHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.responsavel||'—')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`;}).join(''); }
+function setAuditFilterMesas(val,el){ auditFilterMesas=val; document.querySelectorAll('#audit-filter-pills-mesas .audit-pill').forEach(p=>p.classList.remove('active')); el.classList.add('active'); renderAuditMesas(); }
+const MESA_EVENT_CONFIG={ checkin:{label:'Check-in',iconCls:'activate',icon:'<path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="19" y1="8" x2="19" y2="14"/><line x1="22" y1="11" x2="16" y2="11"/>',badgeCls:'activate'}, checkout:{label:'Check-out',iconCls:'adicionar',icon:'<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>',badgeCls:'adicionar'}, disponivel:{label:'Disponível',iconCls:'activate',icon:'<polyline points="20 6 9 17 4 12"/>',badgeCls:'activate'}, indisponivel:{label:'Indisponível',iconCls:'deactivate',icon:'<circle cx="12" cy="12" r="10"/><line x1="4.93" y1="4.93" x2="19.07" y2="19.07"/>',badgeCls:'deactivate'} };
+function renderAuditMesas(){ let log=loadAuditLog(AUDIT_KEY_MESAS),dateVal=document.getElementById('audit-date-mesas')?.value||'',q=(document.getElementById('audit-search-mesas')?.value||'').toLowerCase(); let filtered=filterByDate(log,dateVal).filter(e=>{let matchEvento=auditFilterMesas==='todos'||e.evento===auditFilterMesas;let matchQ=!q||String(e.mesa||'').toLowerCase().includes(q)||(e.responsavel||'').toLowerCase().includes(q)||(e.obs||'').toLowerCase().includes(q);return matchEvento&&matchQ;}); let total=log.length,checkins=log.filter(e=>e.evento==='checkin').length,checkouts=log.filter(e=>e.evento==='checkout').length,indisp=log.filter(e=>e.evento==='indisponivel').length; document.getElementById('audit-stats-mesas').innerHTML=`<div class="audit-stat"><div class="audit-stat-dot" style="background:var(--accent)"></div><span class="audit-stat-label">Total</span><span class="audit-stat-val">${total}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-available)"></div><span class="audit-stat-label">Check-ins</span><span class="audit-stat-val">${checkins}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-occupied)"></div><span class="audit-stat-label">Check-outs</span><span class="audit-stat-val">${checkouts}</span></div><div class="audit-stat"><div class="audit-stat-dot" style="background:var(--status-unavailable)"></div><span class="audit-stat-label">Indisponíveis</span><span class="audit-stat-val">${indisp}</span></div>`; let wrap=document.getElementById('audit-log-mesas'); if(!filtered.length){wrap.innerHTML=renderAuditEmpty(total,'mesa ou responsável');return;} wrap.innerHTML=filtered.map(e=>{let cfg=MESA_EVENT_CONFIG[e.evento]||MESA_EVENT_CONFIG.disponivel;let detalhesHtml=[];if(e.pessoas)detalhesHtml.push(`<span class="audit-entry-origin">👥 ${e.pessoas} pessoa${e.pessoas>1?'s':''}</span>`);if(e.total!=null)detalhesHtml.push(`<span class="audit-entry-origin">R$ ${Number(e.total).toFixed(2).replace('.',',')}</span>`);let obsHtml=e.obs?`<div class="audit-entry-motivo">${escHtml(e.obs)}</div>`:'';return `<div class="audit-entry"><div class="audit-entry-icon ${cfg.iconCls}"><svg viewBox="0 0 24 24">${cfg.icon}</svg></div><div class="audit-entry-body"><div class="audit-entry-main"><span class="audit-entry-prato">Mesa ${escHtml(String(e.mesa||'?'))}</span><span class="audit-entry-action ${cfg.badgeCls}">${cfg.label}</span>${detalhesHtml.join('')}</div>${obsHtml}<div class="audit-entry-meta"><span class="audit-entry-user"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>${escHtml(e.responsavel||'—')}</span><span class="audit-entry-time">${formatAuditTime(e.timestamp)}</span></div></div></div>`;}).join(''); }
+function renderAuditLog(){ if(auditCurrentTab==='cardapio')renderAuditCardapio(); else if(auditCurrentTab==='funcionarios')renderAuditFunc(); else if(auditCurrentTab==='pedidos')renderAuditPedidos(); else if(auditCurrentTab==='mesas')renderAuditMesas(); }
+
+// seed sample data para audit de pedidos/mesas
+(function seedSampleData(){
+    if(loadAuditLog(AUDIT_KEY_PEDIDOS).length===0){let now=Date.now(),min=m=>now-m*60000;saveAuditLog(AUDIT_KEY_PEDIDOS,[{id:now+1,timestamp:new Date(min(8)).toISOString(),mesa:4,status:'pronto',responsavel:'Cozinha — Rafael',itens:[{nome:'Risoto de camarão',qty:2,nota:''},{nome:'Suco natural',qty:2,nota:''}],total:188.00,tempoPreparo:22},{id:now+2,timestamp:new Date(min(30)).toISOString(),mesa:4,status:'anotado',responsavel:'Carlos Mendes',itens:[{nome:'Risoto de camarão',qty:2,nota:''},{nome:'Suco natural',qty:2,nota:'sem gelo'}],total:188.00}]);}
+    if(loadAuditLog(AUDIT_KEY_MESAS).length===0){let now=Date.now(),min=m=>now-m*60000;saveAuditLog(AUDIT_KEY_MESAS,[{id:now+10,timestamp:new Date(min(5)).toISOString(),mesa:3,evento:'checkin',responsavel:'Fernanda Lima',pessoas:2},{id:now+11,timestamp:new Date(min(40)).toISOString(),mesa:1,evento:'checkout',responsavel:'Carlos Mendes',total:212.00}]);}
+    updateAuditTabCounts();
+})();
+
+document.addEventListener('keydown', e => { if(e.key==='Escape'){ closePratoModal(); closeDelPratoModal(); closeToggleDispModal(); closeModal('modal-add'); closeModal('modal-remove'); } });
+
+document.addEventListener('DOMContentLoaded', () => {
+    fetchFuncionarios();
+    loadFilaReservas();
+    setInterval(loadFilaReservas, 30000);
+    updateAuditTabCounts();
+});
 </script>
 </body>
 </html>

@@ -7,7 +7,6 @@
     <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="../styles/shared.css">
 
-    <!-- Tema aplicado antes do paint para evitar flash -->
     <script>
         (function () {
             var t = localStorage.getItem('t4u-private-theme') || 'light';
@@ -16,273 +15,52 @@
     </script>
 
     <style>
-        /* ── RECEIPT CARD ── */
-        .receipt-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            box-shadow: var(--shadow-card);
-            overflow: hidden;
-            max-width: 480px;
-            margin: 0 auto;
-        }
-
-        /* Receipt header */
-        .receipt-header {
-            padding: 20px 20px 16px;
-            border-bottom: 2px dashed var(--border);
-            text-align: center;
-        }
-
-        .receipt-brand {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.7rem;
-            font-weight: 500;
-            color: var(--text-muted);
-            text-transform: uppercase;
-            letter-spacing: 0.15em;
-            margin-bottom: 6px;
-        }
-
-        .receipt-table {
-            font-size: 1.4rem;
-            font-weight: 700;
-            color: var(--text-primary);
-            letter-spacing: -0.5px;
-            margin-bottom: 4px;
-        }
-
-        .receipt-meta {
-            font-size: 0.75rem;
-            color: var(--text-muted);
-            font-family: 'IBM Plex Mono', monospace;
-        }
-
-        /* Receipt items */
+        .receipt-card { background: var(--bg-card); border: 1px solid var(--border); border-radius: 16px; box-shadow: var(--shadow-card); overflow: hidden; max-width: 480px; margin: 0 auto; }
+        .receipt-header { padding: 20px 20px 16px; border-bottom: 2px dashed var(--border); text-align: center; }
+        .receipt-brand { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; font-weight: 500; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.15em; margin-bottom: 6px; }
+        .receipt-table { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); letter-spacing: -0.5px; margin-bottom: 4px; }
+        .receipt-meta { font-size: 0.75rem; color: var(--text-muted); font-family: 'IBM Plex Mono', monospace; }
         .receipt-body { padding: 0 20px; }
-
-        /* Round group */
         .round-group { padding: 14px 0 0; }
-
-        .round-label {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            font-size: 0.65rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.1em;
-            color: var(--text-muted);
-            margin-bottom: 8px;
-        }
-
-        .round-label::after {
-            content: '';
-            flex: 1;
-            height: 1px;
-            background: var(--border);
-        }
-
-        .receipt-line {
-            display: flex;
-            align-items: flex-start;
-            justify-content: space-between;
-            gap: 12px;
-            padding: 6px 0;
-            font-size: 0.875rem;
-        }
-
-        .receipt-line:nth-child(even) {
-            background: var(--receipt-stripe);
-            margin: 0 -20px;
-            padding: 6px 20px;
-        }
-
+        .round-label { display: flex; align-items: center; gap: 8px; font-size: 0.65rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--text-muted); margin-bottom: 8px; }
+        .round-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+        .receipt-line { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; padding: 6px 0; font-size: 0.875rem; }
         .receipt-line-left { flex: 1; min-width: 0; }
-
-        .receipt-line-name {
-            color: var(--text-primary);
-            font-weight: 500;
-            line-height: 1.3;
-        }
-
-        .receipt-line-note {
-            font-size: 0.72rem;
-            color: var(--text-muted);
-            font-style: italic;
-            margin-top: 1px;
-        }
-
-        .receipt-line-right {
-            text-align: right;
-            flex-shrink: 0;
-        }
-
-        .receipt-line-qty {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.7rem;
-            color: var(--text-muted);
-        }
-
-        .receipt-line-price {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.83rem;
-            font-weight: 500;
-            color: var(--text-primary);
-        }
-
-        /* Subtotal per round */
-        .round-subtotal {
-            display: flex;
-            justify-content: flex-end;
-            gap: 8px;
-            padding: 8px 0 12px;
-            border-bottom: 1px solid var(--border);
-            font-size: 0.75rem;
-            color: var(--text-secondary);
-        }
-
-        .round-subtotal span:last-child {
-            font-family: 'IBM Plex Mono', monospace;
-            font-weight: 600;
-            color: var(--text-primary);
-        }
-
-        /* ── SUMMARY ── */
-        .receipt-summary {
-            padding: 16px 20px;
-            border-top: 2px dashed var(--border);
-        }
-
-        .summary-line {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 5px 0;
-            font-size: 0.875rem;
-        }
-
+        .receipt-line-name { color: var(--text-primary); font-weight: 500; line-height: 1.3; }
+        .receipt-line-right { text-align: right; flex-shrink: 0; }
+        .receipt-line-qty { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-muted); }
+        .receipt-line-price { font-family: 'IBM Plex Mono', monospace; font-size: 0.83rem; font-weight: 500; color: var(--text-primary); }
+        .round-subtotal { display: flex; justify-content: flex-end; gap: 8px; padding: 8px 0 12px; border-bottom: 1px solid var(--border); font-size: 0.75rem; color: var(--text-secondary); }
+        .round-subtotal span:last-child { font-family: 'IBM Plex Mono', monospace; font-weight: 600; color: var(--text-primary); }
+        .receipt-summary { padding: 16px 20px; border-top: 2px dashed var(--border); }
+        .summary-line { display: flex; justify-content: space-between; align-items: center; padding: 5px 0; font-size: 0.875rem; }
         .summary-line-label { color: var(--text-secondary); }
         .summary-line-value { font-family: 'IBM Plex Mono', monospace; color: var(--text-primary); font-weight: 500; }
-
-        /* Service charge toggle */
-        .service-charge-row {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            padding: 8px 0;
-        }
-
+        .service-charge-row { display: flex; justify-content: space-between; align-items: center; padding: 8px 0; }
         .service-label { display: flex; align-items: center; gap: 8px; }
         .service-label-text { font-size: 0.875rem; color: var(--text-secondary); }
-        .service-tag {
-            font-size: 0.62rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.06em;
-            color: var(--accent);
-            background: var(--accent-subtle);
-            padding: 2px 6px;
-            border-radius: 4px;
-        }
-
-        /* Toggle switch */
-        .switch {
-            width: 40px; height: 22px;
-            border-radius: 11px;
-            border: none;
-            cursor: pointer;
-            display: flex; align-items: center;
-            padding: 2px;
-            transition: background 0.25s;
-            background: var(--toggle-bg);
-            flex-shrink: 0;
-        }
-
+        .service-tag { font-size: 0.62rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--accent); background: var(--accent-subtle); padding: 2px 6px; border-radius: 4px; }
+        .switch { width: 40px; height: 22px; border-radius: 11px; border: none; cursor: pointer; display: flex; align-items: center; padding: 2px; transition: background 0.25s; background: var(--toggle-bg); flex-shrink: 0; }
         .switch.on { background: var(--accent); }
-        .switch-knob {
-            width: 18px; height: 18px;
-            border-radius: 50%;
-            background: var(--toggle-knob);
-            transition: transform 0.25s cubic-bezier(0.4,0,0.2,1);
-            flex-shrink: 0;
-        }
+        .switch-knob { width: 18px; height: 18px; border-radius: 50%; background: var(--toggle-knob); transition: transform 0.25s cubic-bezier(0.4,0,0.2,1); flex-shrink: 0; }
         .switch.on .switch-knob { transform: translateX(18px); }
-
-        .service-value {
-            font-family: 'IBM Plex Mono', monospace;
-            font-size: 0.875rem;
-            font-weight: 500;
-            color: var(--text-primary);
-            min-width: 72px;
-            text-align: right;
-        }
-
-        /* Total */
-        .summary-total {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-top: 10px;
-            padding: 14px 0 4px;
-            border-top: 2px solid var(--border);
-        }
-
+        .service-value { font-family: 'IBM Plex Mono', monospace; font-size: 0.875rem; font-weight: 500; color: var(--text-primary); min-width: 72px; text-align: right; }
+        .summary-total { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding: 14px 0 4px; border-top: 2px solid var(--border); }
         .total-label { font-size: 1rem; font-weight: 700; color: var(--text-primary); }
         .total-value { font-family: 'IBM Plex Mono', monospace; font-size: 1.3rem; font-weight: 700; color: var(--accent); }
-
-        /* Empty state */
-        .empty-state {
-            text-align: center;
-            padding: 40px 20px;
-        }
-
+        .empty-state { text-align: center; padding: 40px 20px; }
         .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
         .empty-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); margin-bottom: 6px; }
         .empty-desc { font-size: 0.83rem; color: var(--text-secondary); line-height: 1.6; }
-
-        /* ── ACTION BAR ── */
-        .action-bar {
-            position: fixed;
-            bottom: 0; left: 220px; right: 0;
-            background: var(--bg-topbar);
-            border-top: 1px solid var(--border);
-            padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0));
-            display: flex;
-            gap: 10px;
-            z-index: 30;
-            box-shadow: 0 -4px 20px rgba(0,0,0,0.06);
-            transition: left 0.25s cubic-bezier(0.4,0,0.2,1);
-        }
-        #sidebar.collapsed ~ * .action-bar,
-        body.sidebar-collapsed .action-bar { left: 56px; }
+        .action-bar { position: fixed; bottom: 0; left: 220px; right: 0; background: var(--bg-topbar); border-top: 1px solid var(--border); padding: 12px 16px calc(12px + env(safe-area-inset-bottom, 0)); display: flex; gap: 10px; z-index: 30; box-shadow: 0 -4px 20px rgba(0,0,0,0.06); transition: left 0.25s cubic-bezier(0.4,0,0.2,1); }
         @media (max-width: 600px) { .action-bar { left: 0; } }
-
-        .action-btn {
-            flex: 1;
-            padding: 13px 16px;
-            border-radius: 12px;
-            border: none;
-            font-family: 'DM Sans', sans-serif;
-            font-size: 0.875rem;
-            font-weight: 600;
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: background 0.15s, transform 0.1s;
-            text-decoration: none;
-        }
-
+        .action-btn { flex: 1; padding: 13px 16px; border-radius: 12px; border: none; font-family: 'DM Sans', sans-serif; font-size: 0.875rem; font-weight: 600; cursor: pointer; display: flex; align-items: center; justify-content: center; gap: 8px; transition: background 0.15s, transform 0.1s; text-decoration: none; }
         .action-btn:active { transform: scale(0.98); }
         .action-btn svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2; stroke-linecap: round; stroke-linejoin: round; flex-shrink: 0; }
         .btn-back { background: var(--accent-subtle); color: var(--accent); border: 1px solid var(--border); flex: 0 0 auto; padding: 13px 18px; }
         .btn-back:hover { background: var(--border); }
         .btn-close { background: var(--accent); color: #fff; }
         .btn-close:hover { background: var(--accent-hover); }
-
-        /* CONFIRM MODAL */
         #confirm-overlay { display: none; position: fixed; inset: 0; background: var(--overlay); z-index: 110; align-items: flex-end; justify-content: center; }
         #confirm-overlay.open { display: flex; }
         #confirm-modal { background: var(--bg-card); border-radius: 20px 20px 0 0; width: 100%; max-width: 480px; padding: 20px 20px calc(20px + env(safe-area-inset-bottom, 0)); box-shadow: var(--shadow-modal); animation: sheet-up 0.3s cubic-bezier(0.16,1,0.3,1) both; }
@@ -304,7 +82,6 @@
 
         /* Toast container - ajuste de posição para não sobrepor action bar */
         #toast-container { bottom: 90px; }
-
         @media (max-width: 600px) { #sidebar { display: none; } }
     </style>
 </head>
@@ -321,9 +98,7 @@
             <span class="sidebar-brand">Table4U</span>
         </button>
     </div>
-    <div class="sidebar-nav" id="sidebar-nav">
-        <!-- renderizado por JS baseado no parâmetro origin -->
-    </div>
+    <div class="sidebar-nav" id="sidebar-nav"></div>
     <div class="sidebar-footer">
         <button id="btn-voltar-admin" class="nav-item oculto"
                 data-tooltip="Sair do modo" onclick="window.location.href='admin.html'">
@@ -379,7 +154,6 @@
     <main id="content"></main>
 </div>
 
-<!-- ACTION BAR -->
 <div class="action-bar" id="action-bar" style="display:none">
     <a class="action-btn btn-back" id="btn-back" href="waiter.html">
         <svg viewBox="0 0 24 24"><polyline points="15 18 9 12 15 6"/></svg>
@@ -390,7 +164,6 @@
     </button>
 </div>
 
-<!-- CONFIRM MODAL -->
 <div id="confirm-overlay" role="dialog" aria-modal="true">
     <div id="confirm-modal">
         <div class="confirm-handle" aria-hidden="true"></div>
@@ -400,7 +173,7 @@
         <p class="confirm-desc">A conta será encerrada e a mesa ficará disponível novamente.</p>
         <div class="confirm-actions">
             <button class="confirm-btn confirm-btn-secondary" onclick="closeConfirmModal()">Cancelar</button>
-            <button class="confirm-btn confirm-btn-primary" onclick="closeTable()">✓ Confirmar</button>
+            <button class="confirm-btn confirm-btn-primary" id="btn-close-table" onclick="closeTable()">✓ Confirmar</button>
         </div>
     </div>
 </div>
@@ -409,18 +182,24 @@
 
 <script src="../scripts/shared.js" defer></script>
 
-<script>     
-    // ── ORIGEM (waiter ou reception) ──
-    const params = new URLSearchParams(window.location.search);
+<script>
+    const params  = new URLSearchParams(window.location.search);
     const tableId = params.get('table') || '?';
     const origin  = params.get('origin') || 'waiter';
     const backUrl = origin === 'reception' ? 'reception.html' : 'waiter.html';
 
-    // ── SIDEBAR (renderização dinâmica baseada na origem) ──
+    let serviceChargeOn = true;
+    let subtotalGlobal  = 0;
+    let atendimentoData = null;
+
+    function fmt(n) { return 'R$ ' + Number(n).toFixed(2).replace('.', ','); }
+    function fmtTime(ts) { return new Date(ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); }
+    function fmtDate(ts) { return new Date(ts).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' }); }
+
     function renderSidebar() {
-        const sidebarNav = document.getElementById('sidebar-nav');
+        const nav = document.getElementById('sidebar-nav');
         if (origin === 'reception') {
-            sidebarNav.innerHTML = `
+            nav.innerHTML = `
                 <div class="nav-section-label">Recepção</div>
                 <a class="nav-item" href="reception.html" data-tooltip="Mesas">
                     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
@@ -431,16 +210,12 @@
                     <span class="nav-label">Fechar Conta</span>
                 </button>`;
         } else {
-            sidebarNav.innerHTML = `
+            nav.innerHTML = `
                 <div class="nav-section-label">Garçom</div>
                 <a class="nav-item" href="waiter.html" data-tooltip="Mesas">
                     <svg viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/></svg>
                     <span class="nav-label">Mesas</span>
                 </a>
-                <button class="nav-item" data-tooltip="Pedido" onclick="showToast('Você não pode fazer isso aqui!')">
-                    <svg viewBox="0 0 24 24"><path d="M9 5H7a2 2 0 0 0-2 2v12a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V7a2 2 0 0 0-2-2h-2"/><rect x="9" y="3" width="6" height="4" rx="2"/><line x1="9" y1="12" x2="15" y2="12"/><line x1="9" y1="16" x2="13" y2="16"/></svg>
-                    <span class="nav-label">Pedido</span>
-                </button>
                 <button class="nav-item active" data-tooltip="Fechar Conta">
                     <svg viewBox="0 0 24 24"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
                     <span class="nav-label">Fechar Conta</span>
@@ -448,41 +223,34 @@
         }
     }
 
-    // ── TOPBAR ORIGIN LABEL ──
-    document.getElementById('topbar-origin-name').textContent = origin === 'reception' ? 'Recepção' : 'Garçom';
-    // Botão de voltar
-    const btnBack = document.getElementById('btn-back');
-    if (btnBack) btnBack.href = backUrl;
-
-    let serviceChargeOn = true;
-    let subtotalGlobal = 0;
-
-    // ── HELPERS ──
-    function fmt(n) { return 'R$ ' + n.toFixed(2).replace('.', ','); }
-    function fmtTime(ts) { return new Date(ts).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }); }
-    function fmtDate(ts) { return new Date(ts).toLocaleDateString('pt-BR', { day: '2-digit', month: '2-digit', year: '2-digit' }); }
-
-    function getOrders() {
-        try { return JSON.parse(sessionStorage.getItem(`t4u-orders-table-${tableId}`)) || []; }
-        catch { return []; }
-    }
-
-    function render() {
-        const orders = getOrders();
+    async function loadAndRender() {
         const content = document.getElementById('content');
+        content.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">Carregando...</div>';
+
+        try {
+            const res = await fetch(`/api/mesas/${tableId}/pedidos`);
+            if (!res.ok) throw new Error();
+            atendimentoData = await res.json();
+        } catch (_) {
+            content.innerHTML = '<div style="padding:40px;text-align:center;color:var(--text-muted);">Erro ao carregar pedidos.</div>';
+            return;
+        }
+
+        const pedidos = atendimentoData.pedidos || [];
+
         document.getElementById('topbar-title').textContent = `Fechar Conta — Mesa ${tableId}`;
 
-        if (!orders.length) {
+        if (!pedidos.length) {
             content.innerHTML = `
                 <div class="receipt-card">
                     <div class="empty-state">
                         <div class="empty-icon">🧾</div>
                         <div class="empty-title">Nenhum pedido registrado</div>
-                        <p class="empty-desc">Esta mesa ainda não possui pedidos. Volte e realize um pedido primeiro.</p>
+                        <p class="empty-desc">Esta mesa ainda não possui pedidos.</p>
                     </div>
                 </div>
                 <div style="max-width:480px;margin:12px auto 0">
-                    <a class="action-btn btn-back" id="btn-back-empty" href="${backUrl}" style="display:flex;align-items:center;gap:8px;padding:13px 18px;background:var(--accent-subtle);color:var(--accent);border:1px solid var(--border);border-radius:12px;text-decoration:none;font-weight:600;font-size:0.875rem">
+                    <a class="action-btn btn-back" href="${backUrl}" style="display:flex;align-items:center;gap:8px;padding:13px 18px;background:var(--accent-subtle);color:var(--accent);border:1px solid var(--border);border-radius:12px;text-decoration:none;font-weight:600;font-size:0.875rem">
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
                         Voltar às mesas
                     </a>
@@ -490,45 +258,39 @@
             return;
         }
 
-        subtotalGlobal = orders.reduce((s, r) => s + r.total, 0);
+        subtotalGlobal = pedidos.reduce((s, p) => s + p.preco * p.quantidade, 0);
         const serviceAmt = serviceChargeOn ? subtotalGlobal * 0.1 : 0;
         const totalFinal = subtotalGlobal + serviceAmt;
+        const checkin = atendimentoData.checkin;
 
-        const openedAt = orders[0].timestamp;
-        const closedAt = Date.now();
-
-        let roundsHTML = orders.map((round, idx) => {
-            const roundTotal = round.items.reduce((s, i) => s + i.price * i.qty, 0);
-            const itemsHTML = round.items.map(item => `
-                <div class="receipt-line">
-                    <div class="receipt-line-left">
-                        <div class="receipt-line-name">${escHtml(item.name)}</div>
-                        ${item.note ? `<div class="receipt-line-note">📝 ${escHtml(item.note)}</div>` : ''}
-                    </div>
-                    <div class="receipt-line-right">
-                        <div class="receipt-line-qty">×${item.qty}</div>
-                        <div class="receipt-line-price">${fmt(item.price * item.qty)}</div>
-                    </div>
-                </div>`).join('');
-            return `
-                <div class="round-group">
-                    <div class="round-label">Rodada ${idx + 1} · ${fmtTime(round.timestamp)}</div>
-                    ${itemsHTML}
-                    <div class="round-subtotal">
-                        <span>Subtotal rodada ${idx + 1}</span>
-                        <span>${fmt(roundTotal)}</span>
-                    </div>
-                </div>`;
-        }).join('');
+        const itemsHTML = pedidos.map(p => `
+            <div class="receipt-line">
+                <div class="receipt-line-left">
+                    <div class="receipt-line-name">${p.nome}</div>
+                </div>
+                <div class="receipt-line-right">
+                    <div class="receipt-line-qty">×${p.quantidade}</div>
+                    <div class="receipt-line-price">${fmt(p.preco * p.quantidade)}</div>
+                </div>
+            </div>`).join('');
 
         content.innerHTML = `
             <div class="receipt-card">
                 <div class="receipt-header">
                     <div class="receipt-brand">Table4U · Nota de consumo</div>
                     <div class="receipt-table">Mesa ${tableId}</div>
-                    <div class="receipt-meta">Abertura ${fmtDate(openedAt)} ${fmtTime(openedAt)} · ${orders.length} rodada${orders.length !== 1 ? 's' : ''}</div>
+                    <div class="receipt-meta">${checkin ? `Abertura ${fmtDate(checkin)} ${fmtTime(checkin)}` : ''} · ${pedidos.length} item${pedidos.length !== 1 ? 'ns' : ''}</div>
                 </div>
-                <div class="receipt-body">${roundsHTML}</div>
+                <div class="receipt-body">
+                    <div class="round-group">
+                        <div class="round-label">Consumo</div>
+                        ${itemsHTML}
+                        <div class="round-subtotal">
+                            <span>Subtotal</span>
+                            <span>${fmt(subtotalGlobal)}</span>
+                        </div>
+                    </div>
+                </div>
                 <div class="receipt-summary">
                     <div class="summary-line">
                         <span class="summary-line-label">Subtotal</span>
@@ -552,7 +314,9 @@
                     </div>
                 </div>
             </div>`;
+
         document.getElementById('action-bar').style.display = 'flex';
+        document.getElementById('btn-back').href = backUrl;
         updateConfirmTotal();
     }
 
@@ -591,15 +355,24 @@
         if (e.target === this) closeConfirmModal();
     });
 
-    function closeTable() {
-        closeConfirmModal();
-        sessionStorage.removeItem(`t4u-orders-table-${tableId}`);
-        sessionStorage.setItem(`t4u-release-table-${tableId}`, 'true');
-        showToast('✓ Conta fechada! Mesa liberada.');
-        setTimeout(() => { window.location.href = backUrl; }, 1200);
+    async function closeTable() {
+        const btn = document.getElementById('btn-close-table');
+        btn.disabled = true;
+        btn.textContent = 'Processando...';
+
+        try {
+            const res = await fetch(`/api/mesas/${tableId}/checkout`, { method: 'POST' });
+            if (!res.ok) throw new Error();
+            closeConfirmModal();
+            showToast('✓ Conta fechada! Mesa liberada.');
+            setTimeout(() => { window.location.href = backUrl; }, 1200);
+        } catch (err) {
+            showToast('Erro ao fechar conta. Tente novamente.');
+            btn.disabled = false;
+            btn.textContent = '✓ Confirmar';
+        }
     }
 
-    // ── INICIALIZAÇÃO ──
     document.addEventListener('DOMContentLoaded', () => {
         T4U.requireAuth(['garcom','recepcao','admin']);
         const user = T4U.getUser();
@@ -612,7 +385,7 @@
                 : 'Sair do Modo Garçom';
         }
         renderSidebar();
-        render();
+        loadAndRender();
     });
 </script>
 </body>
