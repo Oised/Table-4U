@@ -29,6 +29,7 @@ function showSection(id, navEl) {
     document.getElementById('topbar-title').textContent = sectionTitles[id] || id;
     document.getElementById('topbar-icon').innerHTML   = sectionIcons[id]  || '';
     if (id === 'dashboard')    fetchDashboard();
+    if (id === 'restaurante')  fetchMesasAdmin();
     if (id === 'menu')         fetchPratos();
     if (id === 'funcionarios') fetchFuncionarios();
     if (id === 'filareservas') loadFilaReservas();
@@ -912,6 +913,86 @@ function renderAuditLog() {
     else if (auditCurrentTab === 'mesas')        renderAuditMesas();
 }
 
+// ── RESTAURANTE (mesas ao vivo) ──
+const MESA_STATUS_CFG = {
+    available:   { icon: '🟢', label: 'Disponível' },
+    occupied:    { icon: '🔵', label: 'Ocupada' },
+    unavailable: { icon: '🔴', label: 'Indisponível' },
+};
+
+let adminTables = [];
+let adminTablesInterval = null;
+
+async function fetchMesasAdmin() {
+    try {
+        const res = await fetch('/api/mesas');
+        if (!res.ok) throw new Error('Erro ao buscar mesas');
+        adminTables = await res.json();
+
+        // Enrich occupied tables with active atendimento (same as reception does on modal open)
+        await Promise.all(
+            adminTables
+                .filter(t => t.status === 'occupied')
+                .map(async t => {
+                    try {
+                        const r = await fetch(`/api/mesas/${t.mesa_id}/atendimento-ativo`);
+                        if (r.ok) t._atendimento = await r.json();
+                    } catch (_) {}
+                })
+        );
+
+        renderMesasAdmin();
+    } catch (err) {
+        console.error(err);
+        showToast('Erro ao carregar mesas');
+    }
+}
+
+function renderStatsAdmin() {
+    const counts = { available: 0, occupied: 0, unavailable: 0 };
+    adminTables.forEach(t => counts[t.status]++);
+    const total = adminTables.length;
+    const ocupacao = total ? Math.round((counts.occupied / total) * 100) : 0;
+    const el = document.getElementById('rest-stats-bar');
+    if (!el) return;
+    el.innerHTML = `
+        <div class="stat-chip"><div class="stat-chip-dot" style="background:var(--status-available)"></div><span class="stat-chip-label">Disponíveis</span><span class="stat-chip-val">${counts.available}</span></div>
+        <div class="stat-chip"><div class="stat-chip-dot" style="background:var(--status-occupied)"></div><span class="stat-chip-label">Ocupadas</span><span class="stat-chip-val">${counts.occupied}</span></div>
+        <div class="stat-chip"><div class="stat-chip-dot" style="background:var(--status-unavailable)"></div><span class="stat-chip-label">Indisponíveis</span><span class="stat-chip-val">${counts.unavailable}</span></div>
+        <div class="stat-chip"><div class="stat-chip-dot" style="background:var(--accent)"></div><span class="stat-chip-label">Ocupação</span><span class="stat-chip-val">${ocupacao}%</span></div>`;
+}
+
+function renderMesasAdmin() {
+    const grid = document.getElementById('rest-tables-grid');
+    const countEl = document.getElementById('rest-table-count');
+    if (!grid) return;
+    if (countEl) countEl.textContent = `${adminTables.length} mesas`;
+    renderStatsAdmin();
+
+    grid.innerHTML = adminTables.map(t => {
+        const cfg = MESA_STATUS_CFG[t.status] || MESA_STATUS_CFG.available;
+        const dots = Array.from({ length: t.capacidade }, (_, i) => {
+            const filled = t.status === 'occupied' && t._atendimento && i < t._atendimento.n_pessoas;
+            return `<div class="cap-dot${filled ? ' filled ' + t.status : ''}"></div>`;
+        }).join('');
+        let meta = '';
+        if (t.status === 'occupied' && t._atendimento) {
+            const hora = new Date(t._atendimento.checkin).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' });
+            meta = `<strong>${t._atendimento.n_pessoas} de ${t.capacidade}</strong> pessoas · desde ${hora}`;
+        } else if (t.status === 'available') {
+            meta = `Capacidade: <strong>${t.capacidade}</strong> pessoas`;
+        } else {
+            meta = `Requer atenção antes de liberar`;
+        }
+        return `<div class="rest-table-card ${t.status}">
+            <div class="rest-card-top"><span class="rest-card-num">Mesa ${t.mesa_id}</span><span class="rest-card-badge">${cfg.label}</span></div>
+            <div class="rest-card-icon">${cfg.icon}</div>
+            <div class="rest-card-meta">${meta}</div>
+            <div class="capacity-dots">${dots}</div>
+        </div>`;
+    }).join('');
+}
+
 // ── ESC ──
 document.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
@@ -927,5 +1008,6 @@ document.addEventListener('DOMContentLoaded', () => {
     loadFilaReservas();
     setInterval(loadFilaReservas, 30000);
     setInterval(fetchDashboard, 60000);
+    setInterval(fetchMesasAdmin, 30000);
     updateAuditTabCounts();
 });

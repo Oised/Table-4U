@@ -648,7 +648,12 @@ app.get('/api/dashboard/vendas-categoria', async (req, res) => {
         });
 
         // Contar vendas por categoria
-        const categorias = {};
+        // ✅ Adicionar esta linha ANTES do const categorias = {}
+            const CATEGORIAS = ['Entradas', 'Pratos', 'Bebidas', 'Sobremesas'];
+
+            Categorias.forEach(cat => {
+             categorias[cat] = 0;
+            });
         let totalVendas = 0;
 
         atendimentos.forEach(a => {

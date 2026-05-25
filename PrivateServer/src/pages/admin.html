@@ -379,6 +379,47 @@
         .audit-diff-old { text-decoration: line-through; color: var(--status-unavailable); }
         .audit-diff-new { color: var(--status-available); }
 
+        /* ── RESTAURANTE — MESAS AO VIVO ── */
+        .mesas-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; flex-wrap: wrap; gap: 12px; }
+        .mesas-header-left { display: flex; flex-direction: column; gap: 2px; }
+        .section-title { font-size: 1rem; font-weight: 600; color: var(--text-primary); }
+        .section-sub { font-size: 0.78rem; color: var(--text-muted); }
+        .mesas-header-right { display: flex; align-items: center; gap: 12px; }
+        .table-count-badge { font-family: 'IBM Plex Mono', monospace; font-size: 0.7rem; color: var(--text-muted); background: var(--accent-subtle); padding: 3px 10px; border-radius: 20px; }
+        .stats-bar { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
+        .stat-chip { display: flex; align-items: center; gap: 8px; background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 10px; padding: 8px 14px; box-shadow: var(--shadow-card); }
+        .stat-chip-dot { width: 8px; height: 8px; border-radius: 50%; flex-shrink: 0; }
+        .stat-chip-label { font-size: 0.75rem; color: var(--text-secondary); }
+        .stat-chip-val { font-family: 'IBM Plex Mono', monospace; font-size: 0.85rem; font-weight: 500; color: var(--text-primary); }
+        .rest-tables-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); gap: 14px; }
+        .rest-table-card { background: var(--bg-card); border: 1.5px solid var(--border); border-radius: 14px; padding: 18px 16px 16px; box-shadow: var(--shadow-card); position: relative; overflow: hidden; display: flex; flex-direction: column; gap: 10px; }
+        .rest-table-card::before { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: 4px; border-radius: 14px 0 0 14px; }
+        .rest-table-card.available  { border-color: var(--status-available-border); }
+        .rest-table-card.available::before  { background: var(--status-available); }
+        .rest-table-card.occupied   { border-color: var(--status-occupied-border); }
+        .rest-table-card.occupied::before   { background: var(--status-occupied); }
+        .rest-table-card.unavailable { border-color: var(--status-unavailable-border); }
+        .rest-table-card.unavailable::before { background: var(--status-unavailable); }
+        .rest-card-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+        .rest-card-num { font-family: 'IBM Plex Mono', monospace; font-size: 1.05rem; font-weight: 500; color: var(--text-primary); }
+        .rest-card-badge { font-size: 0.64rem; font-weight: 700; padding: 3px 8px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.05em; white-space: nowrap; flex-shrink: 0; }
+        .rest-table-card.available  .rest-card-badge { background: var(--status-available-bg);   color: var(--status-available);   border: 1px solid var(--status-available-border); }
+        .rest-table-card.occupied   .rest-card-badge { background: var(--status-occupied-bg);    color: var(--status-occupied);    border: 1px solid var(--status-occupied-border); }
+        .rest-table-card.unavailable .rest-card-badge { background: var(--status-unavailable-bg); color: var(--status-unavailable); border: 1px solid var(--status-unavailable-border); }
+        .rest-card-icon { width: 42px; height: 42px; border-radius: 11px; display: flex; align-items: center; justify-content: center; font-size: 1.25rem; }
+        .rest-table-card.available   .rest-card-icon { background: var(--status-available-bg); }
+        .rest-table-card.occupied    .rest-card-icon { background: var(--status-occupied-bg); }
+        .rest-table-card.unavailable .rest-card-icon { background: var(--status-unavailable-bg); }
+        .rest-card-meta { font-size: 0.75rem; color: var(--text-muted); line-height: 1.45; }
+        .rest-card-meta strong { color: var(--text-secondary); font-weight: 500; }
+        .capacity-dots { display: flex; gap: 3px; flex-wrap: wrap; margin-top: 2px; }
+        .cap-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--border); }
+        .cap-dot.filled.available   { background: var(--status-available); }
+        .cap-dot.filled.occupied    { background: var(--status-occupied); }
+        .cap-dot.filled.unavailable { background: var(--status-unavailable); }
+        .status-legend { display: flex; gap: 18px; margin-bottom: 20px; flex-wrap: wrap; }
+        .legend-item { display: flex; align-items: center; gap: 7px; font-size: 0.78rem; color: var(--text-secondary); }
+
         @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
         @media (max-width: 800px) {
             #sidebar { display: none; }
@@ -587,7 +628,22 @@
         <!-- RESTAURANTE -->
         <div class="section-view" id="section-restaurante">
             <div class="content-inner">
-                <div class="placeholder-page"><div class="placeholder-icon"><svg viewBox="0 0 24 24"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg></div><div class="placeholder-title">Informações do Restaurante</div><div class="placeholder-desc">Esta seção exibirá dados detalhados do restaurante.</div><div class="placeholder-badge"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg> Em implementação</div></div>
+                <div class="mesas-header">
+                    <div class="mesas-header-left">
+                        <div class="section-title">Mesas do salão</div>
+                        <div class="section-sub">Visão ao vivo — atualiza automaticamente</div>
+                    </div>
+                    <div class="mesas-header-right">
+                        <span class="table-count-badge" id="rest-table-count">— mesas</span>
+                    </div>
+                </div>
+                <div class="stats-bar" id="rest-stats-bar"></div>
+                <div class="status-legend">
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--status-available)"></div><span>Disponível</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--status-occupied)"></div><span>Ocupada</span></div>
+                    <div class="legend-item"><div class="legend-dot" style="background:var(--status-unavailable)"></div><span>Indisponível</span></div>
+                </div>
+                <div class="rest-tables-grid" id="rest-tables-grid"></div>
             </div>
         </div>
 
