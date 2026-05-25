@@ -1,5 +1,6 @@
 generator client {
   provider = "prisma-client-js"
+  output   = "/Users/ricardo/Table-4U/PrivateServer/generated/public"
 }
 
 datasource db {

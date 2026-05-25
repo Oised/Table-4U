@@ -222,6 +222,8 @@ async function setMesaStatus(mesaId, status) {
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', async () => {
+     T4U.requireAuth(['recepcao', 'admin']);
+
     document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
     await seedMesas();
     setInterval(fetchMesas, 30000);

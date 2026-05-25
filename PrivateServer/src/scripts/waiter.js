@@ -251,6 +251,8 @@ function goToCheckout() { window.location.href = `checkout.html?table=${activeTa
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', async () => {
+     T4U.requireAuth(['garcom', 'admin']);
+
     document.getElementById('modal-overlay').addEventListener('click', function(e) {
         if (e.target === this) closeModal();
     });

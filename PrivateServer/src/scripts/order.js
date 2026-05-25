@@ -3,11 +3,11 @@
 
 const CAT_CONFIG = {
     'Entradas':        { id: 'entradas',   label: 'Entradas',         icon: '🥗' },
-    'Pratos principais': { id: 'principais', label: 'Pratos Principais', icon: '🍽️' },
+    'Pratos': { id: 'principais', label: 'Pratos', icon: '🍽️' },
     'Bebidas':         { id: 'bebidas',    label: 'Bebidas',          icon: '🥤' },
     'Sobremesas':      { id: 'sobremesas', label: 'Sobremesas',       icon: '🍮' },
 };
-const CAT_ORDER = ['Entradas', 'Pratos principais', 'Bebidas', 'Sobremesas'];
+const CAT_ORDER = ['Entradas', 'Pratos', 'Bebidas', 'Sobremesas'];
 
 const params  = new URLSearchParams(window.location.search);
 const tableId = params.get('table') || '?';
@@ -264,6 +264,8 @@ function doCancel()         { window.location.href = 'waiter.html'; }
 
 // ── INIT ──
 document.addEventListener('DOMContentLoaded', () => {
+     T4U.requireAuth(['garcom', 'admin']);
+
     document.getElementById('topbar-title').textContent = `Pedido — Mesa ${tableId}`;
 
     document.getElementById('modal-overlay').addEventListener('click', function(e) {

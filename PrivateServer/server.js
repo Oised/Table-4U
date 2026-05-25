@@ -1,10 +1,12 @@
-require('dotenv').config();
+require('dotenv').config({ path: './.env' });
 
 const { PrismaClient } = require('./generated/private');
 const prisma = new PrismaClient();
 
 const { PrismaClient: PrismaClientPublic } = require('./generated/public');
-const prismaPublic = new PrismaClientPublic();
+const prismaPublic = new PrismaClientPublic({
+    datasources: { db: { url: process.env.DATABASE_URL_PUBLIC } }
+});
 
 const express = require('express');
 const app = express();
@@ -649,11 +651,8 @@ app.get('/api/dashboard/vendas-categoria', async (req, res) => {
 
         // Contar vendas por categoria
         // ✅ Adicionar esta linha ANTES do const categorias = {}
-            const CATEGORIAS = ['Entradas', 'Pratos', 'Bebidas', 'Sobremesas'];
-
-            Categorias.forEach(cat => {
-             categorias[cat] = 0;
-            });
+        const CATEGORIAS = ['Entradas', 'Pratos', 'Bebidas', 'Sobremesas'];
+        categorias = {};
         let totalVendas = 0;
 
         atendimentos.forEach(a => {
