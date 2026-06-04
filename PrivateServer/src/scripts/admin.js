@@ -84,6 +84,15 @@ function renderFaturamento7Dias(dias) {
     // Limpar barras antigas
     svg.querySelectorAll('.bar-rect').forEach(bar => bar.remove());
     
+    // Limpar labels de dias antigos
+    const textElements = svg.querySelectorAll('text[x]');
+    textElements.forEach(text => {
+        const yPos = text.getAttribute('y');
+        if (yPos === '155') { // These are the day labels
+            text.remove();
+        }
+    });
+    
     dias.forEach((dia, i) => {
         const x = 30 + i * spacing;
         const height = (dia.valor / maxValor) * 120;
@@ -95,10 +104,23 @@ function renderFaturamento7Dias(dias) {
         rect.setAttribute('y', y);
         rect.setAttribute('width', barWidth);
         rect.setAttribute('height', height);
-        rect.setAttribute('fill', 'var(--chart-bar-active)');
+        rect.setAttribute('fill', '#3a6ea5');
         rect.setAttribute('opacity', '0.8');
+        rect.setAttribute('rx', '3');
         
         svg.appendChild(rect);
+        
+        // Add day label
+        const text = document.createElementNS('http://www.w3.org/2000/svg', 'text');
+        text.setAttribute('x', x + barWidth / 2);
+        text.setAttribute('y', '155');
+        text.setAttribute('text-anchor', 'middle');
+        text.setAttribute('font-size', '11');
+        text.setAttribute('fill', i === dias.length - 1 ? 'var(--text-primary)' : 'var(--text-muted)');
+        if (i === dias.length - 1) text.setAttribute('font-weight', '600');
+        text.textContent = dia.dia;
+        
+        svg.appendChild(text);
     });
 }
 

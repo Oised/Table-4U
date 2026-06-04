@@ -23,8 +23,6 @@ function enviarCodigoSenha() {
     localStorage.setItem("codigoRecuperacao", codigo);
     localStorage.setItem("emailRecuperacao", usuario.email);
 
-    console.log("Código enviado (simulação):", codigo);
-
     alert("Código enviado para o seu email (simulado no console)");
 
     document.getElementById('fluxo-senha-1').style.display = 'none';

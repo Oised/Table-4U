@@ -28,8 +28,6 @@ app.listen(3000, () => {
 app.post("/clientes", (req, res) => {
   const { nome } = req.body;
 
-  console.log("Cliente recebido:", nome);
-
   res.json({ mensagem: "Cliente recebido com sucesso!" });
 });
 
@@ -87,7 +85,6 @@ app.post("/reserva", async (req, res) => {
     res.json({ mensagem: "Reserva criada com sucesso!" });
 
   } catch (err) {
-    console.error(err);
     res.status(500).json({ mensagem: "Erro ao criar reserva" });
   }
 });
@@ -122,7 +119,6 @@ app.delete("/reserva/:id", async (req, res) => {
     res.json({ mensagem: "Reserva cancelada com sucesso" });
 
   } catch (err) {
-    console.error(err);
     res.status(500).json({ mensagem: "Erro ao cancelar reserva" });
   }
 });
@@ -144,8 +140,6 @@ app.post("/register", async (req, res) => {
     res.status(201).json(cliente);
 
   } catch (err) {
-    console.error(err);
-
     if (err.code === 'P2002') {
       return res.status(400).json({ mensagem: "Email já cadastrado" });
     }
@@ -172,12 +166,10 @@ app.post("/fila", async (req, res) => {
         id_cliente: cliente.id_cliente
       }
     });
-    console.log(`[POST /fila] Cliente entrou na fila: ${email} com ${pessoas} pessoas.`);
 
     res.json({ mensagem: "Entrou na fila com sucesso!" });
 
   } catch (err) {
-    console.error(err);
     res.status(500).json({ mensagem: "Erro ao entrar na fila" });
   }
 });
@@ -199,12 +191,9 @@ app.delete("/fila/:email", async (req, res) => {
         id_cliente: cliente.id_cliente
       }
     });
-    console.log(`[DELETE /fila] Cliente saiu da fila: ${email}. Registros deletados: ${deleteResult.count}`);
-
     res.json({ mensagem: "Saiu da fila com sucesso" });
 
   } catch (err) {
-    console.error(err);
     res.status(500).json({ mensagem: "Erro ao sair da fila" });
   }
 });
@@ -223,10 +212,16 @@ app.get("/tempo-espera", async (req, res) => {
     const totalPessoas = filas.reduce((acc, fila) => acc + fila.numero_pessoas, 0);
 
     // 3. Chamar a API de previsão para cada pessoa e calcular a média
-    const modelApiUrl = process.env.MODEL_API_URL || "http://localhost:3000/predict";
+    const modelApiUrl = process.env.MODEL_API_URL;
     let somaTempoIa = 0;
 
     for (const fila of filas) {
+      // Fallback básico caso a API de modelo não esteja configurada
+      if (!modelApiUrl) {
+        somaTempoIa += fila.numero_pessoas * 5;
+        continue;
+      }
+
       // Formatar a data para o formato esperado pelo modelo
       // Fila tem data_entrada, caso não tenha usa o tempo atual fallback
       const dataEntrada = fila.data_entrada ? new Date(fila.data_entrada) : new Date();
@@ -253,7 +248,6 @@ app.get("/tempo-espera", async (req, res) => {
         const data = await response.json();
         somaTempoIa += data.tempo_espera_min;
       } catch (e) {
-        console.error("Erro na predição: ", e.message);
         // Fallback básico caso a API esteja fora
         somaTempoIa += fila.numero_pessoas * 5;
       }
@@ -269,7 +263,6 @@ app.get("/tempo-espera", async (req, res) => {
     });
 
   } catch (err) {
-    console.error("Erro ao calcular tempo de espera:", err.message);
     res.status(500).json({ mensagem: "Não foi possível calcular o tempo de espera no momento." });
   }
 });
@@ -283,7 +276,6 @@ app.get("/api/todas-filas", async (req, res) => {
     });
     res.json(filas);
   } catch (err) {
-    console.error(err);
     res.status(500).json({ mensagem: "Erro ao buscar filas" });
   }
 });
@@ -296,7 +288,6 @@ app.get("/api/todas-reservas", async (req, res) => {
     });
     res.json(reservas);
   } catch (err) {
-    console.error(err);
     res.status(500).json({ mensagem: "Erro ao buscar reservas" });
   }
 });
@@ -310,7 +301,6 @@ app.get("/api/atendimentos-privados", async (req, res) => {
     });
     res.json(atendimentos);
   } catch (err) {
-    console.error(err);
     res.status(500).json({ mensagem: "Erro ao buscar atendimentos da base privada" });
   }
 });

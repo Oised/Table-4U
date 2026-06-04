@@ -113,7 +113,6 @@ const usuario = JSON.parse(localStorage.getItem("usuarioLogado"));
 
         verificarStatusFila();
     } catch (err) {
-        console.error("Erro na requisição:", err);
         alert("Erro de conexão com o servidor.");
     }
 }
@@ -126,7 +125,6 @@ async function sairDaFila() {
                 method: "DELETE"
             });
         } catch(err) {
-            console.error(err);
         }
     }
 
@@ -142,7 +140,7 @@ async function sairDaFila() {
 // --- LÓGICA DOS TEMPORIZADORES ---
 
 function iniciarSimulacaoFilaAcelerada() {
-    // Para efeito de protótipo: 1 minuto cai a cada 1 segundo!
+    // Simulação realista: 1 minuto de espera diminui a cada 60 segundos reais
     intervaloFila = setInterval(() => {
         let tempo = parseInt(sessionStorage.getItem('fila-tempo'));
         let posicao = parseInt(sessionStorage.getItem('fila-posicao'));
@@ -167,7 +165,7 @@ function iniciarSimulacaoFilaAcelerada() {
             
             verificarStatusFila();
         }
-    }, 1000); // Mude de 1000 para 60000 se quiser que demore minutos reais
+    }, 60000); // 60000ms = 60 segundos (1 minuto real = 1 minuto de espera)
 }
 
 function iniciarTimer10Minutos() {

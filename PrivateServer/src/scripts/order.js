@@ -3,7 +3,7 @@
 
 const CAT_CONFIG = {
     'Entradas':        { id: 'entradas',   label: 'Entradas',         icon: '🥗' },
-    'Pratos': { id: 'principais', label: 'Pratos', icon: '🍽️' },
+    'Pratos': { id: 'pratos', label: 'Pratos', icon: '🍽️' },
     'Bebidas':         { id: 'bebidas',    label: 'Bebidas',          icon: '🥤' },
     'Sobremesas':      { id: 'sobremesas', label: 'Sobremesas',       icon: '🍮' },
 };

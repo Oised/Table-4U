@@ -5,7 +5,7 @@ const prisma = new PrismaClient();
 
 const { PrismaClient: PrismaClientPublic } = require('./generated/public');
 const prismaPublic = new PrismaClientPublic({
-    datasources: { db: { url: process.env.DATABASE_URL_PUBLIC } }
+    datasources: { db: { url: 'postgresql://postgres:123@localhost:5432/DB_Part1_2' } }
 });
 
 const express = require('express');

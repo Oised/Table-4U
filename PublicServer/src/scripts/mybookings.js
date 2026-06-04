@@ -65,7 +65,6 @@ async function carregarReservas() {
         }
 
     } catch (err) {
-        console.error(err);
     }
 }
 
