@@ -63,7 +63,7 @@ PublicServer/
 
 ## Pré-requisitos
 
-- Node.js 20+
+- Node.js 18+
 - PostgreSQL (local ou em nuvem — recomendamos [Neon](https://neon.tech))
 - Python 3.9+ com `flask`, `joblib`, `pandas` e `xgboost` (para o modelo de ML)
 
@@ -74,11 +74,13 @@ PublicServer/
 1. Crie um arquivo `.env` na raiz de `PublicServer/` com base no `.env.example`:
 
 ```env
-DATABASE_URL_PUBLIC="postgresql://usuario:senha@host:5432/nomedobanco?sslmode=require"
+DATABASE_URL="postgresql://usuario:senha@host:5432/nomedobanco"
+DATABASE_URL_PUBLIC="postgresql://usuario:senha@host:5432/nomedobanco"
 MODEL_API_URL="http://localhost:5000/predict"
 ```
 
-> `DATABASE_URL_PUBLIC` é o banco dos clientes (fila, reservas, cadastro).
+> **Atenção:** o `.env.example` atual contém credenciais locais de desenvolvimento — substitua todos os valores pelas suas próprias credenciais.
+> `DATABASE_URL` e `DATABASE_URL_PUBLIC` devem apontar para o mesmo banco público.
 > `MODEL_API_URL` aponta para a API Flask do modelo de ML que calcula o tempo de espera.
 
 2. Instale as dependências:
@@ -87,7 +89,7 @@ MODEL_API_URL="http://localhost:5000/predict"
 npm install
 ```
 
-O `postinstall` executa `prisma generate` automaticamente, gerando o Prisma Client para o banco público e para o schema privado (somente leitura).
+O `postinstall` executa `prisma generate` automaticamente, gerando dois Prisma Clients: um para o banco público (`schema.prisma`) e um para o banco privado (`schema_private.prisma`, somente leitura).
 
 3. Rode as migrations no banco:
 
@@ -118,17 +120,17 @@ python model.py
 
 | Método | Rota | Descrição |
 |--------|------|-----------|
-| `POST` | `/register` | Cadastra novo cliente |
-| `POST` | `/login` | Autentica cliente (retorna dados do usuário) |
+| `POST` | `/register` | Cadastra novo cliente (senha hasheada com bcrypt) |
+| `POST` | `/login` | Autentica cliente com bcrypt |
 | `POST` | `/fila` | Insere cliente na fila de espera |
 | `DELETE` | `/fila/:email` | Remove cliente da fila |
 | `GET` | `/tempo-espera` | Retorna tamanho da fila e tempo estimado via modelo de ML |
 | `POST` | `/reserva` | Cria uma reserva |
 | `GET` | `/reservas/:email` | Lista reservas do cliente |
 | `DELETE` | `/reserva/:id` | Cancela uma reserva |
-| `GET` | `/api/todas-filas` | Lista toda a fila (uso interno / dashboard) |
-| `GET` | `/api/todas-reservas` | Lista todas as reservas (uso interno / dashboard) |
-| `GET` | `/api/atendimentos-privados` | Lê atendimentos do banco privado (somente leitura) |
+| `GET` | `/api/todas-filas` | Lista toda a fila com dados do cliente (uso interno / recepção) |
+| `GET` | `/api/todas-reservas` | Lista todas as reservas com dados do cliente (uso interno / recepção) |
+| `GET` | `/api/atendimentos-privados` | Lê os 20 atendimentos mais recentes do banco privado (somente leitura) |
 
 ---
 
@@ -140,7 +142,7 @@ O banco público possui três modelos:
 - **Fila** — entradas na fila de espera, com número de pessoas e status (`esperando`)
 - **Reserva** — reservas com data/hora, número de pessoas e status (`pendente`)
 
-O schema privado (`schema_private.prisma`) é acessado em modo somente leitura pelo endpoint `/api/atendimentos-privados`, que expõe dados de atendimentos do banco interno para o dashboard público.
+O schema privado (`schema_private.prisma`) é acessado em modo somente leitura pelo endpoint `/api/atendimentos-privados`, que expõe atendimentos do banco interno para o dashboard público. O schema espelha os modelos do PrivateServer — incluindo o campo `cargo` no modelo `funcionario`.
 
 ---
 
